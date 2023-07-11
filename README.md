@@ -8,24 +8,24 @@ It is designed as a set of ```.NET Core Microservices``` communicating via ```Ra
 Data persistence in ```PostgreSQL``` and logging in ```Seq```.
 
 ## Application Components:
-**Gateway Service (ASP.NET Core WebAPi with Ocelot)**
+**Gateway Service (ASP.NET Core Web Api with Ocelot)**
 * The service is responsible for receiving ```HTTP GET``` requests containing a videoId. Upon receiving a videoId, it forwards the videoId to the Data API Service for validation.
 * If the Data API Service does not find the videoId in the database, the Gateway API Service sends the new videoId to the ```VideoIdQueue``` in the RabbitMQ system and notifies the UI that comments are loading. If the Data API Service does find the videoId and returns associated comments, the Gateway API Service forwards these comments to the UI and send the videoId to the ```VideoIdQueue```.
 * Service will use an instance of ```IRabbitMQClientService``` (from the RabbitMQ Client Library) to send ```VideoIdDTO``` objects to the ```VideoIdQueue``` in RabbitMQ.
 * Service will handle user authentication via Patreon or other authentication providers. It receives authentication requests, processes them using the specified provider, and manages session information for authenticated users.By performing authentication at this level, we can ensure that only authenticated requests are passed on to other services.
 * The service will implement error handling to respond to the client-side application with appropriate HTTP status codes and messages in case of any failures.
 
-**Data Service (ASP.NET Core Minimal API)**
+**VideoComments Service (ASP.NET Core Minimal Api)**
 * This service is responsible for receiving ```HTTP GET``` requests from the Gateway API Service. When it receives a videoId, it checks whether the videoId exists in the PostgreSQL database. If the videoId exists, it retrieves the comments for that videoId, wraps them into a ```CommentsBatchDTO```, and returns this DTO to the Gateway API Service.
 * If the videoId does not exist, it responds with a message that the videoId is not available, allowing the Gateway API Service to send a new videoId to the message bus and notify the UI of the loading state.
 * The Data API Service uses Entity Framework Core to interact with the PostgreSQL database and will implement error handling to respond with appropriate HTTP status codes and messages in case of failures.
 
-**Data Execution Service (ASP.NET Core Minimal API)**
+**VideoExecutionStatus Service (ASP.NET Core Minimal Api)**
 * This service is responsible for receiving ```HTTP GET``` requests from the Gateway API Service. When it receives ```GET /api/v1/video-execution/{id}/status```, it checks whether the videoId is currently in execution.
 * If videoId is not available it will return ```HTTP 400 notFound```.
 * If videoId is available it will return the execution status.
 
-**YouTube Comment Fetcher Service (ASP.NET Core Worker Service)**
+**YouTubeCommentsFetcher Service (ASP.NET Core Worker Service)**
 * Worker service is a long-running service that continuously listens to the ```VideoIdQueue``` in RabbitMQ.
 * For each ```VideoIdDTO``` it receives, it interacts with the YouTube API to fetch the comments for the specified videoId.
 * Each batch of up to 100 comments is wrapped into a ```CommentsBatchDTO``` and sent to a ```CommentsQueue``` queue in RabbitMQ.
@@ -33,7 +33,7 @@ Data persistence in ```PostgreSQL``` and logging in ```Seq```.
 * This service should also log the start, progress, and completion of the fetch operation for each videoId to Seq.
 * It implements exception handling to manage potential failures when calling the YouTube API (e.g., rate limits, network failures, etc.).
 
-**Comment Storage Service (ASP.NET Core Worker Service)**
+**CommentsStorage Service (ASP.NET Core Worker Service)**
 * This is another long-running service that continuously listens to all the ```CommentsQueue``` queues in RabbitMQ. For each ```CommentsBatchDTO``` it receives, it saves the comments to a PostgreSQL database.
 * The service will implement a retry policy in case of transient failures when connecting to the database, as well as error handling for non-recoverable failures.
 * It will also log successful operations and any errors to ```Seq```.
