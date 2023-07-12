@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{68C23DCB-0D50-4E8F-AC1B-7724D4E4B9EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsStorage", "CommentsStorage", "{235BF962-D506-4738-9B2C-0C258C26C544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsStorage.Worker", "Services\CommentsStorage\CommentsStorage.Worker\CommentsStorage.Worker.csproj", "{D9EAE4D0-FFB2-43C5-B60C-1507087D873F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideoComments", "VideoComments", "{155AC17E-4700-4A25-A6A2-8337199DF97C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoComments.MinimalApi", "Services\VideoComments\VideoComments.MinimalApi\VideoComments.MinimalApi.csproj", "{FBA38996-1046-46EE-876D-B16BBABE53C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideoExecutionStatus", "VideoExecutionStatus", "{B11E8A83-3C86-42AF-8599-F5082EAD6F04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoExecutionStatus.MinimalApi", "Services\VideoExecutionStatus\VideoExecutionStatus.MinimalApi\VideoExecutionStatus.MinimalApi.csproj", "{AD34CB10-70FF-4BDC-B4E4-EEC4CA41AD40}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "YouTubeCommentsFetcher", "YouTubeCommentsFetcher", "{23D8DC23-5CA7-48EC-A79E-D73A4D67FD67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeCommentsFetcher.Worker", "Services\YouTubeCommentsFetcher\YouTubeCommentsFetcher.Worker\YouTubeCommentsFetcher.Worker.csproj", "{B9892A5B-5F72-487F-9C5C-9038AE784EE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{BFAF26DB-CBB5-4A59-BE52-2B7F1B99C3BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GateWay.Api", "ApiGateway\GateWay.Api\GateWay.Api.csproj", "{B610D08D-AF4C-4366-8658-1202F18E0BC4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B5C29331-E9CB-46D8-AF05-3F7183059AA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9EAE4D0-FFB2-43C5-B60C-1507087D873F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9EAE4D0-FFB2-43C5-B60C-1507087D873F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9EAE4D0-FFB2-43C5-B60C-1507087D873F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9EAE4D0-FFB2-43C5-B60C-1507087D873F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBA38996-1046-46EE-876D-B16BBABE53C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBA38996-1046-46EE-876D-B16BBABE53C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBA38996-1046-46EE-876D-B16BBABE53C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBA38996-1046-46EE-876D-B16BBABE53C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD34CB10-70FF-4BDC-B4E4-EEC4CA41AD40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD34CB10-70FF-4BDC-B4E4-EEC4CA41AD40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD34CB10-70FF-4BDC-B4E4-EEC4CA41AD40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD34CB10-70FF-4BDC-B4E4-EEC4CA41AD40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9892A5B-5F72-487F-9C5C-9038AE784EE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9892A5B-5F72-487F-9C5C-9038AE784EE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9892A5B-5F72-487F-9C5C-9038AE784EE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9892A5B-5F72-487F-9C5C-9038AE784EE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B610D08D-AF4C-4366-8658-1202F18E0BC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B610D08D-AF4C-4366-8658-1202F18E0BC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B610D08D-AF4C-4366-8658-1202F18E0BC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B610D08D-AF4C-4366-8658-1202F18E0BC4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{235BF962-D506-4738-9B2C-0C258C26C544} = {68C23DCB-0D50-4E8F-AC1B-7724D4E4B9EC}
+		{D9EAE4D0-FFB2-43C5-B60C-1507087D873F} = {235BF962-D506-4738-9B2C-0C258C26C544}
+		{155AC17E-4700-4A25-A6A2-8337199DF97C} = {68C23DCB-0D50-4E8F-AC1B-7724D4E4B9EC}
+		{FBA38996-1046-46EE-876D-B16BBABE53C6} = {155AC17E-4700-4A25-A6A2-8337199DF97C}
+		{B11E8A83-3C86-42AF-8599-F5082EAD6F04} = {68C23DCB-0D50-4E8F-AC1B-7724D4E4B9EC}
+		{AD34CB10-70FF-4BDC-B4E4-EEC4CA41AD40} = {B11E8A83-3C86-42AF-8599-F5082EAD6F04}
+		{23D8DC23-5CA7-48EC-A79E-D73A4D67FD67} = {68C23DCB-0D50-4E8F-AC1B-7724D4E4B9EC}
+		{B9892A5B-5F72-487F-9C5C-9038AE784EE6} = {23D8DC23-5CA7-48EC-A79E-D73A4D67FD67}
+		{B610D08D-AF4C-4366-8658-1202F18E0BC4} = {BFAF26DB-CBB5-4A59-BE52-2B7F1B99C3BB}
+		{BFAF26DB-CBB5-4A59-BE52-2B7F1B99C3BB} = {B5C29331-E9CB-46D8-AF05-3F7183059AA1}
+		{68C23DCB-0D50-4E8F-AC1B-7724D4E4B9EC} = {B5C29331-E9CB-46D8-AF05-3F7183059AA1}
+	EndGlobalSection
+EndGlobal
