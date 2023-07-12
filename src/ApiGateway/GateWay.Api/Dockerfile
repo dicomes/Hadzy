@@ -5,17 +5,18 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
+
+COPY ["Hadzy-Services.sln", "Hadzy-Services.sln"]
 COPY ["ApiGateway/GateWay.Api/GateWay.Api.csproj", "ApiGateway/GateWay.Api/GateWay.Api.csproj"]
-COPY ["ApiGateway/GateWay.Api/GateWay.Api.csproj", "ApiGateway/GateWay.Api/GateWay.Api.csproj"]
-RUN dotnet restore "ApiGateway/GateWay.Api/GateWay.Api.csproj"
+RUN dotnet restore "Hadzy-Services.sln"
+
 COPY . .
-WORKDIR "/src/GateWay.Api"
-RUN dotnet build "GateWay.Api.csproj" -c Release -o /app/build
+WORKDIR "src/ApiGateway/GateWay.Api"
+RUN dotnet publish --no-restore -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "GateWay.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "GateWay.Api.dll"]

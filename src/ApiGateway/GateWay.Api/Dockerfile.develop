@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV ASPNETCORE_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["ApiGateway/GateWay.Api/GateWay.Api.csproj", "ApiGateway/GateWay.Api/"]
+
+RUN dotnet restore ApiGateway/GateWay.Api/GateWay.Api.csproj
+
+COPY . .
+WORKDIR "/src/ApiGateway/GateWay.Api"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]
