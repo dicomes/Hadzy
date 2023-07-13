@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV ASPNETCORE_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker/YouTubeCommentsFetcher.Worker.csproj", "Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker/"]
+
+RUN dotnet restore Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker/YouTubeCommentsFetcher.Worker.csproj
+
+COPY . .
+WORKDIR "/src/Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]

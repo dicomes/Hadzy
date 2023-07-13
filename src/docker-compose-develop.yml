@@ -12,12 +12,42 @@ services:
       - "5672:5672"
       - "15672:15672"
   
-  hadzy-gateway.api.prod:
+  hadzy-gateway.api.dev:
     image: hadzy/gateway.api:1.0.0
     ports:
-      - "8080:5000"
+      - "5111:5111"
     build:
       context: .
       dockerfile: ApiGateway/GateWay.Api/Dockerfile.develop
-    environment:
-      - ASPNETCORE_URLS=http://+:5000
+      
+  hadzy-comments.storage.worker.dev:
+    image: hadzy/comments.storage.api:1.0.0
+    ports:
+      - "5121:5121"
+    build:
+      context: .
+      dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
+      
+  hadzy-video.comments.api.dev:
+    image: hadzy/video.comments.api:1.0.0
+    ports:
+      - "5131:5131"
+    build:
+      context: .
+      dockerfile: Services/VideoComments/VideoComments.MinimalApi/Dockerfile.develop
+      
+  hadzy-video.execution.status.api.dev:
+    image: hadzy/video.execution.status.api:1.0.0
+    ports:
+      - "5141:5141"
+    build:
+      context: .
+      dockerfile: Services/VideoExecutionStatus/VideoExecutionStatus.MinimalApi/Dockerfile.develop
+      
+  hadzy-comments.fetcher.worker.dev:
+    image: hadzy/comments.fetcher.api:1.0.0
+    ports:
+      - "5151:5151"
+    build:
+      context: .
+      dockerfile: Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker/Dockerfile.develop

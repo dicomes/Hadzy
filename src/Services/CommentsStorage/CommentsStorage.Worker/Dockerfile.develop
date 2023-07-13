@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV ASPNETCORE_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["Services/CommentsStorage/CommentsStorage.Worker/CommentsStorage.Worker.csproj", "Services/CommentsStorage/CommentsStorage.Worker/"]
+
+RUN dotnet restore Services/CommentsStorage/CommentsStorage.Worker/CommentsStorage.Worker.csproj
+
+COPY . .
+WORKDIR "/src/Services/CommentsStorage/CommentsStorage.Worker"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]

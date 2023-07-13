@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV ASPNETCORE_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["Services/VideoComments/VideoComments.MinimalApi/VideoComments.MinimalApi.csproj", "Services/VideoComments/VideoComments.MinimalApi/"]
+
+RUN dotnet restore Services/VideoComments/VideoComments.MinimalApi/VideoComments.MinimalApi.csproj
+
+COPY . .
+WORKDIR "/src/Services/VideoComments/VideoComments.MinimalApi"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]
