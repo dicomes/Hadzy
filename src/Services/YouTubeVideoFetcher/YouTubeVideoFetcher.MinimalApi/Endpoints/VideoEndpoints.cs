@@ -1,8 +1,3 @@
-using System.Net;
-using AutoMapper;
-using Google;
-using Google.Apis.YouTube.v3.Data;
-using YouTubeVideoFetcher.MinimalApi.Exceptions;
 using YouTubeVideoFetcher.MinimalApi.Models;
 using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 using YouTubeVideoFetcher.Services;
@@ -15,52 +10,39 @@ public static class VideoEndpoints
     {
         app.MapGet("video-fetcher/api/v1/video{id}", GetVideo)
             .WithName("GetVideo")
-            .Produces<YouTubeVideoDto>(200)
-            .Produces(400);
+            .Produces<APIResponse<YouTubeVideoDto>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status500InternalServerError);
     }
 
-    private async static Task<IResult> GetVideo(IVideoService _videoService, IMapper _mapper, string videoId)
+    private async static Task<IResult> GetVideo(IVideoService _videoService, string videoId)
     {
-        Console.WriteLine("GetVideo endpoint executed.");
-        APIResponse response = new APIResponse();
+        YouTubeVideoDto videoDto = await _videoService.GetVideoByIdAsync(videoId);
 
-        try
+        var response = new APIResponse<YouTubeVideoDto>
         {
-            Video video = await _videoService.GetVideoByIdAsync(videoId);
-            YouTubeVideoDto videoDto = _mapper.Map<YouTubeVideoDto>(video);
-            response.Result = videoDto;
-            
-            response.IsSuccess = true;
-            response.StatusCode = HttpStatusCode.OK;
-            return Results.Ok(response);
-        }
-        catch (VideoNotFoundException ex)
-        {
-            response.StatusCode = HttpStatusCode.NotFound;
-            response.ErrorMessages.Add(ex.Message);
-            return Results.NotFound(response);
-        }
-        catch (VideoAccessForbiddenException ex)
-        {
-            response.StatusCode = HttpStatusCode.Forbidden;
-            response.ErrorMessages.Add(ex.Message);
-            return Results.Forbid();
-        }
-        catch (VideoBadRequestException ex)
-        {
-            response.StatusCode = HttpStatusCode.BadRequest;
-            response.ErrorMessages.Add(ex.Message);
-            return Results.BadRequest(response);
-        }
-        catch (GoogleApiException ex)
-        {
-            response.StatusCode = HttpStatusCode.InternalServerError;
-            return Results.StatusCode((int)HttpStatusCode.InternalServerError);
-        }
-        catch (Exception ex)
-        {
-            response.StatusCode = HttpStatusCode.InternalServerError;
-            return Results.StatusCode((int)HttpStatusCode.InternalServerError);
-        }
+            Result = videoDto,
+        };
+
+        return Results.Ok(response);
     }
+    
+    public static APIResponse<T> CreateErrorResponse<T>(string errorMessage)
+    {
+        var response = new APIResponse<T>()
+        {
+            Result = default
+        };
+
+        if (!string.IsNullOrEmpty(errorMessage))
+        {
+            response.ErrorMessages.Add(errorMessage);
+        }
+
+        return response;
+    }
+
+
 }
