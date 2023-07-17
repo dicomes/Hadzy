@@ -4,8 +4,10 @@ using Google.Apis.YouTube.v3.Data;
 using Polly;
 using Polly.Retry;
 using System.Net;
-
+using AutoMapper;
+using YouTubeVideoFetcher.MinimalApi;
 using YouTubeVideoFetcher.MinimalApi.Exceptions;
+using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 
 namespace YouTubeVideoFetcher.Services
 {
@@ -13,10 +15,12 @@ namespace YouTubeVideoFetcher.Services
     {
         private readonly YouTubeService _youtubeService;
         private readonly AsyncRetryPolicy _retryPolicy;
+        private readonly IMapper _mapper;
 
-        public VideoService(YouTubeService youtubeService)
+        public VideoService(YouTubeService youtubeService, IMapper mapper)
         {
             _youtubeService = youtubeService;
+            _mapper = mapper;
 
             _retryPolicy = Policy
                 .Handle<GoogleApiException>(e => e.HttpStatusCode == HttpStatusCode.InternalServerError)
@@ -24,7 +28,7 @@ namespace YouTubeVideoFetcher.Services
                 .RetryAsync(3);
         }
 
-        public async Task<Video> GetVideoByIdAsync(string videoId)
+        public async Task<YouTubeVideoDto> GetVideoByIdAsync(string videoId)
         {
             return await _retryPolicy.ExecuteAsync(async () =>
             {
@@ -40,7 +44,10 @@ namespace YouTubeVideoFetcher.Services
                         throw new VideoNotFoundException($"Video with ID '{videoId}' not found");
                     }
 
-                    return response.Items[0];
+                    Video video = response.Items[0];
+                    YouTubeVideoDto videoDto = _mapper.Map<YouTubeVideoDto>(video);
+                    
+                    return videoDto;
                 }
                 catch (GoogleApiException e)
                 {
@@ -54,7 +61,6 @@ namespace YouTubeVideoFetcher.Services
                         throw new VideoBadRequestException(e.Message);
                     }
 
-                    // If the error is something other than forbidden access or bad request, just rethrow the original exception.
                     throw;
                 }
             });
