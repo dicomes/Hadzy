@@ -1,12 +1,8 @@
-using System.Net;
-using Google;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Microsoft.AspNetCore.Diagnostics;
 using YouTubeVideoFetcher.MinimalApi;
 using YouTubeVideoFetcher.MinimalApi.Endpoints;
-using YouTubeVideoFetcher.MinimalApi.Exceptions;
-using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 using YouTubeVideoFetcher.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +27,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOptions();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IVideoService, VideoService>();
+builder.Services.AddScoped<IFetcherService, FetcherService>();
 builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
 
 var app = builder.Build();
@@ -59,4 +56,3 @@ app.UseExceptionHandler(app =>
 app.ConfigureVideoEndpoints();
 
 app.Run();
-

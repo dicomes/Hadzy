@@ -1,11 +1,9 @@
 using Google;
-using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Polly;
 using Polly.Retry;
 using System.Net;
 using AutoMapper;
-using YouTubeVideoFetcher.MinimalApi;
 using YouTubeVideoFetcher.MinimalApi.Exceptions;
 using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 
@@ -13,13 +11,13 @@ namespace YouTubeVideoFetcher.Services
 {
     public class VideoService : IVideoService
     {
-        private readonly YouTubeService _youtubeService;
+        private readonly IFetcherService _fetcherService;
         private readonly AsyncRetryPolicy _retryPolicy;
         private readonly IMapper _mapper;
 
-        public VideoService(YouTubeService youtubeService, IMapper mapper)
+        public VideoService(IFetcherService fetcherService, IMapper mapper)
         {
-            _youtubeService = youtubeService;
+            _fetcherService = fetcherService;
             _mapper = mapper;
 
             _retryPolicy = Policy
@@ -34,10 +32,7 @@ namespace YouTubeVideoFetcher.Services
             {
                 try
                 {
-                    var request = _youtubeService.Videos.List("snippet,statistics");
-                    request.Id = videoId;
-
-                    var response = await request.ExecuteAsync();
+                    var response = await _fetcherService.GetVideoListByIdAsync(videoId);
 
                     if (response.Items.Count == 0)
                     {
@@ -65,6 +60,5 @@ namespace YouTubeVideoFetcher.Services
                 }
             });
         }
-
     }
 }
