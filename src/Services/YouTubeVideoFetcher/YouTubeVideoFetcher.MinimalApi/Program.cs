@@ -10,12 +10,6 @@ using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 using YouTubeVideoFetcher.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddOptions(); // Add this line
-
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     if (hostingContext.HostingEnvironment.IsDevelopment())
@@ -25,15 +19,19 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 });
 
 var apiKey = builder.Configuration["YouTube:ApiKey"];
-Console.WriteLine($"API Key used: {apiKey}");
-
 builder.Services.AddSingleton<YouTubeService>(provider => new YouTubeService(new BaseClientService.Initializer
 {
     ApiKey = apiKey
 }));
+Console.WriteLine($"API Key used: {apiKey}");
 
+// Add services to the container.
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddOptions();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IVideoService, VideoService>();
+builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
 
 var app = builder.Build();
 
@@ -52,36 +50,11 @@ app.UseExceptionHandler(app =>
         var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
         var exception = errorFeature.Error;
 
-        if (exception is VideoNotFoundException)
-        {
-            var errorResponse = VideoEndpoints.CreateErrorResponse<YouTubeVideoDto>(exception.Message);
-            var result = Results.NotFound(errorResponse);
-            await result.ExecuteAsync(context);
-        }
-        else if (exception is VideoBadRequestException)
-        {
-            var errorResponse = VideoEndpoints.CreateErrorResponse<YouTubeVideoDto>(exception.Message);
-            var result = Results.BadRequest(errorResponse);
-            await result.ExecuteAsync(context);
-        }
-        else if (exception is VideoAccessForbiddenException)
-        {
-            var result = Results.Forbid();
-            await result.ExecuteAsync(context);
-        }
-        else if (exception is GoogleApiException)
-        {
-            var result = Results.StatusCode((int)HttpStatusCode.InternalServerError);
-            await result.ExecuteAsync(context);
-        }
-        else
-        {
-            var result = Results.StatusCode((int)HttpStatusCode.InternalServerError);
-            await result.ExecuteAsync(context);
-        }
+        var handlerService = context.RequestServices.GetRequiredService<IExceptionHandlerService>();
+        var result = await handlerService.HandleException(exception);
+        await result.ExecuteAsync(context);
     });
 });
-
 
 app.ConfigureVideoEndpoints();
 
