@@ -12,8 +12,8 @@ public static class VideoEndpoints
             .WithName("GetVideo")
             .Produces<APIResponse<YouTubeVideoDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError);
     }
 
