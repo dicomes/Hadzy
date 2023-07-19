@@ -60,4 +60,4 @@ services:
       context: .
       dockerfile: Services/YouTubeVideoFetcher/YouTubeVideoFetcher.MinimalApi/Dockerfile.develop
     environment:
-      - YouTube:ApiKey=${YOUTUBE_APIKEY_from_local_.env_file}
+      - YouTube:ApiKey=${YOUTUBE_APIKEY}
