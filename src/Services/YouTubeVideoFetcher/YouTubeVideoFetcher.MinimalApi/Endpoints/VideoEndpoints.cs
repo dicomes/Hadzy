@@ -8,7 +8,7 @@ public static class VideoEndpoints
 {
     public static void ConfigureVideoEndpoints(this WebApplication app)
     {
-        app.MapGet("video-fetcher/api/v1/video/{id}", GetVideo)
+        app.MapGet("video-fetcher/api/v1/video/{videoId}", GetVideo)
             .WithName("GetVideo")
             .Produces<APIResponse<YouTubeVideoDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
