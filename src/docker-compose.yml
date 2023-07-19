@@ -51,3 +51,13 @@ services:
     build:
       context: .
       dockerfile: Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker/Dockerfile.develop
+      
+  hadzy-video.fetcher.api.dev:
+    image: hadzy/video.fetcher.api:1.0.0
+    ports:
+      - "5161:5161"
+    build:
+      context: .
+      dockerfile: Services/YouTubeVideoFetcher/YouTubeVideoFetcher.MinimalApi/Dockerfile.develop
+    environment:
+      - YouTube:ApiKey=${YOUTUBE_APIKEY_from_local_.env_file}

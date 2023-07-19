@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV ASPNETCORE_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["Services/YouTubeVideoFetcher/YouTubeVideoFetcher.MinimalApi/YouTubeVideoFetcher.MinimalApi.csproj", "Services/YouTubeVideoFetcher/YouTubeVideoFetcher.MinimalApi/"]
+
+RUN dotnet restore Services/YouTubeVideoFetcher/YouTubeVideoFetcher.MinimalApi/YouTubeVideoFetcher.MinimalApi.csproj
+
+COPY . .
+WORKDIR "/src/Services/YouTubeVideoFetcher/YouTubeVideoFetcher.MinimalApi"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]

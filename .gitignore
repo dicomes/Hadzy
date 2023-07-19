@@ -31,6 +31,9 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# Docker
+.env
+
 # MacOs-specific
 *.DS_Store
 
