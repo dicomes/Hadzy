@@ -4,6 +4,7 @@ using Polly;
 using Polly.Retry;
 using System.Net;
 using AutoMapper;
+using Serilog;
 using YouTubeVideoFetcher.MinimalApi.Exceptions;
 using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 
@@ -33,9 +34,10 @@ namespace YouTubeVideoFetcher.Services
                 try
                 {
                     var response = await _fetcherService.GetVideoListByIdAsync(videoId);
-
+                    
                     if (response.Items.Count == 0)
                     {
+                        Log.Warning("Video with ID '{VideoId}' not found.", videoId);
                         throw new VideoNotFoundException($"Video with ID '{videoId}' not found");
                     }
 
@@ -46,6 +48,8 @@ namespace YouTubeVideoFetcher.Services
                 }
                 catch (GoogleApiException e)
                 {
+                    Log.Error(e, "Google API exception occurred while fetching video with ID '{VideoId}'.", videoId);
+
                     if (e.HttpStatusCode == HttpStatusCode.Forbidden)
                     {
                         throw new VideoAccessForbiddenException(e.Message);

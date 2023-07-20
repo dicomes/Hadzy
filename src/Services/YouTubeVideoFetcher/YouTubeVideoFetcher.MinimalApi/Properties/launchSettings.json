@@ -6,7 +6,8 @@
       "applicationUrl": "http://localhost:5161",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "YOUTUBE_API_KEY": "api_key_launch"
+        "YOUTUBE_API_KEY": "api_key_launch",
+        "SEQ_URL": "http://seq:80"
       }
     }
   }

@@ -4,8 +4,19 @@ using Microsoft.AspNetCore.Diagnostics;
 using YouTubeVideoFetcher.MinimalApi;
 using YouTubeVideoFetcher.MinimalApi.Endpoints;
 using YouTubeVideoFetcher.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var seqUrl = builder.Configuration["Seq:Url"];
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Seq(seqUrl)
+    .WriteTo.Console()
+    .CreateLogger();
+Log.Information("SEQ URL: {seqUrl}",seqUrl);
+builder.Host.UseSerilog();
+
+// Configure user secrets
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     if (hostingContext.HostingEnvironment.IsDevelopment())
@@ -19,7 +30,7 @@ builder.Services.AddSingleton<YouTubeService>(provider => new YouTubeService(new
 {
     ApiKey = apiKey
 }));
-Console.WriteLine($"API Key used: {apiKey}");
+Log.Information("API KEY: {apiKey}",apiKey);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -37,8 +48,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseExceptionHandler(app =>
 {

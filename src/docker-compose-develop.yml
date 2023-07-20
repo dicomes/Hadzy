@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  
+
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
@@ -11,7 +11,16 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-  
+
+  seq:
+    image: datalust/seq:latest
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+    volumes:
+      - seq-data:/data
+
   hadzy-gateway.api.dev:
     image: hadzy/gateway.api:1.0.0
     ports:
@@ -72,3 +81,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://*:5161
       - YouTube:ApiKey=${YOUTUBE_APIKEY}
+      - Seq:Url=${SEQ_URL}
+
+volumes:
+  seq-data:
