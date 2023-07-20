@@ -21,7 +21,7 @@ services:
       dockerfile: ApiGateway/GateWay.Api/Dockerfile.develop
     environment:
       - ASPNETCORE_URLS=http://*:5111
-      
+
   hadzy-comments.storage.worker.dev:
     image: hadzy/comments.storage.api:1.0.0
     ports:
@@ -31,7 +31,7 @@ services:
       dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
     environment:
       - ASPNETCORE_URLS=http://*:5121
-      
+
   hadzy-video.comments.api.dev:
     image: hadzy/video.comments.api:1.0.0
     ports:
@@ -41,7 +41,7 @@ services:
       dockerfile: Services/VideoComments/VideoComments.MinimalApi/Dockerfile.develop
     environment:
       - ASPNETCORE_URLS=http://*:5131
-      
+
   hadzy-video.execution.status.api.dev:
     image: hadzy/video.execution.status.api:1.0.0
     ports:
@@ -51,7 +51,7 @@ services:
       dockerfile: Services/VideoExecutionStatus/VideoExecutionStatus.MinimalApi/Dockerfile.develop
     environment:
       - ASPNETCORE_URLS=http://*:5141
-      
+
   hadzy-comments.fetcher.worker.dev:
     image: hadzy/comments.fetcher.api:1.0.0
     ports:
