@@ -26,12 +26,18 @@ Data persistence in ```PostgreSQL``` and logging in ```Seq```.
 * If videoId is available it will return the execution status.
 
 **YouTubeCommentsFetcher Service (ASP.NET Core Worker Service)**
-* Worker service is a long-running service that continuously listens to the ```VideoIdQueue``` in RabbitMQ.
-* For each ```VideoIdDTO``` it receives, it interacts with the YouTube API to fetch the comments for the specified videoId.
-* Each batch of up to 100 comments is wrapped into a ```CommentsBatchDTO``` and sent to a ```CommentsQueue``` queue in RabbitMQ.
-* Every time ```CommentsBatchDTO``` is sent to the queue it will also send the progress to a ```ProgressQueue``` for a specific videoId.
+* Worker service is a long-running service that continuously listens to the ```VideoPageToken Queue``` in RabbitMQ.
+* For each ```VideoPageTokenDto {videoId, lastPageToken}``` it consumes, it fetches comments from YouTube API starting with the last page token if available.
+* Each batch of up to 100 comments is wrapped into a ```CommentsBatchDto``` and sent to a ```CommentsBatch Queue``` in RabbitMQ.
+* Execution status is wrapped into a ```CommentsExecutionStatusDto {status: inprogress/processed, progress: 1..100}``` and sent to a ```CommentsExecutionStatus Queue``` in RabbitMQ.
 * This service should also log the start, progress, and completion of the fetch operation for each videoId to Seq.
 * It implements exception handling to manage potential failures when calling the YouTube API (e.g., rate limits, network failures, etc.).
+
+**YouTubeVideoFetcher Service (ASP.NET Core Minimal Api)**
+* This service is responsible for receiving ```GET video-fetcher/api/v1/video/{videoId}``` requests from the Gateway API Service.
+* The service will request YouTube API a Video DTO.
+* If video exist it will return status code 200(OK) and a ```VideoDto``` with video details.
+* If video does not exist it will return status code 404(notFound)
 
 **CommentsStorage Service (ASP.NET Core Worker Service)**
 * This is another long-running service that continuously listens to all the ```CommentsQueue``` queues in RabbitMQ. For each ```CommentsBatchDTO``` it receives, it saves the comments to a PostgreSQL database.
