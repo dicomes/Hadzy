@@ -1,16 +1,16 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5001"
+    "BaseUrl": "https://localhost:5111"
   },
   "Routes": [
     {
       "UpstreamPathTemplate": "/api/v1/video/{id}",
       "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/youtubeservice/v1/video/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/video-fetcher/api/v1/video/{id}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "hadzy-video.fetcher.api.dev",
           "Port": 5161
         }
       ],
