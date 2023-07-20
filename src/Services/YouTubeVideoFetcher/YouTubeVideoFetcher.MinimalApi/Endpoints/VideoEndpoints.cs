@@ -1,3 +1,4 @@
+using Serilog;
 using YouTubeVideoFetcher.MinimalApi.Models;
 using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 using YouTubeVideoFetcher.Services;
@@ -19,8 +20,9 @@ public static class VideoEndpoints
 
     private async static Task<IResult> GetVideo(IVideoService _videoService, string videoId)
     {
+        Log.Information("GET Request received for VideoId: '{VideoId}'.", videoId);
+        
         YouTubeVideoDto videoDto = await _videoService.GetVideoByIdAsync(videoId);
-
         var response = new APIResponse<YouTubeVideoDto>
         {
             Result = videoDto,
