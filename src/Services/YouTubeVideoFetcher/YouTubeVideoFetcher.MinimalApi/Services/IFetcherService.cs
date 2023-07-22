@@ -1,6 +1,6 @@
 using Google.Apis.YouTube.v3.Data;
 
-namespace YouTubeVideoFetcher.Services;
+namespace YouTubeVideoFetcher.MinimalApi.Services;
 
 public interface IFetcherService
 {

@@ -1,14 +1,14 @@
+using System.Net;
+using AutoMapper;
 using Google;
 using Google.Apis.YouTube.v3.Data;
 using Polly;
 using Polly.Retry;
-using System.Net;
-using AutoMapper;
 using Serilog;
 using YouTubeVideoFetcher.MinimalApi.Exceptions;
 using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 
-namespace YouTubeVideoFetcher.Services
+namespace YouTubeVideoFetcher.MinimalApi.Services
 {
     public class VideoService : IVideoService
     {

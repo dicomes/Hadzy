@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace YouTubeVideoFetcher.MinimalApi.Models;
 
 public class APIResponse<T>

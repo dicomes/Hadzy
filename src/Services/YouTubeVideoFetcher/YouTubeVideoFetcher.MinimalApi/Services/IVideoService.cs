@@ -1,7 +1,6 @@
-using Google.Apis.YouTube.v3.Data;
-using YouTubeVideoFetcher.MinimalApi.Models.DTO; // Video
+using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 
-namespace YouTubeVideoFetcher.Services;
+namespace YouTubeVideoFetcher.MinimalApi.Services;
 
 public interface IVideoService
 {

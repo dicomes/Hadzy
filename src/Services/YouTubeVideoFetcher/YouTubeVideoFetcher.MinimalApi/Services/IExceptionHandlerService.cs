@@ -1,4 +1,4 @@
-namespace YouTubeVideoFetcher.Services;
+namespace YouTubeVideoFetcher.MinimalApi.Services;
 
 public interface IExceptionHandlerService
 {

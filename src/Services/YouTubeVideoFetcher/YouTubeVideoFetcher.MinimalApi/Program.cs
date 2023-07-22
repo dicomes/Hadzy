@@ -3,8 +3,8 @@ using Google.Apis.YouTube.v3;
 using Microsoft.AspNetCore.Diagnostics;
 using YouTubeVideoFetcher.MinimalApi;
 using YouTubeVideoFetcher.MinimalApi.Endpoints;
-using YouTubeVideoFetcher.Services;
 using Serilog;
+using YouTubeVideoFetcher.MinimalApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Seq(seqUrl)
     .WriteTo.Console()
     .CreateLogger();
-Log.Information("SEQ URL: {seqUrl}",seqUrl);
+
 builder.Host.UseSerilog();
 
 // Configure user secrets
@@ -30,18 +30,22 @@ builder.Services.AddSingleton<YouTubeService>(provider => new YouTubeService(new
 {
     ApiKey = apiKey
 }));
-Log.Information("API KEY: {apiKey}",apiKey);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOptions();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddScoped<IVideoService, VideoService>();
 builder.Services.AddScoped<IFetcherService, FetcherService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
+builder.Services.AddScoped<IVideoHandlerService, VideoHandlerService>();
 builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
 
 var app = builder.Build();
+
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("SEQ URL: {seqUrl}", seqUrl);
+logger.LogInformation("API KEY: {apiKey}", apiKey);
 
 if (app.Environment.IsDevelopment())
 {

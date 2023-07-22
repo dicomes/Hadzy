@@ -7,7 +7,7 @@ using Xunit;
 using YouTubeVideoFetcher.MinimalApi;
 using YouTubeVideoFetcher.MinimalApi.Exceptions;
 using YouTubeVideoFetcher.MinimalApi.Models.DTO;
-using YouTubeVideoFetcher.Services;
+using YouTubeVideoFetcher.MinimalApi.Services;
 
 namespace YouTubeVideoFetcher.UnitTests;
 
