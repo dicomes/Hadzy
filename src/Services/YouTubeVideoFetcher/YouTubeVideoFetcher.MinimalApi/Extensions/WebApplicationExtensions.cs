@@ -2,7 +2,7 @@ using YouTubeVideoFetcher.MinimalApi.Models;
 using YouTubeVideoFetcher.MinimalApi.Models.DTO;
 using YouTubeVideoFetcher.MinimalApi.Services;
 
-namespace YouTubeVideoFetcher.MinimalApi.Endpoints;
+namespace YouTubeVideoFetcher.MinimalApi.Extensions;
 
 public static class WebApplicationExtensions
 {
