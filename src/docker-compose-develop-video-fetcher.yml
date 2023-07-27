@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+    volumes:
+      - seq-data:/data
+
+  hadzy-gateway.api.dev:
+    image: hadzy/gateway.api:1.0.0
+    ports:
+      - "5111:5111"
+    build:
+      context: .
+      dockerfile: ApiGateway/GateWay.Api/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5111
+
+  hadzy-video.fetcher.api.dev:
+    image: hadzy/video.fetcher.api:1.0.0
+    ports:
+      - "5161:5161"
+    build:
+      context: .
+      dockerfile: Services/YouTubeVideoFetcher/YouTubeVideoFetcher.MinimalApi/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5161
+      - YouTube:ApiKey=${YOUTUBE_APIKEY}
+      - Seq:Url=${SEQ_URL}
+
+volumes:
+  seq-data:
