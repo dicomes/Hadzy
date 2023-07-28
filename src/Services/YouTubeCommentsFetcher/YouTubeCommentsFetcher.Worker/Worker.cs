@@ -1,35 +1,39 @@
-using YouTubeCommentsFetcher.Worker.Models;
-using YouTubeCommentsFetcher.Worker.Services;
+using MassTransit;
+using MassTransit.Util;
 
-namespace YouTubeCommentsFetcher.Worker;
-
-public class Worker : BackgroundService
+namespace YouTubeCommentsFetcher.Worker
 {
-    private readonly ILogger<Worker> _logger;
-    private readonly ICommentsService _commentsService;
-
-    public Worker(ILogger<Worker> logger, ICommentsService commentsService)
+    public class Worker : BackgroundService
     {
-        _logger = logger;
-        _commentsService = commentsService;
+        private readonly ILogger<Worker> _logger;
+        private readonly IBusControl _busControl;
 
-    }
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
+        public Worker(ILogger<Worker> logger, IBusControl busControl)
         {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            
-            // Here code to consume the videoId from RabbitMq via MassTransit.
-            // After videoId is received a fetching process starts below
-            
-            var batch = await _commentsService.GetCommentBatchByVideoIdAsync(new FetchSettings(){VideoId = "WAuEByCltMA", MaxResults = 100, Properties = "snippet"});
-            
-            _logger.LogInformation("Fetched comments for video {videoId}. Nr comments fetched: {commentsFetched}", batch.VideoId, batch.YouTubeCommentsList.Count);
-            // After the batch is ready publish to a RabbitMq queue via MassTransit
-            
-            await Task.Delay(100, stoppingToken);
+            _logger = logger;
+            _busControl = busControl;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation("Worker started. Waiting for VideoId...");
+
+            // Starting the bus control initiates the MassTransit service and begins listening for messages.
+            // When a message of type IVideoIdMessage is received, MassTransit will automatically 
+            // instantiate the associated consumer (VideoIdConsumer) and invoke its Consume method 
+            // to process the message.
+            await _busControl.StartAsync(stoppingToken);
+
+            // Wait until the task is cancelled.
+            await TaskUtil.Completed;
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await _busControl.StopAsync(cancellationToken);
+            await base.StopAsync(cancellationToken);
         }
     }
+
 }
+

@@ -24,7 +24,7 @@ public class YouTubeFetcherService : IFetcherService
         
         return await retryPolicy.ExecuteAsync(async () => 
         {
-            _logger.LogInformation("Fetching {fetchSettings}", fetchSettings);
+            _logger.LogInformation("Fetching comments for VideoId: {VideoId}. PageToken: {PageToken}", fetchSettings.VideoId, fetchSettings.PageToken);
             var request = _youtubeService.CommentThreads.List(fetchSettings.Properties);
             request.VideoId = fetchSettings.VideoId;
             request.MaxResults = fetchSettings.MaxResults;

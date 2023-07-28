@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="docker-compose-develop-comments-fetcher.yml" />
+    <Content Include="docker-compose-develop-infrastructure.yml" />
     <Content Include="docker-compose-develop-video-fetcher.yml" />
     <Content Include="docker-compose-develop.yml" />
   </ItemGroup>
