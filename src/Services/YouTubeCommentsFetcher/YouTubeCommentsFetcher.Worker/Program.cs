@@ -1,7 +1,10 @@
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Serilog;
 using YouTubeCommentsFetcher.Worker.Configurations;
 using YouTubeCommentsFetcher.Worker.Services;
+using YouTubeCommentsFetcher.Worker.Services.Fetcher;
+using YouTubeCommentsFetcher.Worker.Services.Transformer;
 
 namespace YouTubeCommentsFetcher.Worker
 {
@@ -23,7 +26,13 @@ namespace YouTubeCommentsFetcher.Worker
                 .ConfigureServices((hostingContext, services) =>
                 {
                     services.AddHostedService<Worker>();
-
+                    
+                    var seqConfig = hostingContext.Configuration.GetSection("Seq").Get<SeqConfig>();
+                    Log.Logger = new LoggerConfiguration()
+                        .WriteTo.Seq(seqConfig.Url)
+                        .WriteTo.Console()
+                        .CreateLogger();
+                    
                     var youTubeConfig = hostingContext.Configuration.GetSection("YouTube").Get<YouTubeConfig>();
 
                     services.AddSingleton<YouTubeService>(sp => 
@@ -34,11 +43,14 @@ namespace YouTubeCommentsFetcher.Worker
                         });
                     });
 
-                    services.AddSingleton<IFetcherService, FetcherService>();
+                    // Services registration
+                    services.AddSingleton<RetryPolicyProvider>();
+                    services.AddTransient<IFetcherService, YouTubeFetcherService>(); // Fetches comments
                     services.AddAutoMapper(typeof(MappingConfig));
+                    services.AddTransient<ICommentTransformer, CommentThreadToDtoTransformer>(); // Transforms comments to DTO
                     services.AddSingleton<ICommentsService, CommentsService>();
-                    
-                })
+
+                }).UseSerilog()
                 .Build();
 
             await host.RunAsync();

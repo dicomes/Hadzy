@@ -1,44 +1,44 @@
 using System.Net;
-using AutoMapper;
 using Google;
-using Polly;
-using Polly.Retry;
+using YouTubeCommentsFetcher.Worker.Exceptions;
+using YouTubeCommentsFetcher.Worker.Models;
 using YouTubeCommentsFetcher.Worker.Models.DTO;
+using YouTubeCommentsFetcher.Worker.Services.Fetcher;
+using YouTubeCommentsFetcher.Worker.Services.Transformer;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
 public class CommentsService : ICommentsService
 {
     private readonly IFetcherService _fetcherService;
-    private readonly AsyncRetryPolicy _retryPolicy;
-    private readonly IMapper _mapper;
+    private readonly ICommentTransformer _transformer;
 
-    public CommentsService(IFetcherService fetcherService, IMapper mapper)
+    public CommentsService(IFetcherService fetcherService, ICommentTransformer transformer)
     {
         _fetcherService = fetcherService;
-        _mapper = mapper;
-        
-        _retryPolicy = Policy
-            .Handle<GoogleApiException>(e => e.HttpStatusCode == HttpStatusCode.InternalServerError)
-            .Or<TimeoutException>()
-            .RetryAsync(3);
+        _transformer = transformer;
     }
 
-    public async Task<CommentsBatchDto> GetCommentsByVideoIdAsync(string videoId, int maxResults)
+    public async Task<CommentsBatchDto> GetCommentBatchByVideoIdAsync(FetchSettings fetchSettings)
     {
-        return await _retryPolicy.ExecuteAsync(async () => await FetchComments(videoId, maxResults));
-    }
-
-    private async Task<CommentsBatchDto> FetchComments(string videoId, int maxResults)
-    {
-        var response = await _fetcherService.GetCommentThreadList(videoId, maxResults);
-        
-        var youTubeComments = _mapper.Map<List<YouTubeComment>>(response.Items.Select(ct => ct.Snippet.TopLevelComment).ToList());
-        var commentsBatchDto = new CommentsBatchDto
+        try
         {
-            VideoId = videoId,
-            YouTubeCommentsList = youTubeComments
-        };
-        return commentsBatchDto;
+            var response = await _fetcherService.FetchAsync(fetchSettings);
+            return _transformer.Transform(fetchSettings.VideoId, response);
+        }
+        catch (GoogleApiException e)
+        {
+            if (e.HttpStatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new CommentsAccessForbiddenException(e.Message);
+            }
+                    
+            if (e.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                throw new CommentsNotFoundException(e.Message);
+            }
+
+            throw;
+        }
     }
 }

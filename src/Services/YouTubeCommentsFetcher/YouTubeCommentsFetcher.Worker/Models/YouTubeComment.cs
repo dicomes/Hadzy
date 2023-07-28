@@ -1,4 +1,4 @@
-namespace YouTubeCommentsFetcher.Worker.Models.DTO;
+namespace YouTubeCommentsFetcher.Worker.Models;
 
 public class YouTubeComment
 {

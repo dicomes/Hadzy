@@ -1,3 +1,4 @@
+using YouTubeCommentsFetcher.Worker.Models;
 using YouTubeCommentsFetcher.Worker.Services;
 
 namespace YouTubeCommentsFetcher.Worker;
@@ -19,14 +20,16 @@ public class Worker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-
-            var batch = await _commentsService.GetCommentsByVideoIdAsync("4V1RjmLOvmc", 100);
-            foreach (var item in batch.YouTubeCommentsList)
-            {
-                Console.WriteLine(item.TextDisplay);
-            }
-
-            await Task.Delay(1000, stoppingToken);
+            
+            // Here code to consume the videoId from RabbitMq via MassTransit.
+            // After videoId is received a fetching process starts below
+            
+            var batch = await _commentsService.GetCommentBatchByVideoIdAsync(new FetchSettings(){VideoId = "WAuEByCltMA", MaxResults = 100, Properties = "snippet"});
+            
+            _logger.LogInformation("Fetched comments for video {videoId}. Nr comments fetched: {commentsFetched}", batch.VideoId, batch.YouTubeCommentsList.Count);
+            // After the batch is ready publish to a RabbitMq queue via MassTransit
+            
+            await Task.Delay(100, stoppingToken);
         }
     }
 }
