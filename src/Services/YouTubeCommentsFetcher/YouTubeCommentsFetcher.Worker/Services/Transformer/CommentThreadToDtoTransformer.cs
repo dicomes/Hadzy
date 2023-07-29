@@ -2,7 +2,6 @@ using AutoMapper;
 using Google.Apis.YouTube.v3.Data;
 using SharedEventContracts;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
-using YouTubeCommentsFetcher.Worker.Models;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Transformer;
 
@@ -15,14 +14,18 @@ public class CommentThreadToDtoTransformer : ICommentTransformer
         _mapper = mapper;
     }
 
-    public ICommentsFetchedEvent Transform(string videoId, CommentThreadListResponse response)
+    public CommentsFetchedEvent Transform(string videoId, CommentThreadListResponse response)
     {
-        var youTubeComments = _mapper.Map<List<IYouTubeCommentDto>>(response.Items.Select(ct => ct.Snippet.TopLevelComment));
-        return new CommentsFetchedEvent
+        // Extract the comments and map them
+        List<YouTubeCommentDto> youTubeCommentDtos = _mapper.Map<List<YouTubeCommentDto>>(response.Items.Select(ct => ct.Snippet.TopLevelComment));
+        
+        CommentsFetchedEvent commentsFetchedEvent = new CommentsFetchedEvent
         {
             VideoId = videoId,
             PageToken = response.NextPageToken,
-            YouTubeCommentsList = youTubeComments
+            YouTubeCommentsList = youTubeCommentDtos.Cast<IYouTubeCommentDto>().ToList()
         };
+
+        return commentsFetchedEvent;
     }
 }

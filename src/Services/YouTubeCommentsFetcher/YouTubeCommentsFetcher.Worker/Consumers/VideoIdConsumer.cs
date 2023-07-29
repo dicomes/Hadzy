@@ -26,14 +26,15 @@ public class VideoIdConsumer : IConsumer<IVideoIdMessage>
         do
         {
             var commentsFetchedEvent = await _commentsService.GetCommentsFetchedEventByVideoIdAsync(new FetchSettings(videoId, nextPageToken));
-
-            _logger.LogInformation("Fetched comments for video {VideoId}. Nr comments fetched: {CommentsFetched}", commentsFetchedEvent.VideoId, commentsFetchedEvent.YouTubeCommentsList.Count);
+            _logger.LogInformation("Fetching batch completed for videoId: {VideoId}. PageToken: {PageToken}. Batch size: {BatchSize}", videoId, nextPageToken, commentsFetchedEvent.YouTubeCommentsList.Count);
             
-            await _publishEndpoint.Publish(commentsFetchedEvent);
-            _logger.LogInformation("Published CommentsFetchedEvent for video: {VideoId}" ,commentsFetchedEvent.VideoId);
+            await _publishEndpoint.Publish<ICommentsFetchedEvent>(commentsFetchedEvent);
+            _logger.LogInformation("Published fetched batch event completed for video: {VideoId}. PageToken: {PageToken}", videoId, nextPageToken);
             
             nextPageToken = commentsFetchedEvent.PageToken;
-
         } while (!string.IsNullOrEmpty(nextPageToken));
+        
+        _logger.LogInformation("Fetching all batchtes completed for videoId: {VideoId}.", videoId);
+
     }
 }

@@ -1,9 +1,9 @@
 using Google.Apis.YouTube.v3.Data;
-using SharedEventContracts;
+using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Transformer;
 
 public interface ICommentTransformer
 {
-    ICommentsFetchedEvent Transform(string videoId, CommentThreadListResponse response);
+    CommentsFetchedEvent Transform(string videoId, CommentThreadListResponse response);
 }
