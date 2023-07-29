@@ -1,5 +1,6 @@
 using System.Net;
 using Google;
+using SharedEventContracts;
 using YouTubeCommentsFetcher.Worker.Exceptions;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Models;
@@ -19,7 +20,7 @@ public class CommentsService : ICommentsService
         _transformer = transformer;
     }
 
-    public async Task<CommentsFetchedEvent> GetCommentsFetchedEventByVideoIdAsync(FetchSettings fetchSettings)
+    public async Task<ICommentsFetchedEvent> GetCommentsFetchedEventByVideoIdAsync(FetchSettings fetchSettings)
     {
         try
         {

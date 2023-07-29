@@ -1,8 +1,6 @@
-using SharedEventContracts;
+namespace SharedEventContracts;
 
-namespace YouTubeCommentsFetcher.Worker.Models;
-
-public class YouTubeComment : IYouTubeCommentDto
+public interface IYouTubeCommentDto
 {
     public string Etag { get; set; }
     public string Id { get; set; }

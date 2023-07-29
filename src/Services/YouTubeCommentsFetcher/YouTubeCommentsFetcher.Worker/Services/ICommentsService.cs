@@ -1,9 +1,9 @@
-using YouTubeCommentsFetcher.Worker.IntegrationEvents;
+using SharedEventContracts;
 using YouTubeCommentsFetcher.Worker.Models;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
 public interface ICommentsService
 {
-    Task<CommentsFetchedEvent> GetCommentsFetchedEventByVideoIdAsync(FetchSettings fetchSettings);
+    Task<ICommentsFetchedEvent> GetCommentsFetchedEventByVideoIdAsync(FetchSettings fetchSettings);
 }

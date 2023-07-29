@@ -1,14 +1,14 @@
 using AutoMapper;
 using Google.Apis.YouTube.v3.Data;
-using YouTubeCommentsFetcher.Worker.Models;
+using SharedEventContracts;
 
-namespace YouTubeCommentsFetcher.Worker;
+namespace YouTubeCommentsFetcher.Worker.Services.Transformer;
 
 public class MappingConfig : Profile
 {
     public MappingConfig()
     {
-        CreateMap<Comment, YouTubeComment>()
+        CreateMap<Comment, IYouTubeCommentDto>()
             .ForMember(dest => dest.Etag, opt => opt.MapFrom(src => src.ETag))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.AuthorDisplayName, opt => opt.MapFrom(src => src.Snippet.AuthorDisplayName))
