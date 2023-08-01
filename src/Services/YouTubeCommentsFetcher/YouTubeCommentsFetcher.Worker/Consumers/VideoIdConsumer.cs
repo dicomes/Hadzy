@@ -10,12 +10,14 @@ public class VideoIdConsumer : IConsumer<IVideoIdMessage>
     private readonly ILogger<VideoIdConsumer> _logger;
     private readonly ICommentsService _commentsService;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly ICommentsServiceExceptionHandler _commentsServiceExceptionHandler;
 
-    public VideoIdConsumer(ILogger<VideoIdConsumer> logger, ICommentsService commentsService, IPublishEndpoint publishEndpoint)
+    public VideoIdConsumer(ILogger<VideoIdConsumer> logger, ICommentsService commentsService, IPublishEndpoint publishEndpoint, ICommentsServiceExceptionHandler commentsServiceExceptionHandler)
     {
         _logger = logger;
         _commentsService = commentsService;
         _publishEndpoint = publishEndpoint;
+        _commentsServiceExceptionHandler = commentsServiceExceptionHandler;
     }
 
     public async Task Consume(ConsumeContext<IVideoIdMessage> context)
@@ -23,18 +25,27 @@ public class VideoIdConsumer : IConsumer<IVideoIdMessage>
         var videoId = context.Message.VideoId;
         string nextPageToken = null;
 
-        do
+        try
         {
-            var commentsFetchedEvent = await _commentsService.GetCommentsFetchedEventByVideoIdAsync(new FetchSettings(videoId, nextPageToken));
-            _logger.LogInformation("Fetching batch completed for videoId: {VideoId}. PageToken: {PageToken}. Batch size: {BatchSize}", videoId, nextPageToken, commentsFetchedEvent.YouTubeCommentsList.Count);
+            do
+            {
+                var commentsFetchedEvent = await _commentsService.GetCommentsFetchedEventByVideoIdAsync(new FetchSettings(videoId, nextPageToken));
+                _logger.LogInformation("VideoIdConsumer: Fetching batch completed for videoId: {VideoId}. PageToken: {PageToken}. Batch size: {BatchSize}", videoId, nextPageToken, commentsFetchedEvent.YouTubeCommentsList.Count);
             
-            await _publishEndpoint.Publish<ICommentsFetchedEvent>(commentsFetchedEvent);
-            _logger.LogInformation("Published fetched batch event completed for video: {VideoId}. PageToken: {PageToken}", videoId, nextPageToken);
+                await _publishEndpoint.Publish<ICommentsFetchedEvent>(commentsFetchedEvent);
+                _logger.LogInformation("VideoIdConsumer: Published fetched batch event completed for video: {VideoId}. PageToken: {PageToken}", videoId, nextPageToken);
             
-            nextPageToken = commentsFetchedEvent.PageToken;
-        } while (!string.IsNullOrEmpty(nextPageToken));
+                nextPageToken = commentsFetchedEvent.PageToken;
+            } while (!string.IsNullOrEmpty(nextPageToken));
         
-        _logger.LogInformation("Fetching all batchtes completed for videoId: {VideoId}.", videoId);
+            _logger.LogInformation("VideoIdConsumer: Fetching all batches completed for videoId: {VideoId}.", videoId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "VideoIdConsumer: Caught a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}", ex.GetType().Name, videoId, ex.Message);
+            await _commentsServiceExceptionHandler.HandleError(ex);
+        }
 
     }
+
 }

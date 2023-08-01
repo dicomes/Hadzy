@@ -1,7 +1,9 @@
+using Google;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using YouTubeCommentsFetcher.Worker.Enums;
+using YouTubeCommentsFetcher.Worker.Exceptions;
 using YouTubeCommentsFetcher.Worker.Models;
-using ILogger = Serilog.ILogger;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Fetcher;
 
@@ -21,15 +23,32 @@ public class YouTubeFetcherService : IFetcherService
     public async Task<CommentThreadListResponse> FetchAsync(FetchSettings fetchSettings)
     {
         var retryPolicy = _retryPolicyProvider.GetYouTubeApiRetryPolicy();
-        
-        return await retryPolicy.ExecuteAsync(async () => 
+
+        try
         {
-            _logger.LogInformation("Fetching batch started for VideoId: {VideoId}. PageToken: {PageToken}", fetchSettings.VideoId, fetchSettings.PageToken);
-            var request = _youtubeService.CommentThreads.List(fetchSettings.Properties);
-            request.VideoId = fetchSettings.VideoId;
-            request.MaxResults = fetchSettings.MaxResults;
-            request.PageToken = string.IsNullOrEmpty(fetchSettings.PageToken) ? request.PageToken : fetchSettings.PageToken;
-            return await request.ExecuteAsync();
-        });
+            return await retryPolicy.ExecuteAsync(async () => 
+            {
+                _logger.LogInformation("YouTubeFetcherService: Fetching batch started for VideoId: {VideoId}. PageToken: {PageToken}", fetchSettings.VideoId, fetchSettings.PageToken);
+                var request = _youtubeService.CommentThreads.List(fetchSettings.Properties);
+                request.VideoId = fetchSettings.VideoId;
+                request.MaxResults = fetchSettings.MaxResults;
+                request.PageToken = string.IsNullOrEmpty(fetchSettings.PageToken) ? request.PageToken : fetchSettings.PageToken;
+                return await request.ExecuteAsync();
+            });
+        }
+        
+        catch (GoogleApiException ex)
+        {
+            _logger.LogWarning("YouTubeFetcherService: A Google API error occurred while fetching comments for VideoId: {VideoId}", fetchSettings.VideoId);
+            throw new CommentsServiceException(fetchSettings.VideoId, ex.HttpStatusCode.ToString(), ErrorType.GoogleApiError);
+        }
+        
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning("YouTubeFetcherService: An HTTP request error occurred while fetching comments for VideoId: {VideoId}", fetchSettings.VideoId);
+            throw new CommentsServiceException(fetchSettings.VideoId, ex.Message, ErrorType.HttpRequestError);
+        }
+        
     }
+    
 }

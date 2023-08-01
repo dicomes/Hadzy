@@ -14,7 +14,7 @@ namespace YouTubeCommentsFetcher.Worker
     {
         public static async Task Main(string[] args)
         {
-            Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
+            IHost host = Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var environment = hostingContext.HostingEnvironment;
@@ -47,10 +47,20 @@ namespace YouTubeCommentsFetcher.Worker
                         });
                     });
                     
+                    services.AddTransient<ErrorMessageConsumer>();
+                    services.AddTransient<VideoIdConsumer>();
+                    services.AddSingleton<RetryPolicyProvider>();
+                    services.AddSingleton<IFetcherService, YouTubeFetcherService>(); // Fetches comments
+                    services.AddAutoMapper(typeof(MappingConfig));
+                    services.AddTransient<ICommentTransformer, CommentThreadToDtoTransformer>(); // Transforms comments to DTO
+                    services.AddTransient<ICommentsServiceExceptionHandler, CommentsServiceExceptionHandler>();
+                    services.AddSingleton<ICommentsService, CommentsService>();
+                    
                     services.AddMassTransit(configurator =>
                     {
                         // Registering the VideoIdConsumer
                         configurator.AddConsumer<VideoIdConsumer>();
+                        configurator.AddConsumer<ErrorMessageConsumer>();
 
                         configurator.UsingRabbitMq((context, cfg) =>
                         {
@@ -65,15 +75,14 @@ namespace YouTubeCommentsFetcher.Worker
                             {
                                 e.ConfigureConsumer<VideoIdConsumer>(context);
                             });
+                                
+                            // Configuring the ReceiveEndpoint for ErrorMessageConsumer
+                            cfg.ReceiveEndpoint("error-message-queue", e =>
+                            {
+                                e.Consumer<ErrorMessageConsumer>(context);
+                            });
                         });
                     });
-
-                    services.AddMassTransitHostedService();
-                    services.AddSingleton<RetryPolicyProvider>();
-                    services.AddTransient<IFetcherService, YouTubeFetcherService>(); // Fetches comments
-                    services.AddAutoMapper(typeof(MappingConfig));
-                    services.AddTransient<ICommentTransformer, CommentThreadToDtoTransformer>(); // Transforms comments to DTO
-                    services.AddSingleton<ICommentsService, CommentsService>();
 
                 })
                 .UseSerilog()

@@ -17,9 +17,9 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         List<string> videoList = new List<string>();
-        videoList.Add("p3O6bKdPLbw");
-        videoList.Add("tKWAnpECKgU");
-        videoList.Add("xf16YdtLFvw");
+        videoList.Add("_VWC_KGxLhQ");
+        videoList.Add("e7qDpgoHGqI");
+        videoList.Add("sdasd");
         
         while (!stoppingToken.IsCancellationRequested && videoList.Count != 0)
         {
@@ -33,9 +33,11 @@ public class Worker : BackgroundService
             {
                 VideoId = videoList[0]
             });
+            _logger.LogInformation("Published VideoId: {VideoID}", videoList[0]);
+
             videoList.Remove(videoList[0]);
         
-            await Task.Delay(100, stoppingToken);
+            await Task.Delay(1000, stoppingToken);
         }
     }
 
