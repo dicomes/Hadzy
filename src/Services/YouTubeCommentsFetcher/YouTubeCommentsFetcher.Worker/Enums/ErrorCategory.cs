@@ -1,6 +1,6 @@
 namespace YouTubeCommentsFetcher.Worker.Enums;
 
-public enum ErrorType
+public enum ErrorCategory
 {
     GoogleApiError,
     HttpRequestError

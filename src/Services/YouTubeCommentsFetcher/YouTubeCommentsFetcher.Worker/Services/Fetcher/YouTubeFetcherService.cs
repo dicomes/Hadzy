@@ -40,13 +40,13 @@ public class YouTubeFetcherService : IFetcherService
         catch (GoogleApiException ex)
         {
             _logger.LogWarning("YouTubeFetcherService: A Google API error occurred while fetching comments for VideoId: {VideoId}", fetchSettings.VideoId);
-            throw new CommentsServiceException(fetchSettings.VideoId, ex.HttpStatusCode.ToString(), ErrorType.GoogleApiError);
+            throw new CommentsServiceException(fetchSettings.VideoId, ex.HttpStatusCode.ToString(), ErrorCategory.GoogleApiError);
         }
         
         catch (HttpRequestException ex)
         {
             _logger.LogWarning("YouTubeFetcherService: An HTTP request error occurred while fetching comments for VideoId: {VideoId}", fetchSettings.VideoId);
-            throw new CommentsServiceException(fetchSettings.VideoId, ex.Message, ErrorType.HttpRequestError);
+            throw new CommentsServiceException(fetchSettings.VideoId, ex.Message, ErrorCategory.HttpRequestError);
         }
         
     }

@@ -43,8 +43,6 @@ namespace YouTubeCommentsFetcher.Worker
                         .WriteTo.Console()
                         .CreateLogger();
                     
-
-                    
                     services.AddSingleton<YouTubeService>(sp => 
                     {
                         return new YouTubeService(new BaseClientService.Initializer
@@ -79,7 +77,7 @@ namespace YouTubeCommentsFetcher.Worker
                             // Configuring the ReceiveEndpoint to bind to a specific queue and use the VideoIdConsumer
                             cfg.ReceiveEndpoint("videoId-queue", e =>
                             {
-                                e.ConfigureConsumer<VideoIdConsumer>(context);
+                                e.Consumer<VideoIdConsumer>(context);
                             });
                                 
                             // Configuring the ReceiveEndpoint for ErrorMessageConsumer

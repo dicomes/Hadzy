@@ -20,7 +20,7 @@ namespace YouTubeCommentsFetcher.Worker.Services
                 await _publishEndpoint.Publish<IFetcherErrorEvent>(new
                 {
                     Message = commentsServiceException.Message,
-                    ErrorType = commentsServiceException.ErrorType,
+                    ErrorType = commentsServiceException.ErrorCategory,
                     VideoId = commentsServiceException.VideoId,
                 });
             }

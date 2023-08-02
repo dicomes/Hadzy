@@ -14,6 +14,6 @@ public class ErrorMessageConsumer : IConsumer<IFetcherErrorEvent>
 
     public async Task Consume(ConsumeContext<IFetcherErrorEvent> context)
     {
-        _logger.LogWarning("ErrorMessageConsumer: Handling an error occurred while fetching comments for VideoId: {VideoId}. ErrorMessage: {ErrorMessage}. ErrorType: {ErrorType}", context.Message.VideoId, context.Message.Message, context.Message.ErrorType);
+        _logger.LogWarning("ErrorMessageConsumer: Handling an error occurred while fetching comments for VideoId: {VideoId}. ErrorMessage: {ErrorMessage}. ErrorCategory: {ErrorCategory}", context.Message.VideoId, context.Message.Message, context.Message.ErrorCategory);
     }
 }

@@ -6,7 +6,7 @@ namespace YouTubeCommentsFetcher.Worker.IntegrationEvents
     public interface IFetcherErrorEvent
     {
         string Message { get; }
-        ErrorType ErrorType { get; }
+        ErrorCategory ErrorCategory { get; }
         string VideoId { get; }
     }
 }
