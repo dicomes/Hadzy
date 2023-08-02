@@ -5,7 +5,7 @@ using YouTubeCommentsFetcher.Worker.Services;
 
 namespace YouTubeCommentsFetcher.Worker.Consumers;
 
-public class VideoIdConsumer : IConsumer<IVideoIdMessage>
+public class VideoIdConsumer : IConsumer<IFetchCommentsEvent>
 {
     private readonly ILogger<VideoIdConsumer> _logger;
     private readonly ICommentsService _commentsService;
@@ -20,7 +20,7 @@ public class VideoIdConsumer : IConsumer<IVideoIdMessage>
         _commentsServiceExceptionHandler = commentsServiceExceptionHandler;
     }
 
-    public async Task Consume(ConsumeContext<IVideoIdMessage> context)
+    public async Task Consume(ConsumeContext<IFetchCommentsEvent> context)
     {
         var videoId = context.Message.VideoId;
         string nextPageToken = null;

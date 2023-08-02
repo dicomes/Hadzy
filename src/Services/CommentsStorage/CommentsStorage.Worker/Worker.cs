@@ -34,7 +34,7 @@ public class Worker : BackgroundService
             using var scope = _serviceProvider.CreateScope();
             var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
         
-            await publishEndpoint.Publish<IVideoIdMessage>(new
+            await publishEndpoint.Publish<IFetchCommentsEvent>(new
             {
                 VideoId = videoList[0]
             });
