@@ -22,5 +22,8 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         services.AddMassTransitHostedService();
     })
     .Build();
-
+var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+var rabbitMqConfig = host.Services.GetRequiredService<IConfiguration>().GetSection("RabbitMq").Get<RabbitMqConfig>();
+Console.WriteLine($"Application Environment: {environment}");
+Console.WriteLine($"RabbitMQ Hostname: {rabbitMqConfig.Hostname}");
 await host.RunAsync();

@@ -20,6 +20,11 @@ public class Worker : BackgroundService
         videoList.Add("_VWC_KGxLhQ");
         videoList.Add("e7qDpgoHGqI");
         videoList.Add("sdasd");
+        videoList.Add("CQ9w9LczlgA");
+        videoList.Add("iYV8t50fFFg");
+        videoList.Add("Q_RxN7FqV8M");
+        videoList.Add("9kwfbLrei6g");
+        videoList.Add("1KTdoxN_q74");
         
         while (!stoppingToken.IsCancellationRequested && videoList.Count != 0)
         {
@@ -37,7 +42,7 @@ public class Worker : BackgroundService
 
             videoList.Remove(videoList[0]);
         
-            await Task.Delay(1000, stoppingToken);
+            await Task.Delay(10000, stoppingToken);
         }
     }
 

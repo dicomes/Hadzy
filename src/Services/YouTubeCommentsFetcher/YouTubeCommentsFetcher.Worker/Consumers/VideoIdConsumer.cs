@@ -24,6 +24,7 @@ public class VideoIdConsumer : IConsumer<IVideoIdMessage>
     {
         var videoId = context.Message.VideoId;
         string nextPageToken = null;
+        _logger.LogInformation("VideoIdConsumer: VideoId received: {VideoId}. PageToken: {PageToken}.",videoId, nextPageToken);
 
         try
         {
