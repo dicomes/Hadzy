@@ -1,3 +1,4 @@
+using System.Security;
 using MassTransit;
 using SharedEventContracts;
 
@@ -8,6 +9,12 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly IServiceProvider _serviceProvider;
 
+    private struct FetchEvent
+    {
+        public string VideoId;
+        public string PageToken;
+    }
+    
     public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
@@ -16,16 +23,12 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        List<string> videoList = new List<string>();
-        videoList.Add("_VWC_KGxLhQ");
-        videoList.Add("e7qDpgoHGqI");
-        videoList.Add("sdasd");
-        videoList.Add("CQ9w9LczlgA");
-        videoList.Add("iYV8t50fFFg");
-        videoList.Add("Q_RxN7FqV8M");
-        videoList.Add("9kwfbLrei6g");
-        videoList.Add("1KTdoxN_q74");
-        
+        List<FetchEvent> videoList = new List<FetchEvent>();
+        videoList.Add(new FetchEvent {VideoId = "_VWC_KGxLhQ", PageToken = string.Empty});
+        videoList.Add(new FetchEvent {VideoId = "e7qDpgoHGqI", PageToken = "QURTSl9pM1ljcnJQbF9IVkFtX2RqTEhJalF2NE43OW1qSnRDeDZOVmVyUFBDVUhleVJCNGdqdTIwUU9ZWmVKMjRWLV9QdjV2MEZBLXdkWks0NEJDSWF3RUZTaGJuUG80MEE="});
+        videoList.Add(new FetchEvent {VideoId = "sdasd", PageToken = string.Empty});
+        videoList.Add(new FetchEvent {VideoId = "Q_RxN7FqV8M", PageToken = string.Empty});
+
         while (!stoppingToken.IsCancellationRequested && videoList.Count != 0)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
@@ -36,9 +39,10 @@ public class Worker : BackgroundService
         
             await publishEndpoint.Publish<IFetchCommentsEvent>(new
             {
-                VideoId = videoList[0]
+                VideoId = videoList[0].VideoId,
+                PageToken = videoList[0].PageToken
             });
-            _logger.LogInformation("Published VideoId: {VideoID}", videoList[0]);
+            _logger.LogInformation("Published VideoId: {VideoID}. PageToken: {PageToken} ", videoList[0].VideoId, videoList[0].PageToken);
 
             videoList.Remove(videoList[0]);
         

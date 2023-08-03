@@ -23,7 +23,7 @@ public class VideoIdConsumer : IConsumer<IFetchCommentsEvent>
     public async Task Consume(ConsumeContext<IFetchCommentsEvent> context)
     {
         var videoId = context.Message.VideoId;
-        string nextPageToken = null;
+        string nextPageToken = context.Message.PageToken;
         _logger.LogInformation("VideoIdConsumer: VideoId received: {VideoId}. PageToken: {PageToken}.",videoId, nextPageToken);
 
         try
