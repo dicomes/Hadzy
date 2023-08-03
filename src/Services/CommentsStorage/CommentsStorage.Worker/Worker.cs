@@ -1,4 +1,3 @@
-using System.Security;
 using MassTransit;
 using SharedEventContracts;
 
@@ -25,24 +24,24 @@ public class Worker : BackgroundService
     {
         List<FetchEvent> videoList = new List<FetchEvent>();
         videoList.Add(new FetchEvent {VideoId = "_VWC_KGxLhQ", PageToken = string.Empty});
-        videoList.Add(new FetchEvent {VideoId = "e7qDpgoHGqI", PageToken = "QURTSl9pM1ljcnJQbF9IVkFtX2RqTEhJalF2NE43OW1qSnRDeDZOVmVyUFBDVUhleVJCNGdqdTIwUU9ZWmVKMjRWLV9QdjV2MEZBLXdkWks0NEJDSWF3RUZTaGJuUG80MEE="});
+        // videoList.Add(new FetchEvent {VideoId = "e7qDpgoHGqI", PageToken = "QURTSl9pM1ljcnJQbF9IVkFtX2RqTEhJalF2NE43OW1qSnRDeDZOVmVyUFBDVUhleVJCNGdqdTIwUU9ZWmVKMjRWLV9QdjV2MEZBLXdkWks0NEJDSWF3RUZTaGJuUG80MEE="});
         videoList.Add(new FetchEvent {VideoId = "sdasd", PageToken = string.Empty});
-        videoList.Add(new FetchEvent {VideoId = "Q_RxN7FqV8M", PageToken = string.Empty});
+        // videoList.Add(new FetchEvent {VideoId = "Q_RxN7FqV8M", PageToken = string.Empty});
 
         while (!stoppingToken.IsCancellationRequested && videoList.Count != 0)
         {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            _logger.LogInformation("Worker running at: {time}.", DateTimeOffset.Now);
         
             // Create a scope to retrieve scoped services
             using var scope = _serviceProvider.CreateScope();
             var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
         
-            await publishEndpoint.Publish<IFetchCommentsEvent>(new
+            await publishEndpoint.Publish<ICommentsFetchReceivedEvent>(new
             {
                 VideoId = videoList[0].VideoId,
                 PageToken = videoList[0].PageToken
             });
-            _logger.LogInformation("Published VideoId: {VideoID}. PageToken: {PageToken} ", videoList[0].VideoId, videoList[0].PageToken);
+            _logger.LogInformation("Published VideoId: {VideoID}. PageToken: {PageToken}.", videoList[0].VideoId, videoList[0].PageToken);
 
             videoList.Remove(videoList[0]);
         

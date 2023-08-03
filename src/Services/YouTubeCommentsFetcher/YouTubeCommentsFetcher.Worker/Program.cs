@@ -3,10 +3,10 @@ using Google.Apis.YouTube.v3;
 using Serilog;
 using YouTubeCommentsFetcher.Worker.Configurations;
 using YouTubeCommentsFetcher.Worker.Services;
-using YouTubeCommentsFetcher.Worker.Services.Fetcher;
 using YouTubeCommentsFetcher.Worker.Services.Transformer;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker.Consumers;
+using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker
 {
@@ -51,20 +51,22 @@ namespace YouTubeCommentsFetcher.Worker
                         });
                     });
                     
-                    services.AddTransient<ErrorMessageConsumer>();
-                    services.AddTransient<VideoIdConsumer>();
+                    services.AddTransient<FetcherErrorEventConsumer>();
                     services.AddSingleton<RetryPolicyProvider>();
-                    services.AddSingleton<IFetcherService, YouTubeFetcherService>(); // Fetches comments
+                    services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments
                     services.AddAutoMapper(typeof(MappingConfig));
-                    services.AddTransient<ICommentTransformer, CommentThreadToDtoTransformer>(); // Transforms comments to DTO
-                    services.AddTransient<ICommentsServiceExceptionHandler, CommentsServiceExceptionHandler>();
-                    services.AddSingleton<ICommentsService, CommentsService>();
+                    services.AddTransient<ICommentTransformer, CommentThreadToFetchedEventTransformer>(); // Transforms comments to DTO
+                    services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
+                    services.AddSingleton<IYouTubeCommentsManager, YouTubeYouTubeCommentsManager>();
+                    services.AddTransient<CommentsFetchReceivedEventConsumer>();
+                    services.AddTransient<ICommentsPublishingService, CommentsPublishingService>();  // Responsible for publishing events
+                    services.AddTransient<ICommentsIntegrationOrchestrator, CommentsIntegrationOrchestrator>();  // Orchestrates the fetching and publishing
                     
                     services.AddMassTransit(configurator =>
                     {
                         // Registering the VideoIdConsumer
-                        configurator.AddConsumer<VideoIdConsumer>();
-                        configurator.AddConsumer<ErrorMessageConsumer>();
+                        configurator.AddConsumer<CommentsFetchReceivedEventConsumer>();
+                        configurator.AddConsumer<FetcherErrorEventConsumer>();
 
                         configurator.UsingRabbitMq((context, cfg) =>
                         {
@@ -77,13 +79,13 @@ namespace YouTubeCommentsFetcher.Worker
                             // Configuring the ReceiveEndpoint to bind to a specific queue and use the VideoIdConsumer
                             cfg.ReceiveEndpoint("videoId-queue", e =>
                             {
-                                e.Consumer<VideoIdConsumer>(context);
+                                e.Consumer<CommentsFetchReceivedEventConsumer>(context);
                             });
                                 
                             // Configuring the ReceiveEndpoint for ErrorMessageConsumer
                             cfg.ReceiveEndpoint("error-message-queue", e =>
                             {
-                                e.Consumer<ErrorMessageConsumer>(context);
+                                e.Consumer<FetcherErrorEventConsumer>(context);
                             });
                         });
                     });

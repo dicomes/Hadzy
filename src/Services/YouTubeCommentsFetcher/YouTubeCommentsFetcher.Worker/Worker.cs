@@ -16,7 +16,7 @@ namespace YouTubeCommentsFetcher.Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Comments Fetcher started. Waiting for VideoId...");
+            _logger.LogInformation("YouTubeCommentsFetcher started. Waiting for CommentsFetchReceivedEvent...");
 
             // Starting the bus control initiates the MassTransit service and begins listening for messages.
             // When a message of type IVideoIdMessage is received, MassTransit will automatically 

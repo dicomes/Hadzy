@@ -1,9 +1,9 @@
 using Google.Apis.YouTube.v3.Data;
 using YouTubeCommentsFetcher.Worker.Models;
 
-namespace YouTubeCommentsFetcher.Worker.Services.Fetcher;
+namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
-public interface IFetcherService
+public interface IYouTubeFetcherService
 {
     Task<CommentThreadListResponse> FetchAsync(FetchSettings fetchSettings);
 }

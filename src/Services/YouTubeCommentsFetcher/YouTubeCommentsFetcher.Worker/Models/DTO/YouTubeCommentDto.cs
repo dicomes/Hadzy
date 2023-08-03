@@ -1,6 +1,6 @@
 using SharedEventContracts;
 
-namespace YouTubeCommentsFetcher.Worker.IntegrationEvents;
+namespace YouTubeCommentsFetcher.Worker.Models.DTO;
 
 public class YouTubeCommentDto : IYouTubeCommentDto
 {
@@ -19,6 +19,8 @@ public class YouTubeCommentDto : IYouTubeCommentDto
     public string ViewerRating { get; set; }
     public uint LikeCount { get; set; }
     public string ModerationStatus { get; set; }
-    public DateTime PublishedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTimeOffset PublishedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
+    public int TotalReplyCount { get; set; }
+
 }

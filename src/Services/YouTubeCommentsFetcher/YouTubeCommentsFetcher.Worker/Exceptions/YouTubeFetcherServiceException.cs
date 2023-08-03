@@ -3,12 +3,12 @@ using YouTubeCommentsFetcher.Worker.Enums;
 
 namespace YouTubeCommentsFetcher.Worker.Exceptions;
 
-public class CommentsServiceException : Exception
+public class YouTubeFetcherServiceException : Exception
 {
     public string VideoId { get; }
     public ErrorCategory ErrorCategory { get; }
 
-    public CommentsServiceException(string videoId, string message, ErrorCategory errorCategory)
+    public YouTubeFetcherServiceException(string videoId, string message, ErrorCategory errorCategory)
         : base(message)
     {
         VideoId = videoId;
