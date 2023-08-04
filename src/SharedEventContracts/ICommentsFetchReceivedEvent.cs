@@ -2,7 +2,6 @@
 
 public interface ICommentsFetchReceivedEvent
 {
-    string VideoId { get; set; }
-    string PageToken { get; set; }
-    
+    string VideoId { get; }
+    string PageToken { get; }
 }

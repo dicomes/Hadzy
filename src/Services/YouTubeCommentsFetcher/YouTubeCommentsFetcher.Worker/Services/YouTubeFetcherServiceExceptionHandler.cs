@@ -1,4 +1,3 @@
-using MassTransit;
 using YouTubeCommentsFetcher.Worker.Exceptions;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
@@ -7,23 +6,25 @@ namespace YouTubeCommentsFetcher.Worker.Services
 {
     public class YouTubeFetcherServiceExceptionHandler : IYouTubeFetcherServiceExceptionHandler
     {
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IErrorEventPublisher _errorEventPublisher;
 
-        public YouTubeFetcherServiceExceptionHandler(IPublishEndpoint publishEndpoint)
+        public YouTubeFetcherServiceExceptionHandler(IErrorEventPublisher errorEventPublisher)
         {
-            _publishEndpoint = publishEndpoint;
+            _errorEventPublisher = errorEventPublisher;
         }
 
         public async Task HandleError(Exception exception)
         {
             if (exception is YouTubeFetcherServiceException commentsServiceException)
             {
-                await _publishEndpoint.Publish<IInternalFetcherErrorEvent>(new
+                var internalErrorEvent = new FetcherErrorEvent
                 {
                     Message = commentsServiceException.Message,
                     ErrorCategory = commentsServiceException.ErrorCategory,
                     VideoId = commentsServiceException.VideoId,
-                });
+                };
+
+                await _errorEventPublisher.PublishErrorEvent(internalErrorEvent);
             }
         }
     }

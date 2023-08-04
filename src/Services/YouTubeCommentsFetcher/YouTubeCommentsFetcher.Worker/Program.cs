@@ -6,6 +6,7 @@ using YouTubeCommentsFetcher.Worker.Services;
 using YouTubeCommentsFetcher.Worker.Services.Transformer;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker.Consumers;
+using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker
@@ -58,7 +59,9 @@ namespace YouTubeCommentsFetcher.Worker
                     services.AddTransient<ICommentTransformer, CommentThreadToFetchedEventTransformer>(); // Transforms comments to DTO
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
                     services.AddTransient<CommentsFetchReceivedEventConsumer>();
-                    services.AddTransient<ICommentsPublishingService, CommentsPublishingService>();  // Publish fetched event
+                    services.AddTransient<ICommentsFetchedEventPublisher, EventsPublisher>();  // Publish fetched event
+                    services.AddTransient<ICommentsFetchStatusEventPublisher, EventsPublisher>();  // Publish fetch status event
+                    services.AddTransient<IErrorEventPublisher, EventsPublisher>();  // Publish error event
                     services.AddTransient<ICommentsIntegrationOrchestrator, CommentsIntegrationOrchestrator>();  // Orchestrates flows
                     
                     services.AddMassTransit(configurator =>
