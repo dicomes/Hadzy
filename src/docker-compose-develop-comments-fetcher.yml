@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+
+  hadzy-comments.fetcher.worker.dev:
+    image: hadzy/comments.fetcher.api:1.0.0
+    ports:
+      - "5151:5151"
+    build:
+      context: .
+      dockerfile: Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5151
+      - YouTube:ApiKey=${YOUTUBE_APIKEY}
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}

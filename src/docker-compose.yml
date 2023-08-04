@@ -32,7 +32,7 @@ services:
       - ASPNETCORE_URLS=http://*:5111
 
   hadzy-comments.storage.worker.dev:
-    image: hadzy/comments.storage.api:1.0.0
+    image: hadzy/comments.storage.worker:1.0.0
     ports:
       - "5121:5121"
     build:

@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+
+  hadzy-comments.storage.worker.dev:
+    image: hadzy/comments.storage.worker:1.0.0
+    ports:
+      - "5121:5121"
+    build:
+      context: .
+      dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5121
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}
