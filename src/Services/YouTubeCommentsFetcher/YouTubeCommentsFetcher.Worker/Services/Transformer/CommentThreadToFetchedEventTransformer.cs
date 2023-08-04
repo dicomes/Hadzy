@@ -25,8 +25,8 @@ public class CommentThreadToFetchedEventTransformer : ICommentTransformer
         {
             VideoId = videoId,
             PageToken = response.NextPageToken,
-            CommentsCount = YouTubeCommentDtoList.Count,
-            TotalReplyCount = YouTubeCommentDtoList.Sum(cmt => cmt.TotalReplyCount),
+            CommentsFetchedCount = YouTubeCommentDtoList.Count,
+            ReplyCount = YouTubeCommentDtoList.Sum(cmt => cmt.TotalReplyCount),
             YouTubeCommentsList = YouTubeCommentDtoList.Cast<IYouTubeCommentDto>().ToList()
         };
 

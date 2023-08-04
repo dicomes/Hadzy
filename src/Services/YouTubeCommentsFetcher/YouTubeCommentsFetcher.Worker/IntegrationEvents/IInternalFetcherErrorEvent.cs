@@ -3,7 +3,7 @@ using YouTubeCommentsFetcher.Worker.Enums;
 
 namespace YouTubeCommentsFetcher.Worker.IntegrationEvents
 {
-    public interface IFetcherErrorEvent
+    public interface IInternalFetcherErrorEvent
     {
         string Message { get; }
         ErrorCategory ErrorCategory { get; }

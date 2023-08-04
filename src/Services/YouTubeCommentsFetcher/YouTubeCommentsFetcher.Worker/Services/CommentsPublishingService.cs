@@ -18,6 +18,6 @@ public class CommentsPublishingService : ICommentsPublishingService
     public async Task PublishCommentsFetchedEventAsync(ICommentsFetchedEvent commentsFetchedEvent)
     {
         await _publishEndpoint.Publish<ICommentsFetchedEvent>(commentsFetchedEvent);
-        _logger.LogInformation("CommentsPublishingService: Published fetched batch event completed for VideoId: {VideoId}. PageToken: {PageToken}.", commentsFetchedEvent.VideoId, commentsFetchedEvent.PageToken);
+        _logger.LogInformation("CommentsPublishingService: Published fetched CommentsFetchedEvent completed for VideoId: {VideoId}. PageToken: {PageToken}.", commentsFetchedEvent.VideoId, commentsFetchedEvent.PageToken);
     }
 }

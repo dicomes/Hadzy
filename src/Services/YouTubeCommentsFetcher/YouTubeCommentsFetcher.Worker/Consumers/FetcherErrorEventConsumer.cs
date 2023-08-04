@@ -3,7 +3,7 @@ using MassTransit;
 
 namespace YouTubeCommentsFetcher.Worker.Consumers;
 
-public class FetcherErrorEventConsumer : IConsumer<IFetcherErrorEvent>
+public class FetcherErrorEventConsumer : IConsumer<IInternalFetcherErrorEvent>
 {
     private readonly ILogger<FetcherErrorEventConsumer> _logger;
 
@@ -12,7 +12,7 @@ public class FetcherErrorEventConsumer : IConsumer<IFetcherErrorEvent>
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<IFetcherErrorEvent> context)
+    public async Task Consume(ConsumeContext<IInternalFetcherErrorEvent> context)
     {
         _logger.LogWarning("FetcherErrorEventConsumer: Handling an error occurred while fetching comments for VideoId: {VideoId}. ErrorMessage: {ErrorMessage}. ErrorCategory: {ErrorCategory}", context.Message.VideoId, context.Message.Message, context.Message.ErrorCategory);
     }

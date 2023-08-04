@@ -18,7 +18,7 @@ namespace YouTubeCommentsFetcher.Worker.Services
         {
             if (exception is YouTubeFetcherServiceException commentsServiceException)
             {
-                await _publishEndpoint.Publish<IFetcherErrorEvent>(new
+                await _publishEndpoint.Publish<IInternalFetcherErrorEvent>(new
                 {
                     Message = commentsServiceException.Message,
                     ErrorCategory = commentsServiceException.ErrorCategory,

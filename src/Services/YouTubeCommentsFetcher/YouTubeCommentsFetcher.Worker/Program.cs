@@ -57,10 +57,9 @@ namespace YouTubeCommentsFetcher.Worker
                     services.AddAutoMapper(typeof(MappingConfig));
                     services.AddTransient<ICommentTransformer, CommentThreadToFetchedEventTransformer>(); // Transforms comments to DTO
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
-                    services.AddSingleton<IYouTubeCommentsManager, YouTubeYouTubeCommentsManager>();
                     services.AddTransient<CommentsFetchReceivedEventConsumer>();
-                    services.AddTransient<ICommentsPublishingService, CommentsPublishingService>();  // Responsible for publishing events
-                    services.AddTransient<ICommentsIntegrationOrchestrator, CommentsIntegrationOrchestrator>();  // Orchestrates the fetching and publishing
+                    services.AddTransient<ICommentsPublishingService, CommentsPublishingService>();  // Publish fetched event
+                    services.AddTransient<ICommentsIntegrationOrchestrator, CommentsIntegrationOrchestrator>();  // Orchestrates flows
                     
                     services.AddMassTransit(configurator =>
                     {

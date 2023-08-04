@@ -5,30 +5,55 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 
 public class CommentsIntegrationOrchestrator : ICommentsIntegrationOrchestrator
 {
-    private readonly IYouTubeCommentsManager _youTubeCommentsManager;
+    private readonly IYouTubeFetcherService _youTubeFetcherService;
+    private readonly ICommentTransformer _transformer;
     private readonly ICommentsPublishingService _publishingService;
     private readonly ILogger<CommentsIntegrationOrchestrator> _logger;
 
     public CommentsIntegrationOrchestrator(
-        IYouTubeCommentsManager youTubeCommentsManager, 
+        IYouTubeFetcherService youTubeFetcherService,
+        ICommentTransformer transformer,
         ICommentsPublishingService publishingService,
         ILogger<CommentsIntegrationOrchestrator> logger)
     {
-        _youTubeCommentsManager = youTubeCommentsManager;
+        _youTubeFetcherService = youTubeFetcherService;
+        _transformer = transformer;
         _publishingService = publishingService;
         _logger = logger;
     }
 
-    public async Task ProcessCommentsForVideoAsync(string videoId, string nextPageToken)
+    public async Task ProcessCommentsForVideoAsync(string videoId, string initialNextPageToken)
     {
-        var fetchSettings = new FetchSettings(videoId, nextPageToken);
+        string nextPageToken = initialNextPageToken;
+        int totalCommentsFetched = 0;
+        int totalReplies = 0;
 
-        // Retrieve
-        var commentsFetchedEvent = await _youTubeCommentsManager.FetchAndTransformCommentsAsync(fetchSettings);
+        do
+        {
+            var fetchSettings = new FetchSettings(videoId, nextPageToken);
 
-        // Publish
-        await _publishingService.PublishCommentsFetchedEventAsync(commentsFetchedEvent);
+            // Fetch comments
+            var response = await _youTubeFetcherService.FetchAsync(fetchSettings);
 
-        _logger.LogInformation("CommentsIntegrationOrchestrator: Comments processing completed for VideoId: {VideoId}.", videoId);
+            // Transform the comments
+            var commentsFetchedEvent = _transformer.Transform(fetchSettings.VideoId, response);
+
+            int commentsFetchedCount = commentsFetchedEvent.CommentsFetchedCount;
+            int repliesCount = commentsFetchedEvent.ReplyCount;
+            
+            _logger.LogInformation("CommentsIntegrationOrchestrator: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, nextPageToken, commentsFetchedCount, repliesCount);
+
+            totalCommentsFetched += commentsFetchedCount;
+            totalReplies += repliesCount;
+
+            // Publish
+            await _publishingService.PublishCommentsFetchedEventAsync(commentsFetchedEvent);
+            
+            // Set PageToken for next batch
+            nextPageToken = commentsFetchedEvent.PageToken; // set the next page token for the next iteration
+
+        } while (!string.IsNullOrEmpty(nextPageToken));
+
+        _logger.LogInformation("CommentsIntegrationOrchestrator: Completed to fetch all batches for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.", videoId, totalCommentsFetched, totalReplies);
     }
 }

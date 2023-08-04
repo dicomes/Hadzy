@@ -6,7 +6,7 @@ public class CommentsFetchedEvent : ICommentsFetchedEvent
 {
     public string VideoId { get; set; }
     public string PageToken { get; set; } 
-    public int CommentsCount { get; set; }
-    public int TotalReplyCount { get; set; }
+    public int CommentsFetchedCount { get; set; }
+    public int ReplyCount { get; set; }
     public List<IYouTubeCommentDto> YouTubeCommentsList { get; set; }
 }
