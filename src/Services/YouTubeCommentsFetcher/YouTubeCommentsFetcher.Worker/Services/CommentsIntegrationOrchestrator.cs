@@ -9,21 +9,18 @@ public class CommentsIntegrationOrchestrator : ICommentsIntegrationOrchestrator
 {
     private readonly IYouTubeFetcherService _youTubeFetcherService;
     private readonly ICommentTransformer _transformer;
-    private readonly ICommentsFetchedEventPublisher _fetchedEventPublisher;
-    private readonly ICommentsFetchStatusEventPublisher _fetchStatusEventPublisher;
+    private readonly IEventPublisher _eventPublisher;
     private readonly ILogger<CommentsIntegrationOrchestrator> _logger;
 
     public CommentsIntegrationOrchestrator(
         IYouTubeFetcherService youTubeFetcherService,
         ICommentTransformer transformer,
-        ICommentsFetchedEventPublisher fetchedEventPublisher,
-        ICommentsFetchStatusEventPublisher fetchStatusEventPublisher,
+        IEventPublisher eventPublisher,
         ILogger<CommentsIntegrationOrchestrator> logger)
     {
         _youTubeFetcherService = youTubeFetcherService;
         _transformer = transformer;
-        _fetchedEventPublisher = fetchedEventPublisher;
-        _fetchStatusEventPublisher = fetchStatusEventPublisher;
+        _eventPublisher = eventPublisher;
         _logger = logger;
     }
 
@@ -32,7 +29,7 @@ public class CommentsIntegrationOrchestrator : ICommentsIntegrationOrchestrator
         string nextPageToken = initialNextPageToken;
         int totalCommentsFetched = 0;
         int totalReplies = 0;
-
+        
         do
         {
             var fetchSettings = new FetchSettings(videoId, nextPageToken);
@@ -48,14 +45,19 @@ public class CommentsIntegrationOrchestrator : ICommentsIntegrationOrchestrator
             
             _logger.LogInformation("CommentsIntegrationOrchestrator: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, nextPageToken, commentsFetchedCount, repliesCount);
 
-            var fetchStatusEventFactory = new CommentsFetchStatusEventFactory();
-            var commentsFetchStatusEvent = fetchStatusEventFactory.Create(videoId, nextPageToken, commentsFetchedCount, repliesCount);
+            var fetchedStatusEventBuilder = new CommentsFetchedStatusEventBuilder();
+            var commentsFetchStatusEvent = fetchedStatusEventBuilder
+                .WithVideoId(videoId)
+                .WithPageToken(nextPageToken)
+                .WithCommentsFetchedCount(commentsFetchedCount)
+                .WithReplyCount(repliesCount)
+                .Build();
 
             // Publish fetched event
-            await _fetchedEventPublisher.PublishFetchedEvent(commentsFetchedEvent);
+            await _eventPublisher.PublishEvent(commentsFetchedEvent);
             
             // Publish fetch status event
-            await _fetchStatusEventPublisher.PublishFetchStatusEvent(commentsFetchStatusEvent);
+            await _eventPublisher.PublishEvent(commentsFetchStatusEvent);
             
             totalCommentsFetched += commentsFetchedCount;
             totalReplies += repliesCount;

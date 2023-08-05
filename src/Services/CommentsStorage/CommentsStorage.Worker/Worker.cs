@@ -45,7 +45,7 @@ public class Worker : BackgroundService
 
             videoList.Remove(videoList[0]);
         
-            await Task.Delay(10000, stoppingToken);
+            await Task.Delay(1000, stoppingToken);
         }
     }
 

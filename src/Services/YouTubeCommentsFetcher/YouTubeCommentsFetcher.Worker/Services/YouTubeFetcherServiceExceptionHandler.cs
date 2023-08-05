@@ -6,11 +6,11 @@ namespace YouTubeCommentsFetcher.Worker.Services
 {
     public class YouTubeFetcherServiceExceptionHandler : IYouTubeFetcherServiceExceptionHandler
     {
-        private readonly IErrorEventPublisher _errorEventPublisher;
+        private readonly IEventPublisher _eventPublisher;
 
-        public YouTubeFetcherServiceExceptionHandler(IErrorEventPublisher errorEventPublisher)
+        public YouTubeFetcherServiceExceptionHandler(IEventPublisher eventPublisher)
         {
-            _errorEventPublisher = errorEventPublisher;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task HandleError(Exception exception)
@@ -24,7 +24,7 @@ namespace YouTubeCommentsFetcher.Worker.Services
                     VideoId = commentsServiceException.VideoId,
                 };
 
-                await _errorEventPublisher.PublishErrorEvent(internalErrorEvent);
+                await _eventPublisher.PublishEvent(internalErrorEvent);
             }
         }
     }
