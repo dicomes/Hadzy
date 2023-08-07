@@ -14,6 +14,7 @@
     <None Include="docker-compose.yml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="docker-compose-develop-comments-fetch-status-integration.yml" />
     <Content Include="docker-compose-develop-comments-fetcher.yml" />
     <Content Include="docker-compose-develop-comments-storage.yml" />
     <Content Include="docker-compose-develop-infrastructure.yml" />
