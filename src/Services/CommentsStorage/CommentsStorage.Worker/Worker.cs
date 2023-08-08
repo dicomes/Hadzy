@@ -1,5 +1,5 @@
 using MassTransit;
-using SharedEventContracts;
+using IntegrationEventsContracts;
 
 namespace CommentsStorage.Worker;
 

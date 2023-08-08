@@ -1,6 +1,6 @@
 using AutoMapper;
 using Google.Apis.YouTube.v3.Data;
-using SharedEventContracts;
+using IntegrationEventsContracts;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models.DTO;

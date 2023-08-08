@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\SharedEventContracts\SharedEventContracts.csproj" />
+    <ProjectReference Include="..\..\..\SharedContracts\IntegrationEventsContracts\IntegrationEventsContracts.csproj" />
   </ItemGroup>
 
 </Project>

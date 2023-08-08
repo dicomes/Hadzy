@@ -1,4 +1,4 @@
-using SharedEventContracts;
+using IntegrationEventsContracts;
 
 namespace YouTubeCommentsFetcher.Worker.IntegrationEvents;
 

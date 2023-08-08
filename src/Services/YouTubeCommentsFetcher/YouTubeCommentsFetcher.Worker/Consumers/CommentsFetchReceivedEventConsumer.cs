@@ -1,5 +1,5 @@
 using MassTransit;
-using SharedEventContracts;
+using IntegrationEventsContracts;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Consumers

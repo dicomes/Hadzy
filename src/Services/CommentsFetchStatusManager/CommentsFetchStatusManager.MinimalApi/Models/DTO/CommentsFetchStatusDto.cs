@@ -1,4 +1,4 @@
-using SharedEventContracts;
+using IntegrationEventsContracts;
 
 namespace CommentsFetchStatus.MinimalApi.Models.DTO;
 
