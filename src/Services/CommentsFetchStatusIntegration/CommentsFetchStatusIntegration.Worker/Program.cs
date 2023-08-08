@@ -1,11 +1,15 @@
 using CommentsFetchStatusIntegration.Worker;
 using CommentsFetchStatusIntegration.Worker.Configurations;
 using CommentsFetchStatusIntegration.Worker.Consumers;
+using CommentsFetchStatusIntegration.Worker.Mapper;
+using CommentsFetchStatusIntegration.Worker.Services;
+using CommentsFetchStatusIntegration.Worker.Services.Interfaces;
 using MassTransit;
 using Serilog;
 
 var seqConfig = new SeqConfig();
 var rabbitMqConfig = new RabbitMqConfig();
+var mongoDbConfig = new MongoDbConfig();
 
 Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostingContext, services) =>
@@ -19,6 +23,11 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
             .CreateLogger();
         
         services.AddHostedService<Worker>();
+        
+        services.AddAutoMapper(typeof(MappingConfig)); 
+        services.Configure<MongoDbConfig>(
+            hostingContext.Configuration.GetSection("MongoDb"));
+        services.AddSingleton<IVideoCommentsStatusService, VideoCommentsStatusService>();
         services.AddTransient<CommentsFetchStatusEventConsumer>();
 
         services.AddMassTransit(configurator =>

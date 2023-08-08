@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="MassTransit" Version="7.3.1" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
@@ -22,10 +24,10 @@
 
   <ItemGroup>
     <Folder Include="Extensions" />
-    <Folder Include="Services" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\SharedContracts\IntegrationEventsContracts\IntegrationEventsContracts.csproj" />
+    <ProjectReference Include="..\..\..\SharedContracts\MongoDbContracts\MongoDbContracts.csproj" />
   </ItemGroup>
 </Project>
