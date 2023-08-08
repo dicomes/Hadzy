@@ -1,6 +1,6 @@
-using CommentsFetchStatusIntergration.Worker;
-using CommentsFetchStatusIntergration.Worker.Configurations;
-using CommentsFetchStatusIntergration.Worker.Consumers;
+using CommentsFetchStatusIntegration.Worker;
+using CommentsFetchStatusIntegration.Worker.Configurations;
+using CommentsFetchStatusIntegration.Worker.Consumers;
 using MassTransit;
 using Serilog;
 

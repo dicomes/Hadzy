@@ -1,6 +1,4 @@
-using YouTubeCommentsFetcher.Worker.IntegrationEvents;
-
-namespace YouTubeCommentsFetcher.Worker.Services.Builders;
+namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 
 public class CommentsFetchedStatusEventBuilder
 {
@@ -9,6 +7,7 @@ public class CommentsFetchedStatusEventBuilder
     public CommentsFetchedStatusEventBuilder()
     {
         _event = new CommentsFetchedStatusEvent();
+        _event.Id = Guid.NewGuid();
     }
 
     public CommentsFetchedStatusEventBuilder WithVideoId(string videoId)

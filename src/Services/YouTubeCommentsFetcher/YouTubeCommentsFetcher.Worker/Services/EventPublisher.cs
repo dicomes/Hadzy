@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using MassTransit;
-using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services

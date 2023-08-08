@@ -6,7 +6,6 @@ using YouTubeCommentsFetcher.Worker.Services;
 using YouTubeCommentsFetcher.Worker.Services.Transformer;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker.Consumers;
-using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker

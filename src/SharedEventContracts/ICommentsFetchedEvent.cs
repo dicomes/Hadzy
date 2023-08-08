@@ -2,7 +2,8 @@ namespace SharedEventContracts;
 
 public interface ICommentsFetchedEvent
 {
+    Guid Id { get; }
     string VideoId { get; }
-    public string PageToken { get; }
+    string PageToken { get; }
     List<IYouTubeCommentDto> YouTubeCommentsList { get; }
 }

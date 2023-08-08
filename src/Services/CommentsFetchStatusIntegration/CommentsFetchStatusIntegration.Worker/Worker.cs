@@ -1,7 +1,7 @@
 using MassTransit;
 using MassTransit.Util;
 
-namespace CommentsFetchStatusIntergration.Worker;
+namespace CommentsFetchStatusIntegration.Worker;
 
 public class Worker : BackgroundService
 {

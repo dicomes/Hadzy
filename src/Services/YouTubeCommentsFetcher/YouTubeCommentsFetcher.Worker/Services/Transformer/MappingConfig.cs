@@ -1,6 +1,5 @@
 using AutoMapper;
 using Google.Apis.YouTube.v3.Data;
-using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Models.DTO;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Transformer;

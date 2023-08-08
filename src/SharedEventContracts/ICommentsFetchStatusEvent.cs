@@ -2,8 +2,9 @@ namespace SharedEventContracts;
 
 public interface ICommentsFetchStatusEvent
 {
-    public string VideoId { get; }
-    public string PageToken { get; }
-    public int CommentsFetchedCount { get; }
-    public int ReplyCount { get; }
+    Guid Id { get; }
+    string VideoId { get; }
+    string PageToken { get; }
+    int CommentsFetchedCount { get; }
+    int ReplyCount { get; }
 }

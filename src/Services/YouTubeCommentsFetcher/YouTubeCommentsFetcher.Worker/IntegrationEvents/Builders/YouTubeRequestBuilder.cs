@@ -1,6 +1,6 @@
 using Google.Apis.YouTube.v3;
 
-namespace YouTubeCommentsFetcher.Worker.Services.Builders;
+namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 
 public class YouTubeRequestBuilder
 {

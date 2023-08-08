@@ -4,8 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-CommentsFetchStatusIntergration.Worker-CFB480A1-B03A-4E35-BB8E-0D543CC2F6FA</UserSecretsId>
-    <RootNamespace>CommentsFetchStatusIntergration.Worker</RootNamespace>
+    <RootNamespace>CommentsFetchStatusIntegration.Worker</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

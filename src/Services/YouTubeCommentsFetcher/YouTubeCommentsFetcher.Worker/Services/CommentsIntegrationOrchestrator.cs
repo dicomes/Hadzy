@@ -1,6 +1,6 @@
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
+using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models;
-using YouTubeCommentsFetcher.Worker.Services.Builders;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;

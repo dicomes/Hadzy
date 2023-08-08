@@ -1,4 +1,4 @@
-namespace CommentsFetchStatusIntergration.Worker.Configurations;
+namespace CommentsFetchStatusIntegration.Worker.Configurations;
 
 public class SeqConfig
 {

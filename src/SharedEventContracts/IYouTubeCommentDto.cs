@@ -2,22 +2,22 @@ namespace SharedEventContracts;
 
 public interface IYouTubeCommentDto
 {
-    public string Etag { get; }
-    public string Id { get; }
-    public string AuthorDisplayName { get; }
-    public string AuthorProfileImageUrl { get; }
-    public string AuthorChannelUrl { get; }
-    public string AuthorChannelId { get; }
-    public string ChannelId { get; }
-    public string VideoId { get; }
-    public string TextDisplay { get; }
-    public string TextOriginal { get; }
-    public string ParentId { get; }
-    public bool CanRate { get; }
-    public string ViewerRating { get; }
-    public uint LikeCount { get; }
-    public string ModerationStatus { get; }
-    public DateTimeOffset PublishedAt { get; }
-    public DateTimeOffset UpdatedAt { get; }
-    public int TotalReplyCount { get; }
+    string Etag { get; }
+    string Id { get; }
+    string AuthorDisplayName { get; }
+    string AuthorProfileImageUrl { get; }
+    string AuthorChannelUrl { get; }
+    string AuthorChannelId { get; }
+    string ChannelId { get; }
+    string VideoId { get; }
+    string TextDisplay { get; }
+    string TextOriginal { get; }
+    string ParentId { get; }
+    bool CanRate { get; }
+    string ViewerRating { get; }
+    uint LikeCount { get; }
+    string ModerationStatus { get; }
+    DateTimeOffset PublishedAt { get; }
+    DateTimeOffset UpdatedAt { get; }
+    int TotalReplyCount { get; }
 }

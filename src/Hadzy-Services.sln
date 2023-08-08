@@ -35,9 +35,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MessageContracts", "Message
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedEventContracts", "SharedEventContracts\SharedEventContracts.csproj", "{B972AAAF-82F1-40A7-966A-393F4A9D966F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsFetchStatus", "CommentsFetchStatus", "{ABD767C1-DC13-494D-A1B0-3B95F5A89036}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsFetchStatusManager", "CommentsFetchStatusManager", "{ABD767C1-DC13-494D-A1B0-3B95F5A89036}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsFetchStatus.MinimalApi", "Services\CommentsFetchStatusManager\CommentsFetchStatus.MinimalApi\CommentsFetchStatus.MinimalApi.csproj", "{076E4A2D-0780-495F-A20B-DE4BA8B8095F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsFetchStatusManager.MinimalApi", "Services\CommentsFetchStatusManager\CommentsFetchStatusManager.MinimalApi\CommentsFetchStatusManager.MinimalApi.csproj", "{076E4A2D-0780-495F-A20B-DE4BA8B8095F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsFetchStatusIntegration", "CommentsFetchStatusIntegration", "{489899DB-C6DF-443A-9FD9-94D9F8CBF205}"
 EndProject

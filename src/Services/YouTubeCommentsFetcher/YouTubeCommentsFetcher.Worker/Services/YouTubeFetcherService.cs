@@ -3,8 +3,8 @@ using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using YouTubeCommentsFetcher.Worker.Enums;
 using YouTubeCommentsFetcher.Worker.Exceptions;
+using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models;
-using YouTubeCommentsFetcher.Worker.Services.Builders;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
