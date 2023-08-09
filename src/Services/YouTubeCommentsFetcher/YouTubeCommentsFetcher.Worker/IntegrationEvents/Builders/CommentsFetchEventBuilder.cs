@@ -23,7 +23,7 @@ public class CommentsFetchedEventBuilder
 
     public CommentsFetchedEventBuilder WithPageToken(string pageToken)
     {
-        _event.PageToken = pageToken;
+        _event.NextPageToken = pageToken;
         return this;
     }
 

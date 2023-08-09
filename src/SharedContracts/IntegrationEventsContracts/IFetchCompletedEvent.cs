@@ -4,6 +4,6 @@ public interface IFetchCompletedEvent
 {
     Guid Id { get; }
     string VideoId { get; }
-    string PageToken { get; }
+    string NextPageToken { get; }
     List<IYouTubeCommentDto> YouTubeCommentsList { get; }
 }

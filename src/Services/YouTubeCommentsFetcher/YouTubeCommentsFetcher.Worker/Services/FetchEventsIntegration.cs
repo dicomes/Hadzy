@@ -31,7 +31,7 @@ public async Task FetchAndPublishAsync(string videoId, string pageToken)
     string lastPageToken = string.Empty;
     FetchStatusChangedEvent fetchStatusChangedEvent;
     FetchStatusChangedEventBuilder fetchedStatusChangedEventBuilder = new FetchStatusChangedEventBuilder();;
-
+    
     do
     {
         var fetchSettings = new FetchSettings(videoId, pageToken);
@@ -39,49 +39,33 @@ public async Task FetchAndPublishAsync(string videoId, string pageToken)
         // Fetch comments
         var response = await _youTubeFetcherService.FetchAsync(fetchSettings);
 
-        // Transform the comments
+        // Map response to fetched event
         FetchCompletedEvent fetchCompletedEvent = _mapper.Map(fetchSettings.VideoId, response);
-
-        int commentsFetchedCount = fetchCompletedEvent.CommentsFetchedCount;
-        int repliesCount = fetchCompletedEvent.ReplyCount;
-
-        _logger.LogInformation("FetchEventsIntegration: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, pageToken, commentsFetchedCount, repliesCount);
-
-        fetchStatusChangedEvent = fetchedStatusChangedEventBuilder
-            .WithVideoId(videoId)
-            .WithPageToken(fetchCompletedEvent.PageToken)
-            .WithCommentsFetchedCount(commentsFetchedCount)
-            .WithReplyCount(repliesCount)
-            .WithIsFetching(true)
-            .Build();
-
+        _logger.LogInformation("FetchEventsIntegration: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, pageToken, fetchCompletedEvent.CommentsFetchedCount, fetchCompletedEvent.ReplyCount);
+        
         // Publish fetched event
         await _eventPublisher.PublishEvent(fetchCompletedEvent);
+        
+        // Build fetch status event
+        fetchStatusChangedEvent = fetchedStatusChangedEventBuilder
+            .WithVideoId(videoId)
+            .WithPageToken(pageToken)
+            .WithCommentsFetchedCount(fetchCompletedEvent.CommentsFetchedCount)
+            .WithReplyCount(fetchCompletedEvent.ReplyCount)
+            .WithIsFetching(!string.IsNullOrEmpty(fetchCompletedEvent.NextPageToken))
+            .Build();
 
         // Publish fetch status event
         await _eventPublisher.PublishEvent(fetchStatusChangedEvent);
 
-        totalCommentsFetched += commentsFetchedCount;
-        totalReplies += repliesCount;
-        
-        // Save last provided pageToken
-        lastPageToken = !string.IsNullOrEmpty(pageToken) ? pageToken : lastPageToken;
-
         // Set PageToken used by the fetcher service
-        pageToken = fetchCompletedEvent.PageToken;
+        pageToken = fetchCompletedEvent.NextPageToken;
+        
+        totalCommentsFetched += fetchCompletedEvent.CommentsFetchedCount;
+        totalReplies += fetchCompletedEvent.ReplyCount;
 
     } while (!string.IsNullOrEmpty(pageToken));
-
-    // After fetching, pass the event to denote the fetching is complete
-    fetchStatusChangedEvent = fetchedStatusChangedEventBuilder
-        .WithVideoId(videoId)
-        .WithIsFetching(false)
-        .WithPageToken(lastPageToken)
-        .Build();
-
-    // Publish fetch status event with IsFetching = false
-    await _eventPublisher.PublishEvent(fetchStatusChangedEvent);
-
+    
     _logger.LogInformation("FetchEventsIntegration: Completed to fetch all batches for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.", videoId, totalCommentsFetched, totalReplies);
 }
 
