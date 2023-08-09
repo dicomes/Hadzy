@@ -11,6 +11,9 @@ public class FetchStatus : IFetchStatusModel
     [BsonElement("TotalCommentsFetched")]
     public int TotalCommentsFetched { get; set; }
     
+    [BsonElement("LastPageToken")]
+    public string LastPageToken { get; set; }
+    
     [BsonElement("IsFetching")]
     public bool IsFetching { get; set; }
 }

@@ -27,7 +27,7 @@ public class FetchStatusChangedConsumer : IConsumer<IFetchStatusChangedEvent>
 
     public async Task Consume(ConsumeContext<IFetchStatusChangedEvent> context)
     {
-        FetchStatusChangedEvent fetchStatusChangedEventReceived = _eventBuilder.BuildFromMessage(context.Message);
+        FetchStatusChangedEvent fetchStatusChangedEventReceived = _eventBuilder.BuildFromEvent(context.Message);
         _logger.LogInformation("CommentsFetchStatusIntegration: Received FetchStatusChangedEvent. Guid: {Guid}. Event data: {EventData}.", fetchStatusChangedEventReceived.Id, fetchStatusChangedEventReceived);
 
         await _updateFetchStatusEvent.UpdateAsync(fetchStatusChangedEventReceived);

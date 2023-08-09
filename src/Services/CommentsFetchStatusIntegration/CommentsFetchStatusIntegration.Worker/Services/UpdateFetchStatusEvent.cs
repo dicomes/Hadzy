@@ -27,6 +27,7 @@ public class UpdateFetchStatusEvent : IUpdateFetchStatusEvent
             fetchStatus = await _fetchStatusService.GetFetchStatusByVideoIdAsync(fetchStatusChangedEvent.VideoId);
             fetchStatus.IsFetching = fetchStatusChangedEvent.IsFetching;
             fetchStatus.TotalCommentsFetched += fetchStatusChangedEvent.CommentsFetchedCount + fetchStatusChangedEvent.ReplyCount;
+            fetchStatus.LastPageToken = fetchStatusChangedEvent.PageToken;
             await _fetchStatusService.UpdateFetchStatusAsync(fetchStatus);
         }
         else

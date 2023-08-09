@@ -57,7 +57,7 @@ public class CommentsFetchStatusEventBuilder
         return _changedEvent;
     }
     
-    public FetchStatusChangedEvent BuildFromMessage(IFetchStatusChangedEvent message)
+    public FetchStatusChangedEvent BuildFromEvent(IFetchStatusChangedEvent message)
     {
         return new CommentsFetchStatusEventBuilder()
             .WithId(message.Id)

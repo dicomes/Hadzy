@@ -28,6 +28,7 @@ public async Task FetchAndPublishAsync(string videoId, string pageToken)
 {
     int totalCommentsFetched = 0;
     int totalReplies = 0;
+    string lastPageToken = string.Empty;
     FetchStatusChangedEvent fetchStatusChangedEvent;
     FetchStatusChangedEventBuilder fetchedStatusChangedEventBuilder = new FetchStatusChangedEventBuilder();;
 
@@ -57,14 +58,17 @@ public async Task FetchAndPublishAsync(string videoId, string pageToken)
         // Publish fetched event
         await _eventPublisher.PublishEvent(fetchCompletedEvent);
 
-        // Publish fetch status event with IsFetching = true
+        // Publish fetch status event
         await _eventPublisher.PublishEvent(fetchStatusChangedEvent);
 
         totalCommentsFetched += commentsFetchedCount;
         totalReplies += repliesCount;
+        
+        // Save last provided pageToken
+        lastPageToken = !string.IsNullOrEmpty(pageToken) ? pageToken : lastPageToken;
 
         // Set PageToken used by the fetcher service
-        pageToken = fetchCompletedEvent.PageToken; // set the next page token for the next iteration
+        pageToken = fetchCompletedEvent.PageToken;
 
     } while (!string.IsNullOrEmpty(pageToken));
 
@@ -72,6 +76,7 @@ public async Task FetchAndPublishAsync(string videoId, string pageToken)
     fetchStatusChangedEvent = fetchedStatusChangedEventBuilder
         .WithVideoId(videoId)
         .WithIsFetching(false)
+        .WithPageToken(lastPageToken)
         .Build();
 
     // Publish fetch status event with IsFetching = false
