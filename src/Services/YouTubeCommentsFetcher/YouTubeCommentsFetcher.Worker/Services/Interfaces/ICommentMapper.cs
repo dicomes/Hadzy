@@ -5,5 +5,5 @@ namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 public interface ICommentMapper
 {
-    CommentsFetchedEvent Map(string videoId, CommentThreadListResponse response);
+    FetchCompletedEvent Map(string videoId, CommentThreadListResponse response);
 }

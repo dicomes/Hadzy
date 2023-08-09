@@ -2,7 +2,7 @@ using CommentsFetchStatusIntegration.Worker.IntegrationEvents;
 
 namespace CommentsFetchStatusIntegration.Worker.Services.Interfaces;
 
-public interface ICommentsFetchStatusProcessor
+public interface IUpdateFetchStatusEvent
 {
-    Task ProcessVideoCommentsStatusAsync(CommentsFetchStatusEvent fetchStatusEvent);
+    Task UpdateAsync(FetchStatusChangedEvent fetchStatusChangedEvent);
 }

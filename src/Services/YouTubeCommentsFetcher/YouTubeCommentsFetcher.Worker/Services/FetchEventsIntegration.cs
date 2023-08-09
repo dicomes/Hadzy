@@ -5,18 +5,18 @@ using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
-public class CommentsIntegrationOrchestrator : ICommentsIntegrationOrchestrator
+public class FetchEventsIntegration : IFetchEventsIntegration
 {
     private readonly IYouTubeFetcherService _youTubeFetcherService;
     private readonly ICommentMapper _mapper;
     private readonly IEventPublisher _eventPublisher;
-    private readonly ILogger<CommentsIntegrationOrchestrator> _logger;
+    private readonly ILogger<FetchEventsIntegration> _logger;
 
-    public CommentsIntegrationOrchestrator(
+    public FetchEventsIntegration(
         IYouTubeFetcherService youTubeFetcherService,
         ICommentMapper mapper,
         IEventPublisher eventPublisher,
-        ILogger<CommentsIntegrationOrchestrator> logger)
+        ILogger<FetchEventsIntegration> logger)
     {
         _youTubeFetcherService = youTubeFetcherService;
         _mapper = mapper;
@@ -24,12 +24,12 @@ public class CommentsIntegrationOrchestrator : ICommentsIntegrationOrchestrator
         _logger = logger;
     }
 
-public async Task ProcessCommentsForVideoAsync(string videoId, string pageToken)
+public async Task FetchAndPublishAsync(string videoId, string pageToken)
 {
     int totalCommentsFetched = 0;
     int totalReplies = 0;
-    CommentsFetchStatusEvent commentsFetchStatusEvent;
-    CommentsFetchedStatusEventBuilder fetchedStatusEventBuilder = new CommentsFetchedStatusEventBuilder();;
+    FetchStatusChangedEvent fetchStatusChangedEvent;
+    FetchStatusChangedEventBuilder fetchedStatusChangedEventBuilder = new FetchStatusChangedEventBuilder();;
 
     do
     {
@@ -39,45 +39,45 @@ public async Task ProcessCommentsForVideoAsync(string videoId, string pageToken)
         var response = await _youTubeFetcherService.FetchAsync(fetchSettings);
 
         // Transform the comments
-        CommentsFetchedEvent commentsFetchedEvent = _mapper.Map(fetchSettings.VideoId, response);
+        FetchCompletedEvent fetchCompletedEvent = _mapper.Map(fetchSettings.VideoId, response);
 
-        int commentsFetchedCount = commentsFetchedEvent.CommentsFetchedCount;
-        int repliesCount = commentsFetchedEvent.ReplyCount;
+        int commentsFetchedCount = fetchCompletedEvent.CommentsFetchedCount;
+        int repliesCount = fetchCompletedEvent.ReplyCount;
 
-        _logger.LogInformation("CommentsIntegrationOrchestrator: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, pageToken, commentsFetchedCount, repliesCount);
+        _logger.LogInformation("FetchEventsIntegration: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, pageToken, commentsFetchedCount, repliesCount);
 
-        commentsFetchStatusEvent = fetchedStatusEventBuilder
+        fetchStatusChangedEvent = fetchedStatusChangedEventBuilder
             .WithVideoId(videoId)
-            .WithPageToken(commentsFetchedEvent.PageToken)
+            .WithPageToken(fetchCompletedEvent.PageToken)
             .WithCommentsFetchedCount(commentsFetchedCount)
             .WithReplyCount(repliesCount)
             .WithIsFetching(true)
             .Build();
 
         // Publish fetched event
-        await _eventPublisher.PublishEvent(commentsFetchedEvent);
+        await _eventPublisher.PublishEvent(fetchCompletedEvent);
 
         // Publish fetch status event with IsFetching = true
-        await _eventPublisher.PublishEvent(commentsFetchStatusEvent);
+        await _eventPublisher.PublishEvent(fetchStatusChangedEvent);
 
         totalCommentsFetched += commentsFetchedCount;
         totalReplies += repliesCount;
 
         // Set PageToken used by the fetcher service
-        pageToken = commentsFetchedEvent.PageToken; // set the next page token for the next iteration
+        pageToken = fetchCompletedEvent.PageToken; // set the next page token for the next iteration
 
     } while (!string.IsNullOrEmpty(pageToken));
 
     // After fetching, pass the event to denote the fetching is complete
-    commentsFetchStatusEvent = fetchedStatusEventBuilder
+    fetchStatusChangedEvent = fetchedStatusChangedEventBuilder
         .WithVideoId(videoId)
         .WithIsFetching(false)
         .Build();
 
     // Publish fetch status event with IsFetching = false
-    await _eventPublisher.PublishEvent(commentsFetchStatusEvent);
+    await _eventPublisher.PublishEvent(fetchStatusChangedEvent);
 
-    _logger.LogInformation("CommentsIntegrationOrchestrator: Completed to fetch all batches for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.", videoId, totalCommentsFetched, totalReplies);
+    _logger.LogInformation("FetchEventsIntegration: Completed to fetch all batches for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.", videoId, totalCommentsFetched, totalReplies);
 }
 
 }

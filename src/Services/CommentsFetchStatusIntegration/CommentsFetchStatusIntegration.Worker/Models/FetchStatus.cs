@@ -3,7 +3,7 @@ using MongoDbContracts;
 
 namespace CommentsFetchStatusIntegration.Worker.Models;
 
-public class VideoCommentsStatus : IVideoCommentsStatusModel
+public class FetchStatus : IFetchStatusModel
 {
     [BsonId]
     public string VideoId { get; set; }

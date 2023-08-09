@@ -5,22 +5,22 @@ namespace CommentsFetchStatusIntegration.Worker.Builders;
 
 public class CommentsFetchStatusEventBuilder
 {
-    private readonly CommentsFetchStatusEvent _event;
+    private readonly FetchStatusChangedEvent _changedEvent;
 
     public CommentsFetchStatusEventBuilder()
     {
-        _event = new CommentsFetchStatusEvent();
+        _changedEvent = new FetchStatusChangedEvent();
     }
 
     public CommentsFetchStatusEventBuilder WithId(Guid id)
     {
-        _event.Id = id;
+        _changedEvent.Id = id;
         return this;
     }
 
     public CommentsFetchStatusEventBuilder WithVideoId(string videoId)
     {
-        _event.VideoId = videoId;
+        _changedEvent.VideoId = videoId;
         return this;
     }
 
@@ -28,7 +28,7 @@ public class CommentsFetchStatusEventBuilder
     {
         if (!string.IsNullOrEmpty(pageToken))
         {
-            _event.PageToken = pageToken;
+            _changedEvent.PageToken = pageToken;
         }
         
         return this;
@@ -36,28 +36,28 @@ public class CommentsFetchStatusEventBuilder
 
     public CommentsFetchStatusEventBuilder WithCommentsFetchedCount(int count)
     {
-        _event.CommentsFetchedCount = count;
+        _changedEvent.CommentsFetchedCount = count;
         return this;
     }
 
     public CommentsFetchStatusEventBuilder WithReplyCount(int count)
     {
-        _event.ReplyCount = count;
+        _changedEvent.ReplyCount = count;
         return this;
     }
 
     public CommentsFetchStatusEventBuilder WithIsFetching(bool isFetching)
     {
-        _event.IsFetching = isFetching;
+        _changedEvent.IsFetching = isFetching;
         return this;
     }
 
-    public CommentsFetchStatusEvent Build()
+    public FetchStatusChangedEvent Build()
     {
-        return _event;
+        return _changedEvent;
     }
     
-    public CommentsFetchStatusEvent BuildFromMessage(ICommentsFetchStatusEvent message)
+    public FetchStatusChangedEvent BuildFromMessage(IFetchStatusChangedEvent message)
     {
         return new CommentsFetchStatusEventBuilder()
             .WithId(message.Id)

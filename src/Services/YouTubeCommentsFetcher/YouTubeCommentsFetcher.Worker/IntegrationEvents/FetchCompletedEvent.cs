@@ -2,7 +2,7 @@ using IntegrationEventsContracts;
 
 namespace YouTubeCommentsFetcher.Worker.IntegrationEvents;
 
-public class CommentsFetchedEvent : ICommentsFetchedEvent
+public class FetchCompletedEvent : IFetchCompletedEvent
 {
     public Guid Id { get; set; }
     public string VideoId { get; set; }
@@ -12,6 +12,6 @@ public class CommentsFetchedEvent : ICommentsFetchedEvent
     public List<IYouTubeCommentDto> YouTubeCommentsList { get; set; }
 
     public override string ToString() =>
-        $"CommentsFetchedEvent - Guid {Id} .VideoId: {VideoId}, PageToken: {PageToken}, " +
+        $"FetchCompletedEvent - Guid {Id} .VideoId: {VideoId}, PageToken: {PageToken}, " +
         $"CommentsFetchedCount: {CommentsFetchedCount}, ReplyCount: {ReplyCount}";
 }

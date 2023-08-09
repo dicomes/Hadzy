@@ -36,12 +36,12 @@ public class Worker : BackgroundService
             using var scope = _serviceProvider.CreateScope();
             var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
         
-            await publishEndpoint.Publish<ICommentsFetchReceivedEvent>(new
+            await publishEndpoint.Publish<IFetchingInitiatedEvent>(new
             {
                 VideoId = videoList[0].VideoId,
                 PageToken = videoList[0].PageToken
             });
-            _logger.LogInformation("Published VideoId: {VideoID}. PageToken: {PageToken}.", videoList[0].VideoId, videoList[0].PageToken);
+            _logger.LogInformation("Published CommentsFetchingInitiatedEvent: {VideoID}. PageToken: {PageToken}.", videoList[0].VideoId, videoList[0].PageToken);
 
             videoList.Remove(videoList[0]);
         

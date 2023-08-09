@@ -2,7 +2,7 @@ using IntegrationEventsContracts;
 
 namespace YouTubeCommentsFetcher.Worker.IntegrationEvents;
 
-public class CommentsFetchStatusEvent : ICommentsFetchStatusEvent
+public class FetchStatusChangedEvent : IFetchStatusChangedEvent
 {
     public Guid Id { get; set; }
     public string VideoId { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace IntegrationEventsContracts;
 
-public interface ICommentsFetchReceivedEvent
+public interface IFetchingInitiatedEvent
 {
     Guid Id { get; }
     string VideoId { get; }

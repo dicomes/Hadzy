@@ -16,13 +16,13 @@ public class CommentThreadToFetchedEventMapper : ICommentMapper
         _mapper = mapper;
     }
 
-    public CommentsFetchedEvent Map(string videoId, CommentThreadListResponse response)
+    public FetchCompletedEvent Map(string videoId, CommentThreadListResponse response)
     {
         // Extract the comments and map them
         List<YouTubeCommentDto> YouTubeCommentDtoList = _mapper.Map<List<YouTubeCommentDto>>(response.Items.Select(ct => ct.Snippet));
 
         CommentsFetchedEventBuilder commentsFetchedEventBuilder = new CommentsFetchedEventBuilder();
-        CommentsFetchedEvent commentsFetchedEvent = commentsFetchedEventBuilder
+        FetchCompletedEvent fetchCompletedEvent = commentsFetchedEventBuilder
             .WithVideoId(videoId)
             .WithPageToken(response.NextPageToken)
             .WithCommentsFetchedCount(YouTubeCommentDtoList.Count)
@@ -30,6 +30,6 @@ public class CommentThreadToFetchedEventMapper : ICommentMapper
             .WithYouTubeCommentsList(YouTubeCommentDtoList)
             .Build();
 
-        return commentsFetchedEvent;
+        return fetchCompletedEvent;
     }
 }

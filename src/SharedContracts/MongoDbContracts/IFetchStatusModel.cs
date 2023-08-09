@@ -2,7 +2,7 @@
 
 namespace MongoDbContracts;
 
-public interface IVideoCommentsStatusModel
+public interface IFetchStatusModel
 {
     [BsonId]
     string VideoId { get; }

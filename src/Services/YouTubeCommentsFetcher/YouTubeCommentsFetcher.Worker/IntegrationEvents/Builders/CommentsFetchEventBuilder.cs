@@ -5,11 +5,11 @@ namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 
 public class CommentsFetchedEventBuilder
 {
-    private readonly CommentsFetchedEvent _event;
+    private readonly FetchCompletedEvent _event;
 
     public CommentsFetchedEventBuilder()
     {
-        _event = new CommentsFetchedEvent
+        _event = new FetchCompletedEvent
         {
             Id = Guid.NewGuid()
         };
@@ -45,7 +45,7 @@ public class CommentsFetchedEventBuilder
         return this;
     }
 
-    public CommentsFetchedEvent Build()
+    public FetchCompletedEvent Build()
     {
         return _event;
     }

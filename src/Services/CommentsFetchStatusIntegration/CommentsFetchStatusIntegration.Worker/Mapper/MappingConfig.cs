@@ -8,7 +8,7 @@ public class MappingConfig : Profile
 {
     public MappingConfig()
     {
-        CreateMap<CommentsFetchStatusEvent, VideoCommentsStatus>()
+        CreateMap<FetchStatusChangedEvent, FetchStatus>()
             .ForMember(dest => dest.VideoId, opt => opt.MapFrom(src => src.VideoId))
             .ForMember(dest => dest.TotalCommentsFetched, opt => opt.MapFrom(src => src.CommentsFetchedCount))
             .ForMember(dest => dest.IsFetching, opt => opt.MapFrom(src => src.IsFetching));

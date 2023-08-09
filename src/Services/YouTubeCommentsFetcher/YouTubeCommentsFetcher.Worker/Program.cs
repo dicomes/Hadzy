@@ -57,14 +57,14 @@ namespace YouTubeCommentsFetcher.Worker
                     services.AddAutoMapper(typeof(MappingConfig));
                     services.AddTransient<ICommentMapper, CommentThreadToFetchedEventMapper>(); // Transforms comments to DTO
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
-                    services.AddTransient<CommentsFetchReceivedEventConsumer>();
+                    services.AddTransient<FetchingInitiatedEventConsumer>();
                     services.AddTransient<IEventPublisher, EventPublisher>();  // Publish events
-                    services.AddTransient<ICommentsIntegrationOrchestrator, CommentsIntegrationOrchestrator>();  // Orchestrates flows
+                    services.AddTransient<IFetchEventsIntegration, FetchEventsIntegration>();  // Orchestrates flows
                     
                     services.AddMassTransit(configurator =>
                     {
                         // Registering the VideoIdConsumer
-                        configurator.AddConsumer<CommentsFetchReceivedEventConsumer>();
+                        configurator.AddConsumer<FetchingInitiatedEventConsumer>();
                         configurator.AddConsumer<FetcherErrorEventConsumer>();
 
                         configurator.UsingRabbitMq((context, cfg) =>
@@ -78,7 +78,7 @@ namespace YouTubeCommentsFetcher.Worker
                             // Configuring the ReceiveEndpoint to bind to a specific queue and use the VideoIdConsumer
                             cfg.ReceiveEndpoint("videoId-queue", e =>
                             {
-                                e.Consumer<CommentsFetchReceivedEventConsumer>(context);
+                                e.Consumer<FetchingInitiatedEventConsumer>(context);
                             });
                                 
                             // Configuring the ReceiveEndpoint for ErrorMessageConsumer
