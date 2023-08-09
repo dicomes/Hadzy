@@ -2,5 +2,5 @@ namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 public interface ICommentsIntegrationOrchestrator
 {
-    public Task ProcessCommentsForVideoAsync(string videoId, string nextPageToken);
+    public Task ProcessCommentsForVideoAsync(string videoId, string pageToken);
 }

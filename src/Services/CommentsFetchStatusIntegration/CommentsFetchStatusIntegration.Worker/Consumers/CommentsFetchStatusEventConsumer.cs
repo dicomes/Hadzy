@@ -11,47 +11,25 @@ namespace CommentsFetchStatusIntegration.Worker.Consumers;
 public class CommentsFetchStatusEventConsumer : IConsumer<ICommentsFetchStatusEvent>
 {
     private readonly ILogger<CommentsFetchStatusEventConsumer> _logger;
-    private readonly IVideoCommentsStatusService _videoCommentsStatusService;
-    private readonly IMapper _mapper;
+    private readonly ICommentsFetchStatusProcessor _commentsFetchStatusProcessor;
+    private readonly CommentsFetchStatusEventBuilder _eventBuilder;
 
-    public CommentsFetchStatusEventConsumer(ILogger<CommentsFetchStatusEventConsumer> logger, IVideoCommentsStatusService videoCommentsStatusService, IMapper mapper)
+
+    public CommentsFetchStatusEventConsumer(
+        ILogger<CommentsFetchStatusEventConsumer> logger,
+        ICommentsFetchStatusProcessor commentsFetchStatusProcessor,
+        CommentsFetchStatusEventBuilder eventBuilder)
     {
         _logger = logger;
-        _videoCommentsStatusService = videoCommentsStatusService;
-        _mapper = mapper;
+        _commentsFetchStatusProcessor = commentsFetchStatusProcessor;
+        _eventBuilder = eventBuilder;
     }
 
     public async Task Consume(ConsumeContext<ICommentsFetchStatusEvent> context)
     {
-        CommentsFetchStatusEventBuilder commentsFetchStatusEventBuilder = new CommentsFetchStatusEventBuilder()
-            .WithId(context.Message.Id)
-            .WithVideoId(context.Message.VideoId)
-            .WithPageToken(context.Message.PageToken)
-            .WithCommentsFetchedCount(context.Message.CommentsFetchedCount)
-            .WithReplyCount(context.Message.ReplyCount)
-            .WithIsFetching(context.Message.IsFetching);
+        CommentsFetchStatusEvent fetchStatusEventReceived = _eventBuilder.BuildFromMessage(context.Message);
+        _logger.LogInformation("CommentsFetchStatusEventConsumer: Received CommentsFetchStatusEvent. Guid: {Guid}. Event data: {EventData}.", fetchStatusEventReceived.Id, fetchStatusEventReceived);
 
-        CommentsFetchStatusEvent fetchStatus = commentsFetchStatusEventBuilder.Build();
-
-        _logger.LogInformation("CommentsFetchStatusEventConsumer: Received CommentsFetchStatusEvent. Guid: {Guid}. VideoId: {VideoId}. PageToken: {CommentsCount}.", fetchStatus.Id, fetchStatus.VideoId, fetchStatus.CommentsFetchedCount);
-
-        VideoCommentsStatus videoCommentsStatus;
-
-        // Check if the videoId exists in the database
-        bool videoIdExists = await _videoCommentsStatusService.VideoIdExistsAsync(fetchStatus.VideoId);
-
-        // Update or insert the videoCommentsStatus in the database based on videoId existence
-        if (videoIdExists)
-        {
-            videoCommentsStatus = await _videoCommentsStatusService.GetVideoCommentsStatusByVideoIdAsync(fetchStatus.VideoId);
-            videoCommentsStatus.TotalCommentsFetched += fetchStatus.CommentsFetchedCount + fetchStatus.ReplyCount;
-            await _videoCommentsStatusService.UpdateVideoCommentsStatusAsync(videoCommentsStatus);
-        }
-        else
-        {
-            videoCommentsStatus = _mapper.Map<VideoCommentsStatus>(fetchStatus);
-            await _videoCommentsStatusService.InsertVideoCommentsStatusAsync(videoCommentsStatus); 
-        }
-
+        await _commentsFetchStatusProcessor.ProcessVideoCommentsStatusAsync(fetchStatusEventReceived);
     }
 }

@@ -25,10 +25,10 @@ services:
   mongodb:
     image: mongo
     container_name: mongodb
+    volumes:
+      - mongo-data:/data/db
     ports:
       - "27017:27017"
-    volumes:
-      - ./data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
@@ -36,3 +36,4 @@ services:
 
 volumes:
   seq-data:
+  mongo-data:

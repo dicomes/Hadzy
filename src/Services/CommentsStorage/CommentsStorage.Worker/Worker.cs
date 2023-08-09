@@ -23,8 +23,8 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         List<FetchEvent> videoList = new List<FetchEvent>();
-        videoList.Add(new FetchEvent {VideoId = "wiV91CjJa6A", PageToken = string.Empty});
-        // videoList.Add(new FetchEvent {VideoId = "e7qDpgoHGqI", PageToken = "QURTSl9pM1ljcnJQbF9IVkFtX2RqTEhJalF2NE43OW1qSnRDeDZOVmVyUFBDVUhleVJCNGdqdTIwUU9ZWmVKMjRWLV9QdjV2MEZBLXdkWks0NEJDSWF3RUZTaGJuUG80MEE="});
+        videoList.Add(new FetchEvent {VideoId = "h3bt79JUYak", PageToken = string.Empty});
+        videoList.Add(new FetchEvent {VideoId = "GeGQvs7U3ZE", PageToken = string.Empty});
         videoList.Add(new FetchEvent {VideoId = "sdasd", PageToken = string.Empty});
         // videoList.Add(new FetchEvent {VideoId = "Q_RxN7FqV8M", PageToken = string.Empty});
 

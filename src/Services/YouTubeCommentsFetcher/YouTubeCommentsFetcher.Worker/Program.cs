@@ -3,7 +3,7 @@ using Google.Apis.YouTube.v3;
 using Serilog;
 using YouTubeCommentsFetcher.Worker.Configurations;
 using YouTubeCommentsFetcher.Worker.Services;
-using YouTubeCommentsFetcher.Worker.Services.Transformer;
+using YouTubeCommentsFetcher.Worker.Services.Mapper;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker.Consumers;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
@@ -55,7 +55,7 @@ namespace YouTubeCommentsFetcher.Worker
                     services.AddSingleton<RetryPolicyProvider>();
                     services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments
                     services.AddAutoMapper(typeof(MappingConfig));
-                    services.AddTransient<ICommentTransformer, CommentThreadToFetchedEventTransformer>(); // Transforms comments to DTO
+                    services.AddTransient<ICommentMapper, CommentThreadToFetchedEventMapper>(); // Transforms comments to DTO
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
                     services.AddTransient<CommentsFetchReceivedEventConsumer>();
                     services.AddTransient<IEventPublisher, EventPublisher>();  // Publish events
@@ -92,11 +92,11 @@ namespace YouTubeCommentsFetcher.Worker
                 .UseSerilog()
                 .Build();
                 var logger = host.Services.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("-----------YouTubeCommentsFetcher service settings----------------");
+                logger.LogInformation("YouTubeCommentsFetcher service settings-------------------->");
                 logger.LogInformation("SEQ URL: {SeqUrl}", seqConfig.Url);
                 logger.LogInformation("API KEY: {ApiKey}", youTubeConfig.ApiKey);
                 logger.LogInformation("RABBITMQ HOST: {ApiKey}", rabbitMqConfig.Hostname);
-                logger.LogInformation("------------------------------------------------------------------");
+                logger.LogInformation("<--------------------YouTubeCommentsFetcher service settings");
             await host.RunAsync();
         }
     }

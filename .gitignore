@@ -32,7 +32,7 @@ bld/
 [Ll]ogs/
 
 # MongoDb
-src/data/*
+src/data/**
 
 # Docker
 .env

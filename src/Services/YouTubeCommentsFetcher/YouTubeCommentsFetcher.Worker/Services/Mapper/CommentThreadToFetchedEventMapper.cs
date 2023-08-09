@@ -1,23 +1,22 @@
 using AutoMapper;
 using Google.Apis.YouTube.v3.Data;
-using IntegrationEventsContracts;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models.DTO;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
-namespace YouTubeCommentsFetcher.Worker.Services.Transformer;
+namespace YouTubeCommentsFetcher.Worker.Services.Mapper;
 
-public class CommentThreadToFetchedEventTransformer : ICommentTransformer
+public class CommentThreadToFetchedEventMapper : ICommentMapper
 {
     private readonly IMapper _mapper;
 
-    public CommentThreadToFetchedEventTransformer(IMapper mapper)
+    public CommentThreadToFetchedEventMapper(IMapper mapper)
     {
         _mapper = mapper;
     }
 
-    public CommentsFetchedEvent Transform(string videoId, CommentThreadListResponse response)
+    public CommentsFetchedEvent Map(string videoId, CommentThreadListResponse response)
     {
         // Extract the comments and map them
         List<YouTubeCommentDto> YouTubeCommentDtoList = _mapper.Map<List<YouTubeCommentDto>>(response.Items.Select(ct => ct.Snippet));

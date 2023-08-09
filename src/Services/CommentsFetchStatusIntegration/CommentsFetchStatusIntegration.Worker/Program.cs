@@ -1,4 +1,5 @@
 using CommentsFetchStatusIntegration.Worker;
+using CommentsFetchStatusIntegration.Worker.Builders;
 using CommentsFetchStatusIntegration.Worker.Configurations;
 using CommentsFetchStatusIntegration.Worker.Consumers;
 using CommentsFetchStatusIntegration.Worker.Mapper;
@@ -14,6 +15,7 @@ var mongoDbConfig = new MongoDbConfig();
 Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostingContext, services) =>
     {
+    
         seqConfig = hostingContext.Configuration.GetSection("Seq").Get<SeqConfig>();
         rabbitMqConfig = hostingContext.Configuration.GetSection("RabbitMq").Get<RabbitMqConfig>();
         
@@ -23,11 +25,11 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
             .CreateLogger();
         
         services.AddHostedService<Worker>();
-        
-        services.AddAutoMapper(typeof(MappingConfig)); 
-        services.Configure<MongoDbConfig>(
-            hostingContext.Configuration.GetSection("MongoDb"));
+        services.AddAutoMapper(typeof(MappingConfig));
+        services.Configure<MongoDbConfig>(hostingContext.Configuration.GetSection("MongoDb"));
+        services.AddSingleton<ICommentsFetchStatusProcessor, CommentsFetchStatusProcessor>();
         services.AddSingleton<IVideoCommentsStatusService, VideoCommentsStatusService>();
+        services.AddSingleton<CommentsFetchStatusEventBuilder>();
         services.AddTransient<CommentsFetchStatusEventConsumer>();
 
         services.AddMassTransit(configurator =>
@@ -49,10 +51,12 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
     })
     .UseSerilog()
     .Build();
+
 var logger = host.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("CommentsFetchStatusIntergration service settings--->");
+logger.LogInformation("CommentsFetchStatusIntergration service settings-------------------->");
 logger.LogInformation("SEQ URL: {SeqUrl}", seqConfig.Url);
 logger.LogInformation("RABBITMQ HOST: {ApiKey}", rabbitMqConfig.Hostname);
-logger.LogInformation("<---CommentsFetchStatusIntergration service settings");
+logger.LogInformation("<--------------------CommentsFetchStatusIntegration service settings");
+
 await host.RunAsync();
 

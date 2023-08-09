@@ -2,11 +2,11 @@ namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 
 public class CommentsFetchedStatusEventBuilder
 {
-    private CommentsFetchedStatusEvent _event;
+    private CommentsFetchStatusEvent _event;
 
     public CommentsFetchedStatusEventBuilder()
     {
-        _event = new CommentsFetchedStatusEvent();
+        _event = new CommentsFetchStatusEvent();
         _event.Id = Guid.NewGuid();
     }
 
@@ -36,8 +36,14 @@ public class CommentsFetchedStatusEventBuilder
         _event.ReplyCount = count;
         return this;
     }
+    
+    public CommentsFetchedStatusEventBuilder WithIsFetching(bool isFetching)
+    {
+        _event.IsFetching = isFetching;
+        return this;
+    }
 
-    public CommentsFetchedStatusEvent Build()
+    public CommentsFetchStatusEvent Build()
     {
         return _event;
     }

@@ -17,7 +17,7 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("CommentsFetchStatusIntergration started. Waiting for CommentsFetchStatusEvent...");
+        _logger.LogInformation("CommentsFetchStatusIntegration started. Waiting for CommentsFetchStatusEvent...");
 
         // Starting the bus control initiates the MassTransit service and begins listening for messages.
         // When a message of type ICommentsFetchStatusEvent is received, MassTransit will automatically 
