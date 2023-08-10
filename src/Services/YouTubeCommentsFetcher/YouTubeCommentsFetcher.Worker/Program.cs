@@ -51,15 +51,16 @@ namespace YouTubeCommentsFetcher.Worker
                         });
                     });
                     
-                    services.AddTransient<FetcherErrorEventConsumer>();
-                    services.AddSingleton<RetryPolicyProvider>();
-                    services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments
-                    services.AddAutoMapper(typeof(MappingConfig));
-                    services.AddTransient<ICommentMapper, CommentThreadToFetchedEventMapper>(); // Transforms comments to DTO
+                    services.AddSingleton<RetryPolicyProvider>(); // Retry policy with exponential backoff for fetcher
+                    services.AddTransient<FetcherErrorEventConsumer>(); // Consumes errors raised by the fetcher
+                    services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments for a given videoId
+                    services.AddAutoMapper(typeof(MappingConfig)); // Mapping config for mapper
+                    services.AddTransient<ICommentMapper, CommentThreadToFetchedEventMapper>(); // Transforms fetch comments to commentsDto
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
-                    services.AddTransient<FetchingInitiatedEventConsumer>();
+                    services.AddTransient<FetchingInitiatedEventConsumer>(); // Consume events that initiate fetching for a given videoId
                     services.AddTransient<IEventPublisher, EventPublisher>();  // Publish events
-                    services.AddTransient<IFetchEventsIntegration, FetchEventsIntegration>();  // Orchestrates flows
+                    services.AddTransient<ICommentsIterator, CommentsIterator>();
+                    services.AddTransient<IFetchEventsIntegration, FetchEventsIntegration>();  // Integrate fetching events
                     
                     services.AddMassTransit(configurator =>
                     {

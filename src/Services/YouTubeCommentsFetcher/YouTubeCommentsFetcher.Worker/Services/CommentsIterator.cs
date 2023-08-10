@@ -4,36 +4,28 @@ using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
-public class CommentsIterator
+public class CommentsIterator : ICommentsIterator
 {
-    private readonly string _videoId;
     private readonly IYouTubeFetcherService _fetcherService;
-    private string _currentPageToken;
     private readonly ICommentMapper _mapper;
-
+    private string _pageToken;
 
     public CommentsIterator(
-        string videoId,
-        IYouTubeFetcherService fetcherService,
-        string initialPageToken = null)
+        IYouTubeFetcherService fetcherService, ICommentMapper mapper)
     {
-        _videoId = videoId;
         _fetcherService = fetcherService;
-        _currentPageToken = initialPageToken;
+        _mapper = mapper;
     }
 
-    public async Task<FetchCompletedEvent> Next()
+    public async Task<FetchCompletedEvent> Next(FetchSettings fetchSettings)
     {
-        var fetchSettings = new FetchSettings(_videoId, _currentPageToken);
         var response = await _fetcherService.FetchAsync(fetchSettings);
-
-        _currentPageToken = response.NextPageToken;
-
+        _pageToken = response.NextPageToken;
         return _mapper.Map(fetchSettings.VideoId, response);
     }
 
     public bool HasNext()
     {
-        return !string.IsNullOrEmpty(_currentPageToken);
+        return !string.IsNullOrEmpty(_pageToken);
     }
 }

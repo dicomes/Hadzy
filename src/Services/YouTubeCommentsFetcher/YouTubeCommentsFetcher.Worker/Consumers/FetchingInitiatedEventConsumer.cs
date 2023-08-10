@@ -1,5 +1,7 @@
+using Google;
 using MassTransit;
 using IntegrationEventsContracts;
+using YouTubeCommentsFetcher.Worker.Exceptions;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Consumers
@@ -30,10 +32,14 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
             {
                 await _fetchEventsIntegration.FetchAndPublishAsync(videoId, nextPageToken);
             }
-            catch (Exception ex)
+            catch (YouTubeFetcherServiceException ex)
             {
                 _logger.LogWarning(ex, "FetchingInitiatedEventConsumer: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", ex.GetType().Name, videoId, ex.Message);
                 await _youTubeFetcherServiceExceptionHandler.HandleError(ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "FetchingInitiatedEventConsumer: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", ex.GetType().Name, videoId, ex.Message);
             }
         }
     }
