@@ -1,4 +1,5 @@
 using CommentsFetchStatusIntegration.Worker.Configurations;
+using CommentsFetchStatusIntegration.Worker.Configurations.Interfaces;
 using CommentsFetchStatusIntegration.Worker.Models;
 using CommentsFetchStatusIntegration.Worker.Services.Interfaces;
 using Microsoft.Extensions.Options;
@@ -8,25 +9,26 @@ namespace CommentsFetchStatusIntegration.Worker.Services;
 
 public class FetchStatusService : IFetchStatusService
 {
-    private readonly IMongoCollection<FetchStatus> _videoCommentsCollection;
+    private readonly IMongoCollection<FetchStatus> _fetchStatus;
 
-    public FetchStatusService(IOptions<MongoDbConfig> mongoDbConfig)
+    public FetchStatusService(
+        IMongoDbConfig mongoDbConfig)
     {
-        var mongoClient = new MongoClient(mongoDbConfig.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.Value.DatabaseName);
-        _videoCommentsCollection = mongoDatabase.GetCollection<FetchStatus>(mongoDbConfig.Value.CollectionName);
+        var mongoClient = new MongoClient(mongoDbConfig.ConnectionString);
+        var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.DatabaseName);
+        _fetchStatus = mongoDatabase.GetCollection<FetchStatus>(mongoDbConfig.CommentsFetchStatusCollectionName);
     }
 
     public async Task<bool> VideoIdExistsAsync(string videoId)
     {
         var filter = Builders<FetchStatus>.Filter.Eq(x => x.VideoId, videoId);
-        var count = await _videoCommentsCollection.CountDocumentsAsync(filter);
+        var count = await _fetchStatus.CountDocumentsAsync(filter);
         return count > 0;
     }
 
     public async Task UpdateFetchStatusAsync(FetchStatus fetchStatus)
     {
-        await _videoCommentsCollection.ReplaceOneAsync(x => x.VideoId == fetchStatus.VideoId, fetchStatus);
+        await _fetchStatus.ReplaceOneAsync(x => x.VideoId == fetchStatus.VideoId, fetchStatus);
     }
     
     public async Task UpdateFetchStatusAsync(string videoId, int newTotalCommentsFetched, bool isFetching)
@@ -36,16 +38,16 @@ public class FetchStatusService : IFetchStatusService
             .Set(x => x.TotalCommentsFetched, newTotalCommentsFetched)
             .Set(x => x.IsFetching, isFetching);
     
-        await _videoCommentsCollection.UpdateOneAsync(filter, update);
+        await _fetchStatus.UpdateOneAsync(filter, update);
     }
 
     public async Task<FetchStatus> GetFetchStatusByVideoIdAsync(string videoId)
     {
-        return await _videoCommentsCollection.Find(x => x.VideoId == videoId).FirstOrDefaultAsync();
+        return await _fetchStatus.Find(x => x.VideoId == videoId).FirstOrDefaultAsync();
     }
 
     public async Task InsertFetchStatusAsync(FetchStatus fetchStatus)
     {
-        await _videoCommentsCollection.InsertOneAsync(fetchStatus);
+        await _fetchStatus.InsertOneAsync(fetchStatus);
     }
 }

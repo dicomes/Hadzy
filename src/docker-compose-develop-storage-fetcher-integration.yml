@@ -46,4 +46,4 @@ services:
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
       - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
       - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:CommentsStatusCollectionName=${MONGODB_COLLECTIONNAME}
+      - MongoDb:CommentsFetchStatusCollectionName=${MONGODB_COMMENTSFETCHSTATUSCOLLECTIONNAME}

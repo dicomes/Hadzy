@@ -11,17 +11,16 @@ namespace CommentsFetchStatusIntegration.Worker.Consumers;
 public class FetchStatusChangedConsumer : IConsumer<IFetchStatusChangedEvent>
 {
     private readonly ILogger<FetchStatusChangedConsumer> _logger;
-    private readonly IUpdateFetchStatusEvent _updateFetchStatusEvent;
+    private readonly IIntegrateFetchStatusEvent _integrateFetchStatusEvent;
     private readonly CommentsFetchStatusEventBuilder _eventBuilder;
-
 
     public FetchStatusChangedConsumer(
         ILogger<FetchStatusChangedConsumer> logger,
-        IUpdateFetchStatusEvent updateFetchStatusEvent,
+        IIntegrateFetchStatusEvent integrateFetchStatusEvent,
         CommentsFetchStatusEventBuilder eventBuilder)
     {
         _logger = logger;
-        _updateFetchStatusEvent = updateFetchStatusEvent;
+        _integrateFetchStatusEvent = integrateFetchStatusEvent;
         _eventBuilder = eventBuilder;
     }
 
@@ -30,6 +29,6 @@ public class FetchStatusChangedConsumer : IConsumer<IFetchStatusChangedEvent>
         FetchStatusChangedEvent fetchStatusChangedEventReceived = _eventBuilder.BuildFromEvent(context.Message);
         _logger.LogInformation("CommentsFetchStatusIntegration: Received FetchStatusChangedEvent. Guid: {Guid}. Event data: {EventData}.", fetchStatusChangedEventReceived.Id, fetchStatusChangedEventReceived);
 
-        await _updateFetchStatusEvent.UpdateAsync(fetchStatusChangedEventReceived);
+        await _integrateFetchStatusEvent.UpdateAsync(fetchStatusChangedEventReceived);
     }
 }

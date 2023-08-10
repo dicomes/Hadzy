@@ -5,12 +5,14 @@ using CommentsFetchStatusIntegration.Worker.Services.Interfaces;
 
 namespace CommentsFetchStatusIntegration.Worker.Services;
 
-public class UpdateFetchStatusEvent : IUpdateFetchStatusEvent
+public class IntegrateFetchStatusEvent : IIntegrateFetchStatusEvent
 {
     private readonly IFetchStatusService _fetchStatusService;
     private readonly IMapper _mapper;
 
-    public UpdateFetchStatusEvent(IFetchStatusService fetchStatusService, IMapper mapper)
+    public IntegrateFetchStatusEvent(
+        IFetchStatusService fetchStatusService,
+        IMapper mapper)
     {
         _fetchStatusService = fetchStatusService;
         _mapper = mapper;

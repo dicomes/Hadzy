@@ -2,7 +2,7 @@ using CommentsFetchStatusIntegration.Worker.IntegrationEvents;
 
 namespace CommentsFetchStatusIntegration.Worker.Services.Interfaces;
 
-public interface IUpdateFetchStatusEvent
+public interface IIntegrateFetchStatusEvent
 {
     Task UpdateAsync(FetchStatusChangedEvent fetchStatusChangedEvent);
 }
