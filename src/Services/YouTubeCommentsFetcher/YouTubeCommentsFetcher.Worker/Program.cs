@@ -3,10 +3,9 @@ using Google.Apis.YouTube.v3;
 using Serilog;
 using YouTubeCommentsFetcher.Worker.Configurations;
 using YouTubeCommentsFetcher.Worker.Services;
-using YouTubeCommentsFetcher.Worker.Services.Transformer;
+using YouTubeCommentsFetcher.Worker.Services.Mapper;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker.Consumers;
-using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker
@@ -52,20 +51,21 @@ namespace YouTubeCommentsFetcher.Worker
                         });
                     });
                     
-                    services.AddTransient<FetcherErrorEventConsumer>();
-                    services.AddSingleton<RetryPolicyProvider>();
-                    services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments
-                    services.AddAutoMapper(typeof(MappingConfig));
-                    services.AddTransient<ICommentTransformer, CommentThreadToFetchedEventTransformer>(); // Transforms comments to DTO
+                    services.AddSingleton<RetryPolicyProvider>(); // Retry policy with exponential backoff for fetcher
+                    services.AddTransient<FetcherErrorEventConsumer>(); // Consumes errors raised by the fetcher
+                    services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments for a given videoId
+                    services.AddAutoMapper(typeof(MappingConfig)); // Mapping config for mapper
+                    services.AddTransient<ICommentMapper, CommentThreadToFetchedEventMapper>(); // Transforms fetch comments to commentsDto
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
-                    services.AddTransient<CommentsFetchReceivedEventConsumer>();
+                    services.AddTransient<FetchingInitiatedEventConsumer>(); // Consume events that initiate fetching for a given videoId
                     services.AddTransient<IEventPublisher, EventPublisher>();  // Publish events
-                    services.AddTransient<ICommentsIntegrationOrchestrator, CommentsIntegrationOrchestrator>();  // Orchestrates flows
+                    services.AddTransient<ICommentsIterator, CommentsIterator>();
+                    services.AddTransient<IFetchEventsIntegration, FetchEventsIntegration>();  // Integrate fetching events
                     
                     services.AddMassTransit(configurator =>
                     {
                         // Registering the VideoIdConsumer
-                        configurator.AddConsumer<CommentsFetchReceivedEventConsumer>();
+                        configurator.AddConsumer<FetchingInitiatedEventConsumer>();
                         configurator.AddConsumer<FetcherErrorEventConsumer>();
 
                         configurator.UsingRabbitMq((context, cfg) =>
@@ -79,7 +79,7 @@ namespace YouTubeCommentsFetcher.Worker
                             // Configuring the ReceiveEndpoint to bind to a specific queue and use the VideoIdConsumer
                             cfg.ReceiveEndpoint("videoId-queue", e =>
                             {
-                                e.Consumer<CommentsFetchReceivedEventConsumer>(context);
+                                e.Consumer<FetchingInitiatedEventConsumer>(context);
                             });
                                 
                             // Configuring the ReceiveEndpoint for ErrorMessageConsumer
@@ -93,11 +93,11 @@ namespace YouTubeCommentsFetcher.Worker
                 .UseSerilog()
                 .Build();
                 var logger = host.Services.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("-----------YouTubeCommentsFetcher service settings----------------");
+                logger.LogInformation("YouTubeCommentsFetcher service settings-------------------->");
                 logger.LogInformation("SEQ URL: {SeqUrl}", seqConfig.Url);
                 logger.LogInformation("API KEY: {ApiKey}", youTubeConfig.ApiKey);
                 logger.LogInformation("RABBITMQ HOST: {ApiKey}", rabbitMqConfig.Hostname);
-                logger.LogInformation("------------------------------------------------------------------");
+                logger.LogInformation("<--------------------YouTubeCommentsFetcher service settings");
             await host.RunAsync();
         }
     }

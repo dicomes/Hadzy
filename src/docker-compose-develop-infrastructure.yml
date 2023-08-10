@@ -21,6 +21,19 @@ services:
       - ACCEPT_EULA=Y
     volumes:
       - seq-data:/data
+    
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: video_comment_status
 
 volumes:
   seq-data:
+  mongo-data:

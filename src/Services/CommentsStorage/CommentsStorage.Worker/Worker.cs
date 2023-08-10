@@ -1,5 +1,5 @@
 using MassTransit;
-using SharedEventContracts;
+using IntegrationEventsContracts;
 
 namespace CommentsStorage.Worker;
 
@@ -23,8 +23,8 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         List<FetchEvent> videoList = new List<FetchEvent>();
-        videoList.Add(new FetchEvent {VideoId = "WAuEByCltMA", PageToken = string.Empty});
-        // videoList.Add(new FetchEvent {VideoId = "e7qDpgoHGqI", PageToken = "QURTSl9pM1ljcnJQbF9IVkFtX2RqTEhJalF2NE43OW1qSnRDeDZOVmVyUFBDVUhleVJCNGdqdTIwUU9ZWmVKMjRWLV9QdjV2MEZBLXdkWks0NEJDSWF3RUZTaGJuUG80MEE="});
+        videoList.Add(new FetchEvent {VideoId = "h3bt79JUYak", PageToken = "QURTSl9pMmxMeUZuLXg1bGVPNDJnVzUxVGVjNkJNaVYxR2JYSGp4RmhhcXRTZmJ0aHBPRkY1cmF6V2ZQRzVWOVdYMGt1TGRVYVVTc1JOTQ=="});
+        // videoList.Add(new FetchEvent {VideoId = "GeGQvs7U3ZE", PageToken = string.Empty});
         videoList.Add(new FetchEvent {VideoId = "sdasd", PageToken = string.Empty});
         // videoList.Add(new FetchEvent {VideoId = "Q_RxN7FqV8M", PageToken = string.Empty});
 
@@ -36,12 +36,12 @@ public class Worker : BackgroundService
             using var scope = _serviceProvider.CreateScope();
             var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
         
-            await publishEndpoint.Publish<ICommentsFetchReceivedEvent>(new
+            await publishEndpoint.Publish<IFetchingInitiatedEvent>(new
             {
                 VideoId = videoList[0].VideoId,
                 PageToken = videoList[0].PageToken
             });
-            _logger.LogInformation("Published VideoId: {VideoID}. PageToken: {PageToken}.", videoList[0].VideoId, videoList[0].PageToken);
+            _logger.LogInformation("Published CommentsFetchingInitiatedEvent: {VideoID}. PageToken: {PageToken}.", videoList[0].VideoId, videoList[0].PageToken);
 
             videoList.Remove(videoList[0]);
         
