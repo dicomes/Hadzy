@@ -1,17 +1,45 @@
+using AutoMapper;
+using CommentsFetchStatus.MinimalApi.Configurations;
 using CommentsFetchStatus.MinimalApi.Models;
+using CommentsFetchStatus.MinimalApi.Models.DTO;
 using CommentsFetchStatus.MinimalApi.Services.Interfaces;
+using MongoDB.Driver;
+using Microsoft.Extensions.Options;
 
 namespace CommentsFetchStatus.MinimalApi.Services;
 
 public class FetchStatusService : IFetchStatusService
 {
-    public APIResponse<T> CreateErrorResponse<T>(string errorMessage)
+    private readonly IMongoCollection<FetchStatus> _fetchStatus;
+    private readonly IMapper _mapper;
+
+    public FetchStatusService(
+        IOptions<MongoDbConfig> mongoDbConfig,
+        IMapper mapper)
     {
-        throw new NotImplementedException();
+        var mongoClient = new MongoClient(mongoDbConfig.Value.ConnectionString);
+        var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.Value.DatabaseName);
+        _fetchStatus = mongoDatabase.GetCollection<FetchStatus>(mongoDbConfig.Value.CommentsFetchStatusCollectionName);
+        _mapper = mapper;
     }
 
-    public Task<IResult> GetStatus(string videoId)
+    public async Task<IResult> GetStatusByIdAsync(string videoId)
     {
-        throw new NotImplementedException();
+        FetchStatus status =  await _fetchStatus.Find<FetchStatus>(f => f.VideoId == videoId).FirstOrDefaultAsync();
+        
+        if (status == null)
+        {
+            return Results.NotFound();
+        }
+
+        CommentsFetchStatusDto commentsFetchStatusDto = _mapper.Map<CommentsFetchStatusDto>(status);
+        
+        var response = new APIResponse<CommentsFetchStatusDto>
+        {
+            Result = commentsFetchStatusDto
+        };
+
+        return Results.Ok(response);
     }
+    
 }

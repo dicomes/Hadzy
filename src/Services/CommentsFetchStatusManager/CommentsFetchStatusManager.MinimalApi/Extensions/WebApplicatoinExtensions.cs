@@ -26,12 +26,12 @@ public static class WebApplicatoinExtensions
     
     public static WebApplication ConfigureFetchStatusEndpoints(this WebApplication app)
     {
-        app.MapGet("comments-fetch-status-manager/api/v1/video/{videoId}", (IFetchStatusService videoHandler, string videoId) => videoHandler.GetStatus(videoId))
+        app.MapGet("comments-fetch-status-manager/api/v1/video/{videoId}",
+                (IFetchStatusService fetchStatusService, string videoId) =>
+                    fetchStatusService.GetStatusByIdAsync(videoId))
             .WithName("GetVideo")
             .Produces<APIResponse<CommentsFetchStatusDto>>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status403Forbidden)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status404NotFound);
         
         return app;
     }
