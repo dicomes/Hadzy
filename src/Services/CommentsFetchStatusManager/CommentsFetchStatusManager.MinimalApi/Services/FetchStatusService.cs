@@ -10,7 +10,7 @@ namespace CommentsFetchStatus.MinimalApi.Services;
 
 public class FetchStatusService : IFetchStatusService
 {
-    private readonly IMongoCollection<FetchStatus> _fetchStatus;
+    private readonly IMongoCollection<VideoFetchStatus> _fetchStatus;
     private readonly IMapper _mapper;
 
     public FetchStatusService(
@@ -19,13 +19,13 @@ public class FetchStatusService : IFetchStatusService
     {
         var mongoClient = new MongoClient(mongoDbConfig.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.Value.DatabaseName);
-        _fetchStatus = mongoDatabase.GetCollection<FetchStatus>(mongoDbConfig.Value.CommentsFetchStatusCollectionName);
+        _fetchStatus = mongoDatabase.GetCollection<VideoFetchStatus>(mongoDbConfig.Value.CommentsFetchStatusCollectionName);
         _mapper = mapper;
     }
 
     public async Task<IResult> GetStatusByIdAsync(string videoId)
     {
-        FetchStatus status =  await _fetchStatus.Find<FetchStatus>(f => f.VideoId == videoId).FirstOrDefaultAsync();
+        VideoFetchStatus status =  await _fetchStatus.Find<VideoFetchStatus>(f => f.VideoId == videoId).FirstOrDefaultAsync();
         
         if (status == null)
         {
