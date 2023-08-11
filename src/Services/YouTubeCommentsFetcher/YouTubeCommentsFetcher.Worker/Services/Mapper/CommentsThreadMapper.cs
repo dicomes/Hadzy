@@ -7,22 +7,22 @@ using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Mapper;
 
-public class CommentThreadToFetchedEventMapper : ICommentMapper
+public class CommentsThreadMapper : ICommentsThreadMapper
 {
     private readonly IMapper _mapper;
 
-    public CommentThreadToFetchedEventMapper(IMapper mapper)
+    public CommentsThreadMapper(IMapper mapper)
     {
         _mapper = mapper;
     }
 
-    public FetchCompletedEvent Map(string videoId, CommentThreadListResponse response)
+    public FetchCompletedEvent MapToFetchCompletedEvent(string videoId, CommentThreadListResponse response)
     {
         // Extract the comments and map them
         List<YouTubeCommentDto> YouTubeCommentDtoList = _mapper.Map<List<YouTubeCommentDto>>(response.Items.Select(ct => ct.Snippet));
 
-        CommentsFetchedEventBuilder commentsFetchedEventBuilder = new CommentsFetchedEventBuilder();
-        FetchCompletedEvent fetchCompletedEvent = commentsFetchedEventBuilder
+        FetchCompletedEventBuilder fetchCompletedEventBuilder = new FetchCompletedEventBuilder();
+        FetchCompletedEvent fetchCompletedEvent = fetchCompletedEventBuilder
             .WithVideoId(videoId)
             .WithPageToken(response.NextPageToken)
             .WithCommentsFetchedCount(YouTubeCommentDtoList.Count)

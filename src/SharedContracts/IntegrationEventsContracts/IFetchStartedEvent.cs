@@ -1,6 +1,6 @@
 ﻿namespace IntegrationEventsContracts;
 
-public interface IFetchingInitiatedEvent
+public interface IFetchStartedEvent
 {
     Guid Id { get; }
     string VideoId { get; }

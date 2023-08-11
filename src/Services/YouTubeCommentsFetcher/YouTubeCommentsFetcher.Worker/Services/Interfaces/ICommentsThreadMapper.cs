@@ -3,7 +3,7 @@ using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
-public interface ICommentMapper
+public interface ICommentsThreadMapper
 {
-    FetchCompletedEvent Map(string videoId, CommentThreadListResponse response);
+    FetchCompletedEvent MapToFetchCompletedEvent(string videoId, CommentThreadListResponse response);
 }
