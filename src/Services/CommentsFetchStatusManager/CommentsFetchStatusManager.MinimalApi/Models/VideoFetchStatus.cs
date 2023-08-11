@@ -3,13 +3,13 @@ using MongoDbContracts;
 
 namespace CommentsFetchStatus.MinimalApi.Models;
 
-public class FetchStatus : IFetchStatusModel
+public class VideoFetchStatus : IVideoFetchStatus
 {
     [BsonId]
     public string VideoId { get; set; }
     
-    [BsonElement("TotalCommentsFetched")]
-    public int TotalCommentsFetched { get; set; }
+    [BsonElement("TotalCommentsProcessed")]
+    public int TotalCommentsProcessed { get; set; }
     
     [BsonElement("LastPageToken")]
     public string LastPageToken { get; set; }

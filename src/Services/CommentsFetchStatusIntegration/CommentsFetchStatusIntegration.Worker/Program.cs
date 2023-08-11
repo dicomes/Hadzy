@@ -33,10 +33,10 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
             hostingContext.Configuration.GetSection("MongoDb"));
         services.AddSingleton<IMongoDbConfig>(provider =>
             provider.GetRequiredService<IOptions<MongoDbConfig>>().Value);
-        services.AddSingleton<IIntegrateFetchStatusEvent, IntegrateFetchStatusEvent>();
+        services.AddSingleton<IFetchedStatusChangedEventHandler, FetchedStatusChangedEventHandler>();
         services.AddSingleton<IFetchStatusService, FetchStatusService>();
         services.AddSingleton<CommentsFetchStatusEventBuilder>();
-        services.AddTransient<FetchStatusChangedConsumer>();
+        services.AddTransient<FetchedStatusChangedEventConsumer>();
 
         services.AddMassTransit(configurator =>
         {
@@ -50,7 +50,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                 
                 cfg.ReceiveEndpoint("fetch-status-queue", e =>
                 {
-                    e.Consumer<FetchStatusChangedConsumer>(context);
+                    e.Consumer<FetchedStatusChangedEventConsumer>(context);
                 });
             });
         });
