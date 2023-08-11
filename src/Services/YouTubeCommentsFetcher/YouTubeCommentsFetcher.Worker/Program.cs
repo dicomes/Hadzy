@@ -55,17 +55,17 @@ namespace YouTubeCommentsFetcher.Worker
                     services.AddTransient<FetcherErrorEventConsumer>(); // Consumes errors raised by the fetcher
                     services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments for a given videoId
                     services.AddAutoMapper(typeof(MappingConfig)); // Mapping config for mapper
-                    services.AddTransient<ICommentMapper, CommentThreadToFetchedEventMapper>(); // Transforms fetch comments to commentsDto
+                    services.AddTransient<ICommentsThreadMapper, CommentsThreadMapper>(); // Transforms fetch comments to commentsDto
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
-                    services.AddTransient<FetchingInitiatedEventConsumer>(); // Consume events that initiate fetching for a given videoId
+                    services.AddTransient<FetchStartedEventConsumer>(); // Consume events that initiate fetching for a given videoId
                     services.AddTransient<IEventPublisher, EventPublisher>();  // Publish events
                     services.AddTransient<ICommentsIterator, CommentsIterator>();
-                    services.AddTransient<IFetchEventsIntegration, FetchEventsIntegration>();  // Integrate fetching events
+                    services.AddTransient<IIntegrationEventsManager, IntegrationEventsManager>();  // Integrate fetching events
                     
                     services.AddMassTransit(configurator =>
                     {
                         // Registering the VideoIdConsumer
-                        configurator.AddConsumer<FetchingInitiatedEventConsumer>();
+                        configurator.AddConsumer<FetchStartedEventConsumer>();
                         configurator.AddConsumer<FetcherErrorEventConsumer>();
 
                         configurator.UsingRabbitMq((context, cfg) =>
@@ -79,7 +79,7 @@ namespace YouTubeCommentsFetcher.Worker
                             // Configuring the ReceiveEndpoint to bind to a specific queue and use the VideoIdConsumer
                             cfg.ReceiveEndpoint("videoId-queue", e =>
                             {
-                                e.Consumer<FetchingInitiatedEventConsumer>(context);
+                                e.Consumer<FetchStartedEventConsumer>(context);
                             });
                                 
                             // Configuring the ReceiveEndpoint for ErrorMessageConsumer

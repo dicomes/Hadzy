@@ -5,15 +5,15 @@ using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
-public class FetchEventsIntegration : IFetchEventsIntegration
+public class IntegrationEventsManager : IIntegrationEventsManager
 {
     private readonly IEventPublisher _eventPublisher;
-    private readonly ILogger<FetchEventsIntegration> _logger;
+    private readonly ILogger<IntegrationEventsManager> _logger;
     private readonly ICommentsIterator _commentsIterator;
 
-    public FetchEventsIntegration(
+    public IntegrationEventsManager(
         IEventPublisher eventPublisher,
-        ILogger<FetchEventsIntegration> logger,
+        ILogger<IntegrationEventsManager> logger,
         ICommentsIterator commentsIterator)
     {
         _eventPublisher = eventPublisher;
@@ -21,7 +21,7 @@ public class FetchEventsIntegration : IFetchEventsIntegration
         _commentsIterator = commentsIterator;
     }
 
-public async Task FetchAndPublishAsync(string videoId, string pageToken)
+public async Task FetchCommentsAndPublishFetchedEventsAsync(string videoId, string pageToken)
 {
     int totalCommentsFetched = 0;
     int totalReplies = 0;
@@ -36,7 +36,7 @@ public async Task FetchAndPublishAsync(string videoId, string pageToken)
         
         // Set NextPageToken for next iteration
         fetchSettings.PageToken = fetchCompletedEvent.NextPageToken;
-        _logger.LogInformation("FetchEventsIntegration: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, pageToken, fetchCompletedEvent.CommentsFetchedCount, fetchCompletedEvent.ReplyCount);
+        _logger.LogInformation("IntegrationEventsManager: Fetching batch completed for VideoId: {VideoId}. PageToken: {PageToken}. Batch size: {CommentsFetchedCount}. Replies count: {RepliesCount}.", videoId, pageToken, fetchCompletedEvent.CommentsFetchedCount, fetchCompletedEvent.ReplyCount);
         
         // Publish fetched event
         await _eventPublisher.PublishEvent(fetchCompletedEvent);
@@ -56,7 +56,7 @@ public async Task FetchAndPublishAsync(string videoId, string pageToken)
         totalReplies += fetchCompletedEvent.ReplyCount;
     } while (_commentsIterator.HasNext());
     
-    _logger.LogInformation("FetchEventsIntegration: Completed to fetch all batches for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.", videoId, totalCommentsFetched, totalReplies);
+    _logger.LogInformation("IntegrationEventsManager: Completed to fetch all batches for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.", videoId, totalCommentsFetched, totalReplies);
 }
 
 }

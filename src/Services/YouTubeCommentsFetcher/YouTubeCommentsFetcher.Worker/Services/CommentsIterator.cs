@@ -7,11 +7,11 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 public class CommentsIterator : ICommentsIterator
 {
     private readonly IYouTubeFetcherService _fetcherService;
-    private readonly ICommentMapper _mapper;
+    private readonly ICommentsThreadMapper _mapper;
     private string _pageToken;
 
     public CommentsIterator(
-        IYouTubeFetcherService fetcherService, ICommentMapper mapper)
+        IYouTubeFetcherService fetcherService, ICommentsThreadMapper mapper)
     {
         _fetcherService = fetcherService;
         _mapper = mapper;
@@ -21,7 +21,7 @@ public class CommentsIterator : ICommentsIterator
     {
         var response = await _fetcherService.FetchAsync(fetchSettings);
         _pageToken = response.NextPageToken;
-        return _mapper.Map(fetchSettings.VideoId, response);
+        return _mapper.MapToFetchCompletedEvent(fetchSettings.VideoId, response);
     }
 
     public bool HasNext()

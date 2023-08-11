@@ -8,7 +8,7 @@ public class MappingConfig : Profile
 {
     public MappingConfig()
     {
-        // Map the Google API's Comment object to YouTubeCommentDto
+        // MapToFetchCompletedEvent the Google API's Comment object to YouTubeCommentDto
         CreateMap<CommentThreadSnippet, YouTubeCommentDto>()
             .ForMember(dest => dest.Etag, opt => opt.MapFrom(src => src.TopLevelComment.ETag))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.TopLevelComment.Id))
