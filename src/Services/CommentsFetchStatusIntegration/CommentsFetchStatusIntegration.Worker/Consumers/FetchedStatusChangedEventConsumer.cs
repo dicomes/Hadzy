@@ -8,20 +8,19 @@ using IntegrationEventsContracts;
 
 namespace CommentsFetchStatusIntegration.Worker.Consumers;
 
-public class FetchStatusChangedConsumer : IConsumer<IFetchStatusChangedEvent>
+public class FetchedStatusChangedEventConsumer : IConsumer<IFetchStatusChangedEvent>
 {
-    private readonly ILogger<FetchStatusChangedConsumer> _logger;
-    private readonly IUpdateFetchStatusEvent _updateFetchStatusEvent;
+    private readonly ILogger<FetchedStatusChangedEventConsumer> _logger;
+    private readonly IFetchedStatusChangedEventHandler _fetchedStatusChangedEventHandler;
     private readonly CommentsFetchStatusEventBuilder _eventBuilder;
 
-
-    public FetchStatusChangedConsumer(
-        ILogger<FetchStatusChangedConsumer> logger,
-        IUpdateFetchStatusEvent updateFetchStatusEvent,
+    public FetchedStatusChangedEventConsumer(
+        ILogger<FetchedStatusChangedEventConsumer> logger,
+        IFetchedStatusChangedEventHandler fetchedStatusChangedEventHandler,
         CommentsFetchStatusEventBuilder eventBuilder)
     {
         _logger = logger;
-        _updateFetchStatusEvent = updateFetchStatusEvent;
+        _fetchedStatusChangedEventHandler = fetchedStatusChangedEventHandler;
         _eventBuilder = eventBuilder;
     }
 
@@ -30,6 +29,6 @@ public class FetchStatusChangedConsumer : IConsumer<IFetchStatusChangedEvent>
         FetchStatusChangedEvent fetchStatusChangedEventReceived = _eventBuilder.BuildFromEvent(context.Message);
         _logger.LogInformation("CommentsFetchStatusIntegration: Received FetchStatusChangedEvent. Guid: {Guid}. Event data: {EventData}.", fetchStatusChangedEventReceived.Id, fetchStatusChangedEventReceived);
 
-        await _updateFetchStatusEvent.UpdateAsync(fetchStatusChangedEventReceived);
+        await _fetchedStatusChangedEventHandler.HandeAsync(fetchStatusChangedEventReceived);
     }
 }

@@ -32,7 +32,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: video_comment_status
+      MONGO_INITDB_DATABASE: video-fetch-status
 
 volumes:
   seq-data:

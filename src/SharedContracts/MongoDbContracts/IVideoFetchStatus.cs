@@ -2,13 +2,13 @@
 
 namespace MongoDbContracts;
 
-public interface IFetchStatusModel
+public interface IVideoFetchStatus
 {
     [BsonId]
     string VideoId { get; }
 
-    [BsonElement("TotalCommentsFetched")]
-    int TotalCommentsFetched { get; }
+    [BsonElement("TotalCommentsProcessed")]
+    int TotalCommentsProcessed { get; }
     
     [BsonElement("LastPageToken")]
     public string LastPageToken { get; set; }

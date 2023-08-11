@@ -23,9 +23,9 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         List<FetchEvent> videoList = new List<FetchEvent>();
-        videoList.Add(new FetchEvent {VideoId = "h3bt79JUYak", PageToken = "QURTSl9pMmxMeUZuLXg1bGVPNDJnVzUxVGVjNkJNaVYxR2JYSGp4RmhhcXRTZmJ0aHBPRkY1cmF6V2ZQRzVWOVdYMGt1TGRVYVVTc1JOTQ=="});
-        // videoList.Add(new FetchEvent {VideoId = "GeGQvs7U3ZE", PageToken = string.Empty});
-        videoList.Add(new FetchEvent {VideoId = "sdasd", PageToken = string.Empty});
+        // videoList.Add(new FetchEvent {VideoId = "h3bt79JUYak", PageToken = "QURTSl9pMmxMeUZuLXg1bGVPNDJnVzUxVGVjNkJNaVYxR2JYSGp4RmhhcXRTZmJ0aHBPRkY1cmF6V2ZQRzVWOVdYMGt1TGRVYVVTc1JOTQ=="});
+        videoList.Add(new FetchEvent {VideoId = "h3bt79JUYak", PageToken = string.Empty});
+        // videoList.Add(new FetchEvent {VideoId = "sdasd", PageToken = string.Empty});
         // videoList.Add(new FetchEvent {VideoId = "Q_RxN7FqV8M", PageToken = string.Empty});
 
         while (!stoppingToken.IsCancellationRequested && videoList.Count != 0)
@@ -36,7 +36,7 @@ public class Worker : BackgroundService
             using var scope = _serviceProvider.CreateScope();
             var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
         
-            await publishEndpoint.Publish<IFetchingInitiatedEvent>(new
+            await publishEndpoint.Publish<IFetchStartedEvent>(new
             {
                 VideoId = videoList[0].VideoId,
                 PageToken = videoList[0].PageToken

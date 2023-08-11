@@ -17,7 +17,7 @@ services:
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
     
   hadzy-comments.fetcher.worker.dev:
-    image: hadzy/comments.fetcher.api:1.0.0
+    image: hadzy/comments.fetcher.worker:1.0.0
     ports:
       - "5151:5151"
     build:
@@ -46,4 +46,22 @@ services:
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
       - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
       - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:CommentsStatusCollectionName=${MONGODB_COLLECTIONNAME}
+      - MongoDb:CommentsFetchStatusCollectionName=${MONGODB_COMMENTSFETCHSTATUSCOLLECTIONNAME}
+        
+  
+  hadzy-comments.fetch.status.manager.api.dev:
+    image: hadzy/comments.fetch.status.manager.api:1.0.0
+    ports:
+      - "5181:5181"
+    build:
+      context: .
+      dockerfile: Services/CommentsFetchStatusManager/CommentsFetchStatusManager.MinimalApi/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5181
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}
+      - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
+      - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
+      - MongoDb:CommentsFetchStatusCollectionName=${MONGODB_COMMENTSFETCHSTATUSCOLLECTIONNAME}
