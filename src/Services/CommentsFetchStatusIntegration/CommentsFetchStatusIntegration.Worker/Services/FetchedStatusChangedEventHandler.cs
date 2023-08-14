@@ -18,37 +18,37 @@ public class FetchedStatusChangedEventHandler : IFetchedStatusChangedEventHandle
         _mapper = mapper;
         
     }
-    public async Task HandeAsync(FetchStatusChangedEvent fetchStatusChangedEvent)
+    public async Task HandeAsync(FetchInfoChangedEvent fetchInfoChangedEvent)
     {
 
-        bool fetchStatusByIdExistsAsync = await _fetchStatusService.FetchStatusByIdExistsAsync(fetchStatusChangedEvent.VideoId);
+        bool fetchStatusByIdExistsAsync = await _fetchStatusService.FetchStatusByIdExistsAsync(fetchInfoChangedEvent.VideoId);
 
         if (fetchStatusByIdExistsAsync)
         {
             await UpdateVideoFetchStatusByIdAsync(
-                fetchStatusChangedEvent.VideoId,
-                fetchStatusChangedEvent.IsFetching,
-                fetchStatusChangedEvent.CommentsFetchedCount + fetchStatusChangedEvent.ReplyCount,
-                fetchStatusChangedEvent.PageToken);
+                fetchInfoChangedEvent.VideoId,
+                fetchInfoChangedEvent.Status,
+                fetchInfoChangedEvent.CommentsCount + fetchInfoChangedEvent.ReplyCount,
+                fetchInfoChangedEvent.PageToken);
         }
         else
         {
-            await InsertVideoFetchStatusByStatusChangedEventAsync(fetchStatusChangedEvent);
+            await InsertVideoFetchStatusByStatusChangedEventAsync(fetchInfoChangedEvent);
         }
     }
 
-    private async Task UpdateVideoFetchStatusByIdAsync(string id, bool newIsFetching, int newTotalCommentsProcessed, string newPageToken)
+    private async Task UpdateVideoFetchStatusByIdAsync(string id, string newStatus, int newTotalCommentsProcessed, string newPageToken)
     {
         var videoFetchStatus = await _fetchStatusService.GetFetchStatusByIdAsync(id);
-        videoFetchStatus.IsFetching = newIsFetching;
-        videoFetchStatus.TotalCommentsProcessed += newTotalCommentsProcessed;
+        videoFetchStatus.Status = newStatus;
+        videoFetchStatus.CommentsCount += newTotalCommentsProcessed;
         videoFetchStatus.LastPageToken = newPageToken;
         await _fetchStatusService.UpdateFetchStatusAsync(videoFetchStatus);
     }
 
-    private async Task InsertVideoFetchStatusByStatusChangedEventAsync(FetchStatusChangedEvent fetchStatusChangedEvent)
+    private async Task InsertVideoFetchStatusByStatusChangedEventAsync(FetchInfoChangedEvent fetchInfoChangedEvent)
     {
-        var videoFetchStatus = _mapper.Map<VideoFetchStatus>(fetchStatusChangedEvent);
+        var videoFetchStatus = _mapper.Map<VideoFetchInfo>(fetchInfoChangedEvent);
         await _fetchStatusService.InsertFetchStatusAsync(videoFetchStatus);
     }
 }

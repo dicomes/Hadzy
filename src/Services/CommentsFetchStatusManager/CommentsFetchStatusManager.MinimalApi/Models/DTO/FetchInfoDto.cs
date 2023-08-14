@@ -1,10 +1,10 @@
-using IntegrationEventsContracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace CommentsFetchStatus.MinimalApi.Models.DTO;
 
-public class CommentsFetchStatusDto
+public class FetchInfoDto
 {
     public string VideoId { get; set; }
     public int CommentsCount { get; set; }
-    public bool IsFetching { get; set; }
+    public string Status { get; set; }
 }

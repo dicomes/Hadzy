@@ -8,9 +8,6 @@ public class MappingConfig : Profile
 {
     public MappingConfig()
     {
-        CreateMap<VideoFetchStatus, CommentsFetchStatusDto>()
-            .ForMember(dest => dest.VideoId, opt => opt.MapFrom(src => src.VideoId))
-            .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.TotalCommentsProcessed))
-            .ForMember(dest => dest.IsFetching, opt => opt.MapFrom(src => src.IsFetching));
+        CreateMap<VideoFetchInfo, FetchInfoDto>().ReverseMap();
     }
 }

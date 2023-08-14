@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.16" />
     <PackageReference Include="MongoDB.Driver" Version="2.20.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
@@ -23,6 +24,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\SharedContracts\IntegrationEventsContracts\IntegrationEventsContracts.csproj" />
     <ProjectReference Include="..\..\..\SharedContracts\MongoDbContracts\MongoDbContracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exceptions" />
+    <Folder Include="Models\Enums" />
   </ItemGroup>
 
 </Project>

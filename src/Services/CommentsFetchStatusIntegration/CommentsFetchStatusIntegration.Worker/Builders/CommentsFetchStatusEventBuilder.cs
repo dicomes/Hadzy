@@ -5,11 +5,11 @@ namespace CommentsFetchStatusIntegration.Worker.Builders;
 
 public class CommentsFetchStatusEventBuilder
 {
-    private readonly FetchStatusChangedEvent _changedEvent;
+    private readonly FetchInfoChangedEvent _changedEvent;
 
     public CommentsFetchStatusEventBuilder()
     {
-        _changedEvent = new FetchStatusChangedEvent();
+        _changedEvent = new FetchInfoChangedEvent();
     }
 
     public CommentsFetchStatusEventBuilder WithId(Guid id)
@@ -36,7 +36,7 @@ public class CommentsFetchStatusEventBuilder
 
     public CommentsFetchStatusEventBuilder WithCommentsFetchedCount(int count)
     {
-        _changedEvent.CommentsFetchedCount = count;
+        _changedEvent.CommentsCount = count;
         return this;
     }
 
@@ -46,26 +46,26 @@ public class CommentsFetchStatusEventBuilder
         return this;
     }
 
-    public CommentsFetchStatusEventBuilder WithIsFetching(bool isFetching)
+    public CommentsFetchStatusEventBuilder WithStatus(string status)
     {
-        _changedEvent.IsFetching = isFetching;
+        _changedEvent.Status = status;
         return this;
     }
 
-    public FetchStatusChangedEvent Build()
+    public FetchInfoChangedEvent Build()
     {
         return _changedEvent;
     }
     
-    public FetchStatusChangedEvent BuildFromEvent(IFetchStatusChangedEvent message)
+    public FetchInfoChangedEvent BuildFromEvent(IFetchInfoChangedEvent message)
     {
         return new CommentsFetchStatusEventBuilder()
             .WithId(message.Id)
             .WithVideoId(message.VideoId)
             .WithPageToken(message.PageToken)
-            .WithCommentsFetchedCount(message.CommentsFetchedCount)
+            .WithCommentsFetchedCount(message.CommentsCount)
             .WithReplyCount(message.ReplyCount)
-            .WithIsFetching(message.IsFetching)
+            .WithStatus(message.Status)
             .Build();
     }
 }

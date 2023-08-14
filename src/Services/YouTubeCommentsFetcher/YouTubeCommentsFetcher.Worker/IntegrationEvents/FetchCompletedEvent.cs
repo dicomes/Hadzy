@@ -13,5 +13,5 @@ public class FetchCompletedEvent : IFetchCompletedEvent
 
     public override string ToString() =>
         $"FetchCompletedEvent - Guid {Id} .VideoId: {VideoId}, PageToken: {NextPageToken}, " +
-        $"CommentsFetchedCount: {CommentsFetchedCount}, ReplyCount: {ReplyCount}";
+        $"CommentsCount: {CommentsFetchedCount}, ReplyCount: {ReplyCount}";
 }

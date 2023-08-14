@@ -6,5 +6,5 @@ public class MongoDbConfig : IMongoDbConfig
 {
     public string ConnectionString { get; set; }
     public string DatabaseName { get; set; }
-    public string CommentsFetchStatusCollectionName { get; set; }
+    public string VideoFetchInfoCollectionName { get; set; }
 }

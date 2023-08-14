@@ -5,8 +5,8 @@ namespace CommentsFetchStatusIntegration.Worker.Services.Interfaces;
 public interface IFetchStatusService
 {
     Task<bool> FetchStatusByIdExistsAsync(string videoId);
-    Task UpdateFetchStatusAsync(string videoId, int newTotalCommentsFetched, bool isFetching);
-    Task UpdateFetchStatusAsync(VideoFetchStatus videoFetchStatus);
-    Task<VideoFetchStatus> GetFetchStatusByIdAsync(string videoId);
-    Task InsertFetchStatusAsync(VideoFetchStatus videoFetchStatus);
+    Task UpdateFetchStatusAsync(string videoId, int newTotalCommentsFetched, string newStatus);
+    Task UpdateFetchStatusAsync(VideoFetchInfo videoFetchInfo);
+    Task<VideoFetchInfo> GetFetchStatusByIdAsync(string videoId);
+    Task InsertFetchStatusAsync(VideoFetchInfo videoFetchInfo);
 }

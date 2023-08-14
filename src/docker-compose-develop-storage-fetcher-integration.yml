@@ -1,20 +1,6 @@
 version: '3.4'
 
 services:
-
-  hadzy-comments.storage.worker.dev:
-    image: hadzy/comments.storage.worker:1.0.0
-    ports:
-      - "5121:5121"
-    build:
-      context: .
-      dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
-    environment:
-      - ASPNETCORE_URLS=http://*:5121
-      - Seq:Url=${SEQ_URL}
-      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
-      - RabbitMq:User=${RABBITMQ_USER}
-      - RabbitMq:Password=${RABBITMQ_PASSWORD}
     
   hadzy-comments.fetcher.worker.dev:
     image: hadzy/comments.fetcher.worker:1.0.0
@@ -46,8 +32,7 @@ services:
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
       - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
       - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:CommentsFetchStatusCollectionName=${MONGODB_COMMENTSFETCHSTATUSCOLLECTIONNAME}
-        
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEOFETCHINFOCOLLECTIONNAME}
   
   hadzy-comments.fetch.status.manager.api.dev:
     image: hadzy/comments.fetch.status.manager.api:1.0.0
@@ -64,4 +49,4 @@ services:
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
       - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
       - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:CommentsFetchStatusCollectionName=${MONGODB_COMMENTSFETCHSTATUSCOLLECTIONNAME}
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEOFETCHINFOCOLLECTIONNAME}

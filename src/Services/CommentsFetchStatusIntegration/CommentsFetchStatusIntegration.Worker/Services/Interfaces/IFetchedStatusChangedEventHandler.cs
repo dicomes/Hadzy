@@ -4,5 +4,5 @@ namespace CommentsFetchStatusIntegration.Worker.Services.Interfaces;
 
 public interface IFetchedStatusChangedEventHandler
 {
-    Task HandeAsync(FetchStatusChangedEvent fetchStatusChangedEvent);
+    Task HandeAsync(FetchInfoChangedEvent fetchInfoChangedEvent);
 }

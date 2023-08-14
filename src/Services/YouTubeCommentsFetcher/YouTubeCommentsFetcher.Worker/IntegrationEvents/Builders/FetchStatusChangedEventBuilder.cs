@@ -1,12 +1,14 @@
+using IntegrationEventsContracts;
+
 namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 
 public class FetchStatusChangedEventBuilder
 {
-    private FetchStatusChangedEvent _changedEvent;
+    private FetchInfoChangedEvent _changedEvent;
 
     public FetchStatusChangedEventBuilder()
     {
-        _changedEvent = new FetchStatusChangedEvent();
+        _changedEvent = new FetchInfoChangedEvent();
         _changedEvent.Id = Guid.NewGuid();
     }
 
@@ -27,7 +29,7 @@ public class FetchStatusChangedEventBuilder
 
     public FetchStatusChangedEventBuilder WithCommentsFetchedCount(int count)
     {
-        _changedEvent.CommentsFetchedCount = count;
+        _changedEvent.CommentsCount = count;
         return this;
     }
 
@@ -37,13 +39,13 @@ public class FetchStatusChangedEventBuilder
         return this;
     }
     
-    public FetchStatusChangedEventBuilder WithIsFetching(bool isFetching)
+    public FetchStatusChangedEventBuilder WithStatus(string status)
     {
-        _changedEvent.IsFetching = isFetching;
+        _changedEvent.Status = status;
         return this;
     }
 
-    public FetchStatusChangedEvent Build()
+    public FetchInfoChangedEvent Build()
     {
         return _changedEvent;
     }

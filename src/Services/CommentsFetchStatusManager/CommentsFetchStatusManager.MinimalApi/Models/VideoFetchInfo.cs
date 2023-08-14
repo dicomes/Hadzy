@@ -3,17 +3,17 @@ using MongoDbContracts;
 
 namespace CommentsFetchStatus.MinimalApi.Models;
 
-public class FetchStatus : IVideoFetchStatus
+public class VideoFetchInfo : IVideoFetchInfo
 {
     [BsonId]
     public string VideoId { get; set; }
-
-    [BsonElement("TotalCommentsProcessed")]
-    public int TotalCommentsProcessed { get; }
+    
+    [BsonElement("CommentsCount")]
+    public int CommentsCount { get; set; }
     
     [BsonElement("LastPageToken")]
     public string LastPageToken { get; set; }
-    
-    [BsonElement("IsFetching")]
-    public bool IsFetching { get; set; }
+
+    [BsonElement("Status")]
+    public string Status { get; set; }
 }

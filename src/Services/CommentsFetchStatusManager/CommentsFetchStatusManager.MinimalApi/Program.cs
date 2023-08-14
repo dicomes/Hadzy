@@ -3,7 +3,9 @@ using CommentsFetchStatus.MinimalApi.Extensions;
 using CommentsFetchStatus.MinimalApi.Mapper;
 using CommentsFetchStatus.MinimalApi.Services;
 using CommentsFetchStatus.MinimalApi.Services.Interfaces;
+using FluentValidation;
 using Serilog;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +25,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<MongoDbConfig>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddSingleton<IFetchStatusService, FetchStatusService>();
+builder.Services.AddTransient<IEventPublisherService, EventPublisherService>();
+builder.Services.AddTransient<IFetchStatusHandlerService, FetchStatusHandlerService>();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
+builder.Services.AddMassTransit(configurator =>
+{
+    configurator.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(new Uri(rabbitMqConfig.Hostname), configure =>
+        {
+            configure.Username(rabbitMqConfig.User);
+            configure.Password(rabbitMqConfig.Password);
+        });
+    });
+});
 
 var app = builder.Build();
+app.UseCustomExceptionHandler();
 app.ConfigureFetchStatusEndpoints();
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
