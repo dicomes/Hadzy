@@ -8,7 +8,7 @@ public class CommentsIterator : ICommentsIterator
 {
     private readonly IYouTubeFetcherService _fetcherService;
     private readonly ICommentsThreadMapper _mapper;
-    private string _pageToken;
+    private string? _pageToken;
 
     public CommentsIterator(
         IYouTubeFetcherService fetcherService, ICommentsThreadMapper mapper)
@@ -17,7 +17,7 @@ public class CommentsIterator : ICommentsIterator
         _mapper = mapper;
     }
 
-    public async Task<FetchCompletedEvent> Next(FetchSettings fetchSettings)
+    public async Task<FetchBatchCompletedEvent> Next(FetchSettings fetchSettings)
     {
         var response = await _fetcherService.FetchAsync(fetchSettings);
         _pageToken = response.NextPageToken;

@@ -1,5 +1,7 @@
 
+### 🚧 **Project Status Notice**
 
+>**This project is currently in its initial development phase. As such, changes to the codebase, documentation, and overall structure can be frequent and significant.** 
 
 # Hadzy Microservices
 This is the code repository for HADZY application.

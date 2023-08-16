@@ -3,8 +3,8 @@ using YouTubeCommentsFetcher.Worker.Models;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
-public interface ICommentsIterator
+public interface ICommentsBatchIterator
 {
-    Task<FetchCompletedEvent> Next(FetchSettings fetchSettings);
+    Task<FetchBatchCompletedEvent> Next(FetchSettings fetchSettings);
     public bool HasNext();
 }
