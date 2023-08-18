@@ -31,13 +31,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeVideoFetcher.Minimal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeVideoFetcher.UnitTests", "Services\YouTubeVideoFetcher\YouTubeVideoFetcher.UnitTests\YouTubeVideoFetcher.UnitTests.csproj", "{77F9D413-A8EF-4FA0-856F-C545489B3946}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsFetchStatusManager", "CommentsFetchStatusManager", "{ABD767C1-DC13-494D-A1B0-3B95F5A89036}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsFetchInfoManager", "CommentsFetchInfoManager", "{ABD767C1-DC13-494D-A1B0-3B95F5A89036}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsFetchStatusManager.MinimalApi", "Services\CommentsFetchStatusManager\CommentsFetchStatusManager.MinimalApi\CommentsFetchStatusManager.MinimalApi.csproj", "{076E4A2D-0780-495F-A20B-DE4BA8B8095F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsFetchInfoManager.MinimalApi", "Services\CommentsFetchInfoManager\CommentsFetchInfoManager.MinimalApi\CommentsFetchInfoManager.MinimalApi.csproj", "{076E4A2D-0780-495F-A20B-DE4BA8B8095F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsFetchStatusIntegration", "CommentsFetchStatusIntegration", "{489899DB-C6DF-443A-9FD9-94D9F8CBF205}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsFetchInfoIntegration", "CommentsFetchInfoIntegration", "{489899DB-C6DF-443A-9FD9-94D9F8CBF205}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsFetchStatusIntegration.Worker", "Services\CommentsFetchStatusIntegration\CommentsFetchStatusIntegration.Worker\CommentsFetchStatusIntegration.Worker.csproj", "{0E508A85-E72C-4D9E-99ED-A47E92A45686}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsFetchInfoIntegration.Worker", "Services\CommentsFetchInfoIntegration\CommentsFetchInfoIntegration.Worker\CommentsFetchInfoIntegration.Worker.csproj", "{0E508A85-E72C-4D9E-99ED-A47E92A45686}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedContracts", "SharedContracts", "{BDCA866D-65A2-4847-AEF9-F7372BC2724A}"
 EndProject

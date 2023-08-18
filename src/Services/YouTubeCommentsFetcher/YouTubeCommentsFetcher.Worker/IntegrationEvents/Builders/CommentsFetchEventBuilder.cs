@@ -5,14 +5,11 @@ namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 
 public class FetchCompletedEventBuilder
 {
-    private readonly FetchCompletedEvent _event;
+    private readonly CommentThreadListCompletedEvent _event;
 
     public FetchCompletedEventBuilder()
     {
-        _event = new FetchCompletedEvent
-        {
-            Id = Guid.NewGuid()
-        };
+        _event = new CommentThreadListCompletedEvent();
     }
 
     public FetchCompletedEventBuilder WithVideoId(string videoId)
@@ -29,13 +26,19 @@ public class FetchCompletedEventBuilder
 
     public FetchCompletedEventBuilder WithCommentsFetchedCount(int count)
     {
-        _event.CommentsFetchedCount = count;
+        _event.CommentsCount = count;
         return this;
     }
 
     public FetchCompletedEventBuilder WithReplyCount(int count)
     {
         _event.ReplyCount = count;
+        return this;
+    }
+    
+    public FetchCompletedEventBuilder WithCommentIds(List<string> commentIds)
+    {
+        _event.CommentIds = commentIds;
         return this;
     }
 
@@ -45,7 +48,7 @@ public class FetchCompletedEventBuilder
         return this;
     }
 
-    public FetchCompletedEvent Build()
+    public CommentThreadListCompletedEvent Build()
     {
         return _event;
     }

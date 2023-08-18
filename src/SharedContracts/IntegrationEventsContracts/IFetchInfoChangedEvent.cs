@@ -6,6 +6,7 @@ public interface IFetchInfoChangedEvent
     string VideoId { get; }
     string PageToken { get; }
     int CommentsCount { get; }
+    List<string> CommentIds { get; }
     int ReplyCount { get; }
     string Status { get; }
 }

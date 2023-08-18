@@ -7,6 +7,7 @@ using YouTubeCommentsFetcher.Worker.Services.Mapper;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker.Consumers;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
+using YouTubeCommentsFetcher.Worker.Services.Mappers;
 
 namespace YouTubeCommentsFetcher.Worker
 {
@@ -59,12 +60,13 @@ namespace YouTubeCommentsFetcher.Worker
                     services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
                     services.AddTransient<FetchStartedEventConsumer>(); // Consume events that initiate fetching for a given videoId
                     services.AddTransient<IEventPublisher, EventPublisher>();  // Publish events
-                    services.AddTransient<ICommentsIterator, CommentsIterator>();
-                    services.AddTransient<IIntegrationEventsManager, IntegrationEventsManager>();  // Integrate fetching events
+                    services.AddTransient<ICommentsOverlapHandler, CommentsOverlapHandler>(); // Handle overlapping between existent and fetched comments
+                    services.AddTransient<ICommentThreadIterator, CommentThreadIterator>(); // Iterate through comments batches
+                    services.AddTransient<IIntegrationEventsManager, IntegrationEventsManager>();  // Process comments batches and integrate events
                     
                     services.AddMassTransit(configurator =>
                     {
-                        // Registering the VideoIdConsumer
+                        // Registering the consumers
                         configurator.AddConsumer<FetchStartedEventConsumer>();
                         configurator.AddConsumer<FetcherErrorEventConsumer>();
 

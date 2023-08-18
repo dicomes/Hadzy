@@ -10,6 +10,9 @@ public interface IVideoFetchInfo
     [BsonElement("CommentsCount")]
     int CommentsCount { get; }
     
+    [BsonElement("CommentIds")]
+    List<string> CommentIds { get; }
+    
     [BsonElement("LastPageToken")]
     string LastPageToken { get; set; }
 

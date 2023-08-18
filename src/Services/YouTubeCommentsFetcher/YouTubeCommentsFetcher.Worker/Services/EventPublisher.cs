@@ -23,7 +23,7 @@ namespace YouTubeCommentsFetcher.Worker.Services
 
         private void LogEvent<TEvent>(TEvent eventObject)
         {
-            _logger.LogInformation("EventsPublisher: Event of type {EventType} successfully published. {EventData}", typeof(TEvent).Name, eventObject);
+            _logger.LogInformation("{Source}: Event of type {EventType} successfully published. {EventData}", GetType().Name, typeof(TEvent).Name, eventObject);
         }
     }
 }

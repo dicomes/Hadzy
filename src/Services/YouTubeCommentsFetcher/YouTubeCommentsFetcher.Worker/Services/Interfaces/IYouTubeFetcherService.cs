@@ -5,5 +5,5 @@ namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 public interface IYouTubeFetcherService
 {
-    Task<CommentThreadListResponse> FetchAsync(FetchSettings fetchSettings);
+    Task<CommentThreadListResponse> FetchAsync(FetchParams fetchParams);
 }

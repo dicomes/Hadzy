@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV DOTNET_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["Services/CommentsFetchInfoIntegration/CommentsFetchInfoIntegration.Worker/CommentsFetchInfoIntegration.Worker.csproj", "Services/CommentsFetchInfoIntegration/CommentsFetchInfoIntegration.Worker/"]
+
+RUN dotnet restore Services/CommentsFetchInfoIntegration/CommentsFetchInfoIntegration.Worker/CommentsFetchInfoIntegration.Worker.csproj
+
+COPY . .
+WORKDIR "/src/Services/CommentsFetchInfoIntegration/CommentsFetchInfoIntegration.Worker"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]
