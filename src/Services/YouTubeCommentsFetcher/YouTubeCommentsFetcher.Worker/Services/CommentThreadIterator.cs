@@ -8,14 +8,14 @@ namespace YouTubeCommentsFetcher.Worker.Services;
  public class CommentThreadIterator : ICommentThreadIterator
     {
         private readonly ICommentsThreadMapper _commentsThreadMapper;
-        private readonly ICommentsOverlapHandler _overlapService; // Renamed and refactored to a service
+        private readonly ICommentsOverlapHandler _overlapService;
         private readonly ILogger<CommentThreadIterator> _logger;
         private readonly IYouTubeFetcherService _fetcherService;
         private string? _pageToken;
 
         public CommentThreadIterator(
             ICommentsThreadMapper commentsThreadMapper,
-            ICommentsOverlapHandler overlapService, // Use the new service
+            ICommentsOverlapHandler overlapService,
             ILogger<CommentThreadIterator> logger,
             IYouTubeFetcherService fetcherService
         )
@@ -33,7 +33,7 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 
             if (!IsFirstFetch(fetchParams))
             {
-                HandleOverlappingComments(response, fetchParams);
+                RemoveOverlappingCommentsFromResponse(response, fetchParams);
             }
             else
             {
@@ -58,20 +58,32 @@ namespace YouTubeCommentsFetcher.Worker.Services;
             return fetchParams.PreviouslyFetchedCommentIds.Count == 0;
         }
 
-        private void HandleOverlappingComments(CommentThreadListResponse response, FetchParams fetchParams)
+        private void RemoveOverlappingCommentsFromResponse(CommentThreadListResponse commentThreadList, FetchParams fetchParams)
         {
-            var overlapResult = _overlapService.HandleOverlaps(response, fetchParams.PreviouslyFetchedCommentIds);
-            response = overlapResult.UpdatedResponse;
+            var overlapResult = _overlapService.HandleOverlaps(commentThreadList.Items.ToList(), fetchParams.PreviouslyFetchedCommentIds);
+            commentThreadList.Items = overlapResult.UpdatedCommentList;
+            LogOverlappingWarnings(overlapResult, fetchParams);
+            UpdatePageToken(overlapResult, commentThreadList);
+        }
+
+        private void LogOverlappingWarnings(OverlapResult overlapResult, FetchParams fetchParams)
+        {
+            if (overlapResult.OverlappingCount > 0)
+            {
+                _logger.LogWarning("{Source}: Overlapping occurred {OverlappingCount} out of {BaseCommentCount} for VideoId: {VideoId}.", 
+                    GetType().Name, overlapResult.OverlappingCount, overlapResult.BaseCommentCount, fetchParams.VideoId);
+            }
 
             if (overlapResult.ShouldStopFetching)
             {
-                _logger.LogWarning("{Source}: Overlapping occurred for VideoId: {VideoId}. Stopping fetch.", GetType().Name, fetchParams.VideoId);
-                _pageToken = null;
+                _logger.LogWarning("{Source}: Overlapping threshold met for VideoId: {VideoId}. Overlapping Count: {OverlappingCount} out of {BaseCommentCount}. Fetching will stop.",
+                    GetType().Name, fetchParams.VideoId, overlapResult.OverlappingCount, overlapResult.BaseCommentCount);
             }
-            else
-            {
-                _pageToken = response.NextPageToken;
-            }
+        }
+
+        private void UpdatePageToken(OverlapResult overlapResult, CommentThreadListResponse response)
+        {
+            _pageToken = overlapResult.ShouldStopFetching ? string.Empty : response.NextPageToken;
         }
 
         private CommentThreadListCompletedEvent CreateBatchCompletedEvent(string videoId, CommentThreadListResponse response, List<string> commentIds)

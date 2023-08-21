@@ -5,5 +5,5 @@ namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 public interface ICommentsOverlapHandler
 {
-    OverlapResult HandleOverlaps(CommentThreadListResponse response, List<string> storedCommentIds);
+    OverlapResult HandleOverlaps(IList<CommentThread> items, List<string> storedCommentIds);
 }

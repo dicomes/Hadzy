@@ -25,7 +25,7 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
         public async Task Consume(ConsumeContext<IFetchStartedEvent> context)
         {
             
-            _logger.LogInformation("FetchStartedEventConsumer: Received FetchingInitiatedEvent: {VideoId}. NextPageToken: {PageToken}.", context.Message.VideoId, context.Message.PageToken);
+            _logger.LogInformation("{Source}: Received FetchingInitiatedEvent: {VideoId}. NextPageToken: {PageToken}.", GetType().Name, context.Message.VideoId, context.Message.PageToken);
         
             try
             {
@@ -33,12 +33,12 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
             }
             catch (YouTubeFetcherServiceException ex)
             {
-                _logger.LogWarning(ex, "FetchStartedEventConsumer: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", ex.GetType().Name, context.Message.VideoId, ex.Message);
+                _logger.LogWarning(ex, "{Source}: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", GetType().Name, ex.GetType().Name, context.Message.VideoId, ex.Message);
                 await _youTubeFetcherServiceExceptionHandler.HandleError(ex);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "FetchStartedEventConsumer: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", ex.GetType().Name, context.Message.VideoId, ex.Message);
+                _logger.LogError(ex, "{Source}: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", GetType().Name, ex.GetType().Name, context.Message.VideoId, ex.Message);
             }
         }
     }

@@ -4,7 +4,8 @@ namespace YouTubeCommentsFetcher.Worker.Models;
 
 public class OverlapResult
 {
-    public CommentThreadListResponse UpdatedResponse { get; set; }
+    public IList<CommentThread> UpdatedCommentList { get; set; }
     public int OverlappingCount { get; set; }
+    public int BaseCommentCount { get; set; }
     public bool ShouldStopFetching { get; set; }
 }

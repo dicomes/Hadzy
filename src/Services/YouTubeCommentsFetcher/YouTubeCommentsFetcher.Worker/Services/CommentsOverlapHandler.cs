@@ -7,43 +7,34 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 public class CommentsOverlapHandler : ICommentsOverlapHandler
     {
         private readonly double _overlappingThreshold = 0.5;
-        private readonly ILogger<CommentsOverlapHandler> _logger;
 
-        public CommentsOverlapHandler(ILogger<CommentsOverlapHandler> logger)
+        public OverlapResult HandleOverlaps(IList<CommentThread> items, List<string> storedCommentIds)
         {
-            _logger = logger;
-        }
-
-        public OverlapResult HandleOverlaps(CommentThreadListResponse response, List<string> storedCommentIds)
-        {
-            var (filteredResponse, overlappingCount) = RemoveOverlappingComments(response, storedCommentIds);
-            bool shouldStopFetching = ShouldStopFetching(overlappingCount, response.Items.Count);
+            var (filteredItems, overlappingCount) = RemoveOverlappingComments(items.ToList(), storedCommentIds);
+            bool shouldStopFetching = ShouldStopFetching(overlappingCount, items.Count);
 
             return new OverlapResult
             {
-                UpdatedResponse = filteredResponse,
+                UpdatedCommentList = filteredItems,
                 OverlappingCount = overlappingCount,
+                BaseCommentCount = items.Count,
                 ShouldStopFetching = shouldStopFetching
             };
         }
         
-        private (CommentThreadListResponse FilteredResponse, int OverlappingCount) RemoveOverlappingComments(CommentThreadListResponse response, List<string> storedCommentIds)
+        private (IList<CommentThread> FilteredItems, int OverlappingCount) RemoveOverlappingComments(IList<CommentThread> items, List<string> storedCommentIds)
         {
-            if (storedCommentIds == null || storedCommentIds.Count == 0 || response.Items.Count == 0)
+            if (storedCommentIds.Count == 0 || items.Count == 0)
             {
-                return (response, 0);
+                return (items, 0);
             }
 
-            var originalCount = response.Items.Count;
             var storedIdsSet = new HashSet<string>(storedCommentIds);
             
             // Filter out items that are in the storedIdsSet in-place
-            var filteredItems = response.Items.Where(item => !storedIdsSet.Contains(item.Snippet.TopLevelComment.Id)).ToList();
-            response.Items = filteredItems;
-            
-            int overlappingCount = originalCount - response.Items.Count;
-            
-            return (response, overlappingCount);
+            var filteredItems = items.Where(item => !storedIdsSet.Contains(item.Snippet.TopLevelComment.Id)).ToList();
+            var overlappingCount = items.Count - filteredItems.Count;
+            return (filteredItems, overlappingCount);
         }
 
         private bool ShouldStopFetching(int overlappingCount, int totalResponseCount)
