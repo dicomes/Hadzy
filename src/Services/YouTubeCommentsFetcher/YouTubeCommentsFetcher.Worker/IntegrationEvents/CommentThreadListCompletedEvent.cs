@@ -11,11 +11,11 @@ public class CommentThreadListCompletedEvent : IFetchCommentThreadListCompletedE
     }
 
     public Guid Id { get; }
-    public string VideoId { get; set; }
+    public string? VideoId { get; set; }
     public string? NextPageToken { get; set; } 
     public int CommentsCount { get; set; }
     public int ReplyCount { get; set; }
-    public List<string> CommentIds { get; set; }
+    public List<string>? CommentIds { get; set; }
     public List<IYouTubeCommentDto> YouTubeCommentsList { get; set; }
 
     public override string ToString() =>

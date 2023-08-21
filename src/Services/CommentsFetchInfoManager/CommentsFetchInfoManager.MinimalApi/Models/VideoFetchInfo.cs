@@ -15,8 +15,11 @@ public class VideoFetchInfo : IVideoFetchInfo
     public List<string> CommentIds { get; set; }
     
     [BsonElement("LastPageToken")]
-    public string LastPageToken { get; set; }
+    public string? LastPageToken { get; set; }
 
     [BsonElement("Status")]
-    public string Status { get; set; }
+    public string? Status { get; set; }
+
+    [BsonElement("CompletedTillFirstComment")]
+    public bool CompletedTillFirstComment { get; }
 }

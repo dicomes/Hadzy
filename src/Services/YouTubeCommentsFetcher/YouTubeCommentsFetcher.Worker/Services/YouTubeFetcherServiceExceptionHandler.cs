@@ -17,14 +17,14 @@ namespace YouTubeCommentsFetcher.Worker.Services
         {
             if (exception is YouTubeFetcherServiceException commentsServiceException)
             {
-                var internalErrorEvent = new FetcherErrorEvent
+                var fetcherErrorEvent = new FetcherErrorEvent
                 {
                     Message = commentsServiceException.Message,
                     ErrorCategory = commentsServiceException.ErrorCategory,
                     VideoId = commentsServiceException.VideoId,
                 };
 
-                await _eventPublisher.PublishEvent(internalErrorEvent);
+                await _eventPublisher.PublishEvent(fetcherErrorEvent);
             }
         }
     }

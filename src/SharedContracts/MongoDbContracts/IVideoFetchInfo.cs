@@ -14,8 +14,11 @@ public interface IVideoFetchInfo
     List<string> CommentIds { get; }
     
     [BsonElement("LastPageToken")]
-    string LastPageToken { get; set; }
+    string? LastPageToken { get;}
 
     [BsonElement("Status")]
-    string Status { get; }
+    string? Status { get; }
+    
+    [BsonElement("CompletedTillFirstComment")]
+    bool CompletedTillFirstComment { get; }
 }

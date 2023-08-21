@@ -29,7 +29,7 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
         
             try
             {
-                await _integrationEventsManager.ProcessCommentsAndPublishFetchedEventsAsync(context.Message.VideoId, context.Message.PageToken, context.Message.CommentIds);
+                await _integrationEventsManager.ProcessCommentsAndPublishFetchedEventsAsync(context.Message.VideoId, context.Message.PageToken, context.Message.FirstFetchedCommentIds);
             }
             catch (YouTubeFetcherServiceException ex)
             {

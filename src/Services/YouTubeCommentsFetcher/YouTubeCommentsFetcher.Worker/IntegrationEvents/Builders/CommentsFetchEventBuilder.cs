@@ -12,7 +12,7 @@ public class FetchCompletedEventBuilder
         _event = new CommentThreadListCompletedEvent();
     }
 
-    public FetchCompletedEventBuilder WithVideoId(string videoId)
+    public FetchCompletedEventBuilder WithVideoId(string? videoId)
     {
         _event.VideoId = videoId;
         return this;
@@ -36,7 +36,7 @@ public class FetchCompletedEventBuilder
         return this;
     }
     
-    public FetchCompletedEventBuilder WithCommentIds(List<string> commentIds)
+    public FetchCompletedEventBuilder WithCommentIds(List<string>? commentIds)
     {
         _event.CommentIds = commentIds;
         return this;

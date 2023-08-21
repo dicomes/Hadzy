@@ -17,7 +17,7 @@ public class FetchInfoRepository : IFetchInfoRepository
         _videoFetchInfo = mongoDatabase.GetCollection<VideoFetchInfo>(mongoDbConfig.Value.VideoFetchInfoCollectionName);
     }
 
-    public async Task<VideoFetchInfo> GetByVideoId(string videoId)
+    public async Task<VideoFetchInfo> GetByVideoId(string? videoId)
     {
         return await _videoFetchInfo.Find<VideoFetchInfo>(f => f.VideoId == videoId).FirstOrDefaultAsync();
     }

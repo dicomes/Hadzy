@@ -5,5 +5,5 @@ namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 public interface ICommentsThreadMapper
 {
-    CommentThreadListCompletedEvent ToBatchCompletedEvent(string videoId, CommentThreadListResponse response);
+    CommentThreadListCompletedEvent ToBatchCompletedEvent(string? videoId, CommentThreadListResponse response);
 }

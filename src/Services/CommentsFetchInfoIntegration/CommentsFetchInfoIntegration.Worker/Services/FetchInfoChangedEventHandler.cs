@@ -30,7 +30,8 @@ public class FetchInfoChangedEventHandler : IFetchInfoChangedEventHandler
                 fetchInfoChangedEvent.Status,
                 fetchInfoChangedEvent.CommentsCount + fetchInfoChangedEvent.ReplyCount,
                 fetchInfoChangedEvent.CommentIds,
-                fetchInfoChangedEvent.PageToken
+                fetchInfoChangedEvent.PageToken,
+                fetchInfoChangedEvent.CompletedTillFirstComment
                 );
         }
         else
@@ -39,13 +40,14 @@ public class FetchInfoChangedEventHandler : IFetchInfoChangedEventHandler
         }
     }
 
-    private async Task UpdateFetchInfoAsync(string id, string newStatus, int newTotalCommentsProcessed, List<string> newCommentIds, string newPageToken)
+    private async Task UpdateFetchInfoAsync(string? id, string? newStatus, int newTotalCommentsProcessed, List<string>? newCommentIds, string? newPageToken, bool completed)
     {
         var fetchInfo = await _fetchInfoService.GetFetchInfoByIdAsync(id);
         fetchInfo.Status = newStatus;
         fetchInfo.CommentsCount += newTotalCommentsProcessed;
-        fetchInfo.CommentIds = newCommentIds;
-        fetchInfo.LastPageToken = !string.IsNullOrEmpty(newPageToken) ? newPageToken : fetchInfo.LastPageToken;
+        fetchInfo.CommentIds = newCommentIds ?? fetchInfo.CommentIds;
+        fetchInfo.LastPageToken = newPageToken;
+        fetchInfo.CompletedTillFirstComment = completed;
         await _fetchInfoService.UpdateFetchInfoAsync(fetchInfo);
     }
 

@@ -11,7 +11,7 @@ public class YouTubeRequestBuilder
         _request = youtubeService.CommentThreads.List(properties);
     }
     
-    public YouTubeRequestBuilder SetVideoId(string videoId)
+    public YouTubeRequestBuilder SetVideoId(string? videoId)
     {
         _request.VideoId = videoId;
         return this;
@@ -23,7 +23,7 @@ public class YouTubeRequestBuilder
         return this;
     }
     
-    public YouTubeRequestBuilder SetPageToken(string pageToken)
+    public YouTubeRequestBuilder SetPageToken(string? pageToken)
     {
         if (!string.IsNullOrEmpty(pageToken))
         {

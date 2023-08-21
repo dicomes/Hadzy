@@ -18,13 +18,13 @@ public class CommentsFetchInfoEventBuilder
         return this;
     }
 
-    public CommentsFetchInfoEventBuilder WithVideoId(string videoId)
+    public CommentsFetchInfoEventBuilder WithVideoId(string? videoId)
     {
         _changedEvent.VideoId = videoId;
         return this;
     }
 
-    public CommentsFetchInfoEventBuilder WithPageToken(string pageToken)
+    public CommentsFetchInfoEventBuilder WithPageToken(string? pageToken)
     {
         if (!string.IsNullOrEmpty(pageToken))
         {
@@ -34,7 +34,7 @@ public class CommentsFetchInfoEventBuilder
         return this;
     }
     
-    public CommentsFetchInfoEventBuilder WithCommentIds(List<string> commentIds)
+    public CommentsFetchInfoEventBuilder WithCommentIds(List<string>? commentIds)
     {
         _changedEvent.CommentIds = commentIds;
         return this;
@@ -52,9 +52,15 @@ public class CommentsFetchInfoEventBuilder
         return this;
     }
 
-    public CommentsFetchInfoEventBuilder WithStatus(string status)
+    public CommentsFetchInfoEventBuilder WithStatus(string? status)
     {
         _changedEvent.Status = status;
+        return this;
+    }
+    
+    public CommentsFetchInfoEventBuilder CompletedTillFirstComment(bool completed)
+    {
+        _changedEvent.CompletedTillFirstComment = completed;
         return this;
     }
 
@@ -73,6 +79,7 @@ public class CommentsFetchInfoEventBuilder
             .WithCommentsFetchedCount(message.CommentsCount)
             .WithReplyCount(message.ReplyCount)
             .WithStatus(message.Status)
+            .CompletedTillFirstComment(message.CompletedTillFirstComment)
             .Build();
     }
 }

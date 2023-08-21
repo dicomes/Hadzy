@@ -7,19 +7,24 @@ namespace CommentsFetchInfoManager.MinimalApi.Services;
 public class ExceptionHandlerService : IExceptionHandlerService
 {
     private readonly IFetchInfoHandlerService _fetchInfoHandlerService;
+    private readonly IErrorResponseService _errorResponseService;
 
-    public ExceptionHandlerService(IFetchInfoHandlerService fetchInfoHandlerService)
+    public ExceptionHandlerService(
+        IFetchInfoHandlerService fetchInfoHandlerService,
+        IErrorResponseService errorResponseService)
     {
         _fetchInfoHandlerService = fetchInfoHandlerService;
+        _errorResponseService = errorResponseService;
     }
 
     public IResult HandleException(Exception exception)
     {
         if (exception is BadHttpRequestException)
         {
-            var errorResponse = _fetchInfoHandlerService.CreateErrorResponse<FetchInfoDto>("Message body is invalid");
-            return Results.BadRequest(errorResponse);
+            var apiResponse = _errorResponseService.CreateErrorResponse<FetchInfoDto>(new List<string>{"Message body is invalid"});
+            return Results.BadRequest(apiResponse);
         }
+        
         return Results.StatusCode((int)HttpStatusCode.InternalServerError);
     }
 }

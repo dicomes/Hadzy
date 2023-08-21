@@ -19,7 +19,7 @@ public class FetchInfoService : IFetchInfoService
         _fetchStatus = mongoDatabase.GetCollection<VideoFetchInfo>(mongoDbConfig.VideoFetchInfoCollectionName);
     }
 
-    public async Task<bool> FetchInfoByIdExistsAsync(string videoId)
+    public async Task<bool> FetchInfoByIdExistsAsync(string? videoId)
     {
         var filter = Builders<VideoFetchInfo>.Filter.Eq(x => x.VideoId, videoId);
         var count = await _fetchStatus.CountDocumentsAsync(filter);
@@ -41,7 +41,7 @@ public class FetchInfoService : IFetchInfoService
         await _fetchStatus.UpdateOneAsync(filter, update);
     }
 
-    public async Task<VideoFetchInfo> GetFetchInfoByIdAsync(string videoId)
+    public async Task<VideoFetchInfo> GetFetchInfoByIdAsync(string? videoId)
     {
         return await _fetchStatus.Find(x => x.VideoId == videoId).FirstOrDefaultAsync();
     }

@@ -6,29 +6,23 @@ public class FetchInfoChangedEventBuilder
 {
     private FetchInfoChangedEvent _event;
 
-    public FetchInfoChangedEventBuilder()
+    public FetchInfoChangedEventBuilder(string videoId)
     {
-        _event = new FetchInfoChangedEvent();
+        _event = new FetchInfoChangedEvent(videoId);
     }
-
-    public FetchInfoChangedEventBuilder WithVideoId(string videoId)
+    
+    public FetchInfoChangedEventBuilder WithPageToken(string? pageToken)
     {
-        _event.VideoId = videoId;
-        return this;
-    }
-
-    public FetchInfoChangedEventBuilder WithPageToken(string pageToken)
-    {
-        if (!string.IsNullOrEmpty(pageToken))
-        {
-            _event.PageToken = pageToken;
-        }
+        _event.PageToken = pageToken;
         return this;
     }
     
-    public FetchInfoChangedEventBuilder WithCommentIds(List<string> commentIds)
+    public FetchInfoChangedEventBuilder WithCommentIds(List<string>? commentIds)
     {
-        _event.CommentIds = commentIds;
+        if (commentIds != null)
+        {
+            _event.CommentIds = commentIds;
+        }
         return this;
     }
 
@@ -44,9 +38,15 @@ public class FetchInfoChangedEventBuilder
         return this;
     }
     
-    public FetchInfoChangedEventBuilder WithStatus(string status)
+    public FetchInfoChangedEventBuilder WithStatus(string? status)
     {
         _event.Status = status;
+        return this;
+    }
+
+    public FetchInfoChangedEventBuilder WithCompletedTillFirstComment(bool completed)
+    {
+        _event.CompletedTillFirstComment = completed;
         return this;
     }
 

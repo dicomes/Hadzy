@@ -7,6 +7,6 @@ namespace YouTubeCommentsFetcher.Worker.IntegrationEvents
         Guid Id { get; }
         string Message { get; }
         ErrorCategory ErrorCategory { get; }
-        string VideoId { get; }
+        string? VideoId { get; }
     }
 }

@@ -35,10 +35,11 @@ public static class WebApplicatoinExtensions
             .Accepts<FetchInfoDto>("application/json")
             .Produces<APIResponse<FetchInfoDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status202Accepted)
-            .Produces(StatusCodes.Status400BadRequest);
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
 
         app.MapGet("comments-fetch-status-manager/api/v1/comments/fetch/status/{videoId}",
-                (IFetchInfoHandlerService fetchManagerService, string videoId) =>  
+                (IFetchInfoHandlerService fetchManagerService, string? videoId) =>  
                     fetchManagerService.GetFetchStatusByIdAsync(videoId))
             .WithName("GetFetchStatus")
             .Produces<APIResponse<FetchInfoDto>>(StatusCodes.Status200OK)

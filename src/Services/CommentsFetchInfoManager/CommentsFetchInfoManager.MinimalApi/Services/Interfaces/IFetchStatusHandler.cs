@@ -3,8 +3,8 @@ using CommentsFetchInfoManager.MinimalApi.Models.DTO;
 
 namespace CommentsFetchInfoManager.MinimalApi.Services.Interfaces;
 
-public interface IFetchInfoHandlerService
+public interface IFetchStatusHandler
 {
-    Task<IResult> GetFetchStatusByIdAsync(string? videoId);
-    Task<IResult> PostNewFetchInfo(FetchInfoDto fetchInfoDto);
+    bool CanHandle(string? status);
+    Task<IResult> HandleAsync(FetchInfoDto fetchInfoDto, VideoFetchInfo oldVideoFetchInfo);
 }
