@@ -1,20 +1,6 @@
 version: '3.4'
 
 services:
-
-  hadzy-comments.storage.worker.dev:
-    image: hadzy/comments.storage.worker:1.0.0
-    ports:
-      - "5121:5121"
-    build:
-      context: .
-      dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
-    environment:
-      - ASPNETCORE_URLS=http://*:5121
-      - Seq:Url=${SEQ_URL}
-      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
-      - RabbitMq:User=${RABBITMQ_USER}
-      - RabbitMq:Password=${RABBITMQ_PASSWORD}
     
   hadzy-comments.fetcher.worker.dev:
     image: hadzy/comments.fetcher.worker:1.0.0
@@ -31,13 +17,13 @@ services:
       - RabbitMq:User=${RABBITMQ_USER}
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
         
-  hadzy-comments.fetch.status.integration.worker.dev:
-    image: hadzy/comments.fetch.status.integration.worker:1.0.0
+  hadzy-comments.fetch.info.integration.worker.dev:
+    image: hadzy/comments.fetch.info.integration.worker:1.0.0
     ports:
       - "5171:5171"
     build:
       context: .
-      dockerfile: Services/CommentsFetchStatusIntegration/CommentsFetchStatusIntegration.Worker/Dockerfile.develop
+      dockerfile: Services/CommentsFetchInfoIntegration/CommentsFetchInfoIntegration.Worker/Dockerfile.develop
     environment:
       - ASPNETCORE_URLS=http://*:5171
       - Seq:Url=${SEQ_URL}
@@ -46,16 +32,15 @@ services:
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
       - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
       - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:CommentsFetchStatusCollectionName=${MONGODB_COMMENTSFETCHSTATUSCOLLECTIONNAME}
-        
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEOFETCHINFOCOLLECTIONNAME}
   
-  hadzy-comments.fetch.status.manager.api.dev:
-    image: hadzy/comments.fetch.status.manager.api:1.0.0
+  hadzy-comments.fetch.info.manager.api.dev:
+    image: hadzy/comments.fetch.info.manager.api:1.0.0
     ports:
       - "5181:5181"
     build:
       context: .
-      dockerfile: Services/CommentsFetchStatusManager/CommentsFetchStatusManager.MinimalApi/Dockerfile.develop
+      dockerfile: Services/CommentsFetchInfoManager/CommentsFetchInfoManager.MinimalApi/Dockerfile.develop
     environment:
       - ASPNETCORE_URLS=http://*:5181
       - Seq:Url=${SEQ_URL}
@@ -64,4 +49,4 @@ services:
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
       - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
       - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:CommentsFetchStatusCollectionName=${MONGODB_COMMENTSFETCHSTATUSCOLLECTIONNAME}
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEOFETCHINFOCOLLECTIONNAME}

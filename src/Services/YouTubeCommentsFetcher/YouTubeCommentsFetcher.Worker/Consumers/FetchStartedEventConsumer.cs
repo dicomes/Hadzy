@@ -24,22 +24,21 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
 
         public async Task Consume(ConsumeContext<IFetchStartedEvent> context)
         {
-            var videoId = context.Message.VideoId;
-            string nextPageToken = context.Message.PageToken;
-            _logger.LogInformation("FetchStartedEventConsumer: Received FetchingInitiatedEvent: {VideoId}. PageToken: {PageToken}.", videoId, nextPageToken);
+            
+            _logger.LogInformation("{Source}: Received FetchingInitiatedEvent: {VideoId}. NextPageToken: {PageToken}.", GetType().Name, context.Message.VideoId, context.Message.PageToken);
         
             try
             {
-                await _integrationEventsManager.FetchCommentsAndPublishFetchedEventsAsync(videoId, nextPageToken);
+                await _integrationEventsManager.ProcessCommentsAndPublishFetchedEventsAsync(context.Message.VideoId, context.Message.PageToken, context.Message.FirstFetchedCommentIds);
             }
             catch (YouTubeFetcherServiceException ex)
             {
-                _logger.LogWarning(ex, "FetchStartedEventConsumer: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", ex.GetType().Name, videoId, ex.Message);
+                _logger.LogWarning(ex, "{Source}: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", GetType().Name, ex.GetType().Name, context.Message.VideoId, ex.Message);
                 await _youTubeFetcherServiceExceptionHandler.HandleError(ex);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "FetchStartedEventConsumer: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", ex.GetType().Name, videoId, ex.Message);
+                _logger.LogError(ex, "{Source}: Raised a {ExceptionType} while processing videoId: {VideoId}. Exception Message: {ExceptionMessage}.", GetType().Name, ex.GetType().Name, context.Message.VideoId, ex.Message);
             }
         }
     }

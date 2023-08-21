@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV DOTNET_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["Services/CommentsFetchInfoManager/CommentsFetchInfoManager.MinimalApi/CommentsFetchInfoManager.MinimalApi.csproj", "Services/CommentsFetchInfoManager/CommentsFetchInfoManager.MinimalApi/"]
+
+RUN dotnet restore Services/CommentsFetchInfoManager/CommentsFetchInfoManager.MinimalApi/CommentsFetchInfoManager.MinimalApi.csproj
+
+COPY . .
+WORKDIR "/src/Services/CommentsFetchInfoManager/CommentsFetchInfoManager.MinimalApi"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]

@@ -2,5 +2,5 @@ namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 public interface IIntegrationEventsManager
 {
-    public Task FetchCommentsAndPublishFetchedEventsAsync(string videoId, string pageToken);
+    Task ProcessCommentsAndPublishFetchedEventsAsync(string? videoId, string? pageToken, List<string> commentIds);
 }

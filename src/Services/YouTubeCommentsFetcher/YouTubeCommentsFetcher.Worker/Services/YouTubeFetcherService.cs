@@ -22,7 +22,7 @@ public class YouTubeFetcherService : IYouTubeFetcherService
         _logger = logger;
     }
 
-    public async Task<CommentThreadListResponse> FetchAsync(FetchSettings fetchSettings)
+    public async Task<CommentThreadListResponse> FetchAsync(FetchParams fetchParams)
     {
         var retryPolicy = _retryPolicyProvider.GetYouTubeApiRetryPolicy();
 
@@ -30,11 +30,11 @@ public class YouTubeFetcherService : IYouTubeFetcherService
         {
             return await retryPolicy.ExecuteAsync(async () => 
             {
-                _logger.LogInformation("YouTubeFetcherService: Fetching event started for VideoId: {VideoId}. PageToken: {PageToken}", fetchSettings.VideoId, fetchSettings.PageToken);
-                var request = new YouTubeRequestBuilder(_youtubeService, fetchSettings.Properties)
-                    .SetVideoId(fetchSettings.VideoId)
-                    .SetMaxResults(fetchSettings.MaxResults)
-                    .SetPageToken(fetchSettings.PageToken)
+                _logger.LogInformation("{Source}: Fetching event started for VideoId: {VideoId}. NextPageToken: {NextPageToken}",GetType().Name, fetchParams.VideoId, fetchParams.PageToken);
+                var request = new YouTubeRequestBuilder(_youtubeService, fetchParams.Properties)
+                    .SetVideoId(fetchParams.VideoId)
+                    .SetMaxResults(fetchParams.MaxResults)
+                    .SetPageToken(fetchParams.PageToken)
                     .Build();
                 return await request.ExecuteAsync();
             });
@@ -42,14 +42,14 @@ public class YouTubeFetcherService : IYouTubeFetcherService
         
         catch (GoogleApiException ex)
         {
-            _logger.LogWarning("YouTubeFetcherService: A Google API error occurred while fetching comments for VideoId: {VideoId}", fetchSettings.VideoId);
-            throw new YouTubeFetcherServiceException(fetchSettings.VideoId, ex.HttpStatusCode.ToString(), ErrorCategory.GoogleApiError);
+            _logger.LogWarning("{Source}: A Google API error occurred while fetching comments for VideoId: {VideoId}",GetType().Name, fetchParams.VideoId);
+            throw new YouTubeFetcherServiceException(fetchParams.VideoId, ex.HttpStatusCode.ToString(), ErrorCategory.GoogleApiError);
         }
         
         catch (HttpRequestException ex)
         {
-            _logger.LogWarning("YouTubeFetcherService: An HTTP request error occurred while fetching comments for VideoId: {VideoId}", fetchSettings.VideoId);
-            throw new YouTubeFetcherServiceException(fetchSettings.VideoId, ex.Message, ErrorCategory.HttpRequestError);
+            _logger.LogWarning("{Source}: An HTTP request error occurred while fetching comments for VideoId: {VideoId}", GetType().Name, fetchParams.VideoId);
+            throw new YouTubeFetcherServiceException(fetchParams.VideoId, ex.Message, ErrorCategory.HttpRequestError);
         }
         
     }
