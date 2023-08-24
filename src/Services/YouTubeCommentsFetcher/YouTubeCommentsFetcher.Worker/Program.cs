@@ -44,21 +44,18 @@ namespace YouTubeCommentsFetcher.Worker
                         .WriteTo.Console()
                         .CreateLogger();
                     
-                    services.AddSingleton<YouTubeService>(sp => 
+                    services.AddSingleton<YouTubeService>(sp => new YouTubeService(new BaseClientService.Initializer
                     {
-                        return new YouTubeService(new BaseClientService.Initializer
-                        {
-                            ApiKey = youTubeConfig.ApiKey
-                        });
-                    });
+                        ApiKey = youTubeConfig.ApiKey
+                    }));
                     
                     services.AddSingleton<RetryPolicyProvider>(); // Retry policy with exponential backoff for fetcher
                     services.AddTransient<FetcherErrorEventConsumer>(); // Consumes errors raised by the fetcher
                     services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>(); // Fetches comments for a given videoId
                     services.AddAutoMapper(typeof(MappingConfig)); // Mapping config for mapper
                     services.AddTransient<ICommentsThreadMapper, CommentsThreadMapper>(); // Transforms fetch comments to commentsDto
-                    services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
-                    services.AddTransient<FetchStartedEventConsumer>(); // Consume events that initiate fetching for a given videoId
+                    services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>(); // Handles exceptions raised by Fetcher Service
+                    services.AddTransient<FetchStartedEventConsumer>(); // Consume fetch started event for a given videoId
                     services.AddTransient<IEventPublisher, EventPublisher>();  // Publish events
                     services.AddTransient<ICommentsOverlapHandler, CommentsOverlapHandler>(); // Handle overlapping between existent and fetched comments
                     services.AddTransient<ICommentThreadIterator, CommentThreadIterator>(); // Iterate through comments batches

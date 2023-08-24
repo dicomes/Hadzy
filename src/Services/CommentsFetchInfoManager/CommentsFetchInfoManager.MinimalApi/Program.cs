@@ -20,12 +20,12 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
 
+// Registers IOptions<MongoDbConfig> as a singleton in the DI container
 builder.Services.Configure<MongoDbConfig>(
     builder.Configuration.GetSection("MongoDb"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<MongoDbConfig>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddTransient<IErrorResponseService, ErrorResponseService>();
 builder.Services.AddTransient<IFetchInfoService, FetchInfoService>();

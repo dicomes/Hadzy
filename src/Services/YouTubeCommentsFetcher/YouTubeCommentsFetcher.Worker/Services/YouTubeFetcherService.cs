@@ -11,6 +11,8 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 
 public class YouTubeFetcherService : IYouTubeFetcherService
 {
+    private readonly string _properties = "snippet";
+    private readonly int _maxResults = 100;
     private readonly YouTubeService _youtubeService;
     private readonly RetryPolicyProvider _retryPolicyProvider;
     private readonly ILogger<YouTubeFetcherService> _logger;
@@ -31,9 +33,9 @@ public class YouTubeFetcherService : IYouTubeFetcherService
             return await retryPolicy.ExecuteAsync(async () => 
             {
                 _logger.LogInformation("{Source}: Fetching event started for VideoId: {VideoId}. NextPageToken: {NextPageToken}",GetType().Name, fetchParams.VideoId, fetchParams.PageToken);
-                var request = new YouTubeRequestBuilder(_youtubeService, fetchParams.Properties)
+                var request = new YouTubeRequestBuilder(_youtubeService, _properties)
+                    .SetMaxResults(_maxResults)
                     .SetVideoId(fetchParams.VideoId)
-                    .SetMaxResults(fetchParams.MaxResults)
                     .SetPageToken(fetchParams.PageToken)
                     .Build();
                 return await request.ExecuteAsync();
