@@ -40,7 +40,7 @@ public class FetchInfoChangedEventHandler : IFetchInfoChangedEventHandler
         }
     }
 
-    private async Task UpdateFetchInfoAsync(string? id, string? newStatus, int newTotalCommentsProcessed, List<string>? newCommentIds, string? newPageToken, bool completed)
+    private async Task UpdateFetchInfoAsync(string? id, string? newStatus, ulong newTotalCommentsProcessed, List<string>? newCommentIds, string? newPageToken, bool completed)
     {
         var fetchInfo = await _fetchInfoService.GetFetchInfoByIdAsync(id);
         fetchInfo.Status = newStatus;

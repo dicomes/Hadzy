@@ -40,13 +40,13 @@ public class CommentsFetchInfoEventBuilder
         return this;
     }
     
-    public CommentsFetchInfoEventBuilder WithCommentsFetchedCount(int count)
+    public CommentsFetchInfoEventBuilder WithCommentsFetchedCount(ulong count)
     {
         _changedEvent.CommentsCount = count;
         return this;
     }
 
-    public CommentsFetchInfoEventBuilder WithReplyCount(int count)
+    public CommentsFetchInfoEventBuilder WithReplyCount(uint count)
     {
         _changedEvent.ReplyCount = count;
         return this;

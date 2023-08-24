@@ -25,8 +25,8 @@ public class IntegrationEventsManager : IIntegrationEventsManager
 
         public async Task ProcessCommentsAndPublishFetchedEventsAsync(string? videoId, string? pageToken, List<string> commentIds)
         {
-            int totalCommentsFetched = 0;
-            int totalReplies = 0;
+            ulong totalCommentsFetched = 0;
+            uint totalReplies = 0;
             var fetchParams = new FetchParams(videoId, pageToken, commentIds);
             List<string>? firstIterationCommentIds = new List<string>();
             bool firstIteration = true;
@@ -60,7 +60,7 @@ public class IntegrationEventsManager : IIntegrationEventsManager
             }
         }
 
-        private void IncrementComments(ref int totalCommentsFetched, ref int totalReplies, CommentThreadListCompletedEvent commentThreadListCompletedEvent )
+        private void IncrementComments(ref ulong totalCommentsFetched, ref uint totalReplies, CommentThreadListCompletedEvent commentThreadListCompletedEvent )
         {
             totalCommentsFetched += commentThreadListCompletedEvent.CommentsCount;
             totalReplies += commentThreadListCompletedEvent.ReplyCount;

@@ -26,13 +26,13 @@ public class FetchInfoChangedEventBuilder
         return this;
     }
 
-    public FetchInfoChangedEventBuilder WithCommentsFetchedCount(int count)
+    public FetchInfoChangedEventBuilder WithCommentsFetchedCount(ulong count)
     {
         _event.CommentsCount = count;
         return this;
     }
 
-    public FetchInfoChangedEventBuilder WithReplyCount(int count)
+    public FetchInfoChangedEventBuilder WithReplyCount(uint count)
     {
         _event.ReplyCount = count;
         return this;

@@ -5,9 +5,9 @@ public interface IFetchInfoChangedEvent
     Guid Id { get; }
     string? VideoId { get; }
     string? PageToken { get; }
-    int CommentsCount { get; }
+    ulong CommentsCount { get; }
     List<string>? CommentIds { get; }
-    int ReplyCount { get; }
+    uint ReplyCount { get; }
     string? Status { get; }
     bool CompletedTillFirstComment { get; }
 }

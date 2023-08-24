@@ -8,7 +8,7 @@ public interface IVideoFetchInfo
     string VideoId { get; }
 
     [BsonElement("CommentsCount")]
-    int CommentsCount { get; }
+    ulong CommentsCount { get; }
     
     [BsonElement("CommentIds")]
     List<string> CommentIds { get; }

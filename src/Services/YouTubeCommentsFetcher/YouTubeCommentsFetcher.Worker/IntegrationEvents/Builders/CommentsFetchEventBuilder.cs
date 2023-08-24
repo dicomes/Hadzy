@@ -24,13 +24,13 @@ public class FetchCompletedEventBuilder
         return this;
     }
 
-    public FetchCompletedEventBuilder WithCommentsFetchedCount(int count)
+    public FetchCompletedEventBuilder WithCommentsFetchedCount(ulong count)
     {
         _event.CommentsCount = count;
         return this;
     }
 
-    public FetchCompletedEventBuilder WithReplyCount(int count)
+    public FetchCompletedEventBuilder WithReplyCount(uint count)
     {
         _event.ReplyCount = count;
         return this;

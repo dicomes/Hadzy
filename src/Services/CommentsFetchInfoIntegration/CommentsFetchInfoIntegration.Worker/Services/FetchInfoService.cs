@@ -31,7 +31,7 @@ public class FetchInfoService : IFetchInfoService
         await _fetchStatus.ReplaceOneAsync(x => x.VideoId == videoFetchInfo.VideoId, videoFetchInfo);
     }
     
-    public async Task UpdateFetchInfoAsync(string videoId, int newTotalCommentsFetched, string newStatus)
+    public async Task UpdateFetchInfoAsync(string videoId, ulong newTotalCommentsFetched, string newStatus)
     {
         var filter = Builders<VideoFetchInfo>.Filter.Eq(x => x.VideoId, videoId);
         var update = Builders<VideoFetchInfo>.Update

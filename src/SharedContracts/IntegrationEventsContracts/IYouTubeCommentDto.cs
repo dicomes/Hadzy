@@ -15,9 +15,9 @@ public interface IYouTubeCommentDto
     string ParentId { get; }
     bool CanRate { get; }
     string ViewerRating { get; }
-    uint LikeCount { get; }
+    ulong LikeCount { get; }
     string ModerationStatus { get; }
     DateTimeOffset PublishedAt { get; }
     DateTimeOffset UpdatedAt { get; }
-    int TotalReplyCount { get; }
+    uint TotalReplyCount { get; }
 }

@@ -9,7 +9,7 @@ public class VideoFetchInfo : IVideoFetchInfo
     public string VideoId { get; set; }
     
     [BsonElement("CommentsCount")]
-    public int CommentsCount { get; set; }
+    public ulong CommentsCount { get; set; }
 
     [BsonElement("CommentIds")]
     public List<string> CommentIds { get; set; }

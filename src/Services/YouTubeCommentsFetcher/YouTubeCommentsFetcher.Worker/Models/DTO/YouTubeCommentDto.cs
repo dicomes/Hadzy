@@ -17,10 +17,10 @@ public class YouTubeCommentDto : IYouTubeCommentDto
     public string ParentId { get; set; }
     public bool CanRate { get; set; }
     public string ViewerRating { get; set; }
-    public uint LikeCount { get; set; }
+    public ulong LikeCount { get; set; }
     public string ModerationStatus { get; set; }
     public DateTimeOffset PublishedAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
-    public int TotalReplyCount { get; set; }
+    public uint TotalReplyCount { get; set; }
 
 }
