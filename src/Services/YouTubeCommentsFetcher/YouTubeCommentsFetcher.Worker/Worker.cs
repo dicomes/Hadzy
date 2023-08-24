@@ -19,8 +19,8 @@ namespace YouTubeCommentsFetcher.Worker
             _logger.LogInformation("YouTubeCommentsFetcher started. Waiting for CommentsFetchReceivedEvent...");
 
             // Starting the bus control initiates the MassTransit service and begins listening for messages.
-            // When a message of type IVideoIdMessage is received, MassTransit will automatically 
-            // instantiate the associated consumer (VideoIdConsumer) and invoke its Consume method 
+            // When a message of type IFetchStartedEvent is received, MassTransit will automatically 
+            // instantiate the associated consumer (FetchStartedEventConsumer) and invoke its Consume method 
             // to process the message.
             await _busControl.StartAsync(stoppingToken);
 
