@@ -1,56 +1,44 @@
-using AutoMapper;
+using System.Net;
 using CommentsFetchInfoManager.MinimalApi.Models;
 using CommentsFetchInfoManager.MinimalApi.Models.DTO;
 using CommentsFetchInfoManager.MinimalApi.Services.Interfaces;
+using CommentsFetchInfoManager.MinimalApi.Validations;
 
 namespace CommentsFetchInfoManager.MinimalApi.Services;
 
 public class FetchInfoHandlerService : IFetchInfoHandlerService
 {
-    private readonly IFetchInfoRepository _fetchInfoRepository;
-    private readonly IFetchInfoService _fetchInfoService;
-    private readonly IMapper _mapper;
+    private readonly IValidationService<FetchInfoDto> _validationService;
+    private readonly IVideoFetchInfoRepository _videoFetchInfoRepository;
+    private readonly IEnumerable<IFetchStatusHandler> _statusHandlers;
     private readonly IErrorResponseService _errorResponseService;
 
     public FetchInfoHandlerService(
-        IFetchInfoService fetchInfoService,
-        IMapper mapper,
-        IFetchInfoRepository fetchInfoRepository,
+        IValidationService<FetchInfoDto> validationService,
+        IVideoFetchInfoRepository videoFetchInfoRepository,
+        IEnumerable<IFetchStatusHandler> statusHandlers,
         IErrorResponseService errorResponseService)
     {
-        _fetchInfoRepository = fetchInfoRepository;
-        _fetchInfoService = fetchInfoService;
-        _mapper = mapper;
+        _validationService = validationService;
+        _videoFetchInfoRepository = videoFetchInfoRepository;
+        _statusHandlers = statusHandlers;
         _errorResponseService = errorResponseService;
     }
 
-    public async Task<IResult> GetFetchStatusByIdAsync(string? videoId)
+    public async Task<IResult> HandleAsync(FetchInfoDto? fetchInfoDto)
     {
-        if (string.IsNullOrEmpty(videoId))
-        {
-            var apiResponse = _errorResponseService.CreateErrorResponse<FetchInfoDto>(new List<string>{"Video Id cannot be blank"});
-            return Results.BadRequest(apiResponse);
-        }
+        VideoFetchInfo oldVideoFetchInfo = await _videoFetchInfoRepository.GetByVideoId(fetchInfoDto.VideoId);
 
-        VideoFetchInfo videoFetchInfo = await _fetchInfoRepository.GetByVideoId(videoId);
+        foreach (var handler in _statusHandlers)
+        {
+            if (handler.CanHandle(oldVideoFetchInfo?.Status))
+            {
+                return await handler.HandleAsync(fetchInfoDto, oldVideoFetchInfo);
+            }
+        }
         
-        if (videoFetchInfo == null)
-        {
-            var apiResponse = _errorResponseService.CreateErrorResponse<FetchInfoDto>(new List<string>{"Video Id not found"});
-            return Results.NotFound(apiResponse);
-        }
-
-        var fetchInfoDto = _mapper.Map<FetchInfoDto>(videoFetchInfo);
-        var response = new APIResponse<FetchInfoDto>
-        {
-            Result = fetchInfoDto
-        };
-
-        return Results.Ok(response);
+        return Results.StatusCode((int)HttpStatusCode.InternalServerError);
     }
 
-    public async Task<IResult> PostNewFetchInfo(FetchInfoDto fetchInfoDto)
-    {
-        return await _fetchInfoService.PostNewFetchInfo(fetchInfoDto);
-    }
 }
+

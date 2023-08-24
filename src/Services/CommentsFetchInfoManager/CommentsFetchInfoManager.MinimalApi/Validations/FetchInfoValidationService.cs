@@ -13,16 +13,8 @@ public class FetchInfoValidationService : IValidationService<FetchInfoDto>
         _validator = validator;
     }
 
-    public async Task<ValidationResult> ValidateAsync(FetchInfoDto? fetchInfoDto)
+    public async Task<ValidationResult> ValidateAsync(FetchInfoDto fetchInfoDto)
     {
-        if (fetchInfoDto != null) return await _validator.ValidateAsync(fetchInfoDto);
-        var validationResult = new ValidationResult();
-        validationResult.Errors.Add(new ValidationFailure("", "Request body is missing"));
-        return validationResult;
+        return await _validator.ValidateAsync(fetchInfoDto);
     }
 }
-
-
-
-
-

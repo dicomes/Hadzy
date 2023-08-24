@@ -6,11 +6,11 @@ using MongoDB.Driver;
 
 namespace CommentsFetchInfoManager.MinimalApi.Services;
 
-public class FetchInfoRepository : IFetchInfoRepository
+public class VideoFetchInfoRepository : IVideoFetchInfoRepository
 {
     private readonly IMongoCollection<VideoFetchInfo> _videoFetchInfo;
 
-    public FetchInfoRepository(IOptions<MongoDbConfig> mongoDbConfig)
+    public VideoFetchInfoRepository(IOptions<MongoDbConfig> mongoDbConfig)
     {
         var mongoClient = new MongoClient(mongoDbConfig.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.Value.DatabaseName);

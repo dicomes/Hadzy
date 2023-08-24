@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CommentsFetchInfoManager.MinimalApi.Validations;
 
-public class FetchInfoCreateValidation : AbstractValidator<FetchInfoDto>
+public class FetchInfoDtoValidation : AbstractValidator<FetchInfoDto>
 {
-    public FetchInfoCreateValidation()
+    public FetchInfoDtoValidation()
     {
         RuleFor(x => x.VideoId).NotEmpty().WithMessage("VideoId is required.");
     }

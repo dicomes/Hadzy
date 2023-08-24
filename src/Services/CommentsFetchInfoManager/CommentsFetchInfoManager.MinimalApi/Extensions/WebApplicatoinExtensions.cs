@@ -25,12 +25,11 @@ public static class WebApplicatoinExtensions
         return app;
     }
     
-    public static WebApplication ConfigureFetchStatusEndpoints(this WebApplication app)
+    public static WebApplication ConfigureEndpoints(this WebApplication app)
     {
-
         app.MapPost("comments-fetch-status-manager/api/v1/comments/fetch/",
-                (IFetchInfoHandlerService fetchStatusService, [FromBody] FetchInfoDto? fetchInfoDto) =>
-                    fetchStatusService.PostNewFetchInfo(fetchInfoDto))
+                (IVideoFetchInfoService fetchStatusService, [FromBody] FetchInfoDto fetchInfoDto) =>
+                    fetchStatusService.CreateNewFetchInfoAsync(fetchInfoDto))
             .WithName("NewFetchInfo")
             .Accepts<FetchInfoDto>("application/json")
             .Produces<APIResponse<FetchInfoDto>>(StatusCodes.Status200OK)
@@ -39,8 +38,8 @@ public static class WebApplicatoinExtensions
             .Produces(StatusCodes.Status500InternalServerError);
 
         app.MapGet("comments-fetch-status-manager/api/v1/comments/fetch/status/{videoId}",
-                (IFetchInfoHandlerService fetchManagerService, string? videoId) =>  
-                    fetchManagerService.GetFetchStatusByIdAsync(videoId))
+                (IVideoFetchInfoService fetchManagerService, string? videoId) =>  
+                    fetchManagerService.GetFetchInfoByIdAsync(videoId))
             .WithName("GetFetchStatus")
             .Produces<APIResponse<FetchInfoDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)

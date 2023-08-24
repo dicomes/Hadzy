@@ -3,9 +3,17 @@ using CommentsFetchInfoManager.MinimalApi.Services.Interfaces;
 
 namespace CommentsFetchInfoManager.MinimalApi.Services;
 
-public class ErrorResponseService : IErrorResponseService
+public class ErrorResponseService<T> : IErrorResponseService
 {
-    public APIResponse<T> CreateErrorResponse<T>(List<string> errorMessages)
+    public ErrorResponseService()
+    {
+        var response = new APIResponse<T>()
+        {
+            Result = default
+        };
+    }
+
+    public APIResponse<T> CreateError<T>(List<string> errorMessages)
     {
         var response = new APIResponse<T>()
         {
@@ -13,6 +21,17 @@ public class ErrorResponseService : IErrorResponseService
         };
 
         response.ErrorMessages = errorMessages;
+
+        return response;
+    }
+    public APIResponse<T> CreateError<T>(string errorMessage)
+    {
+        var response = new APIResponse<T>()
+        {
+            Result = default
+        };
+
+        response.ErrorMessages.Add(errorMessage);
 
         return response;
     }
