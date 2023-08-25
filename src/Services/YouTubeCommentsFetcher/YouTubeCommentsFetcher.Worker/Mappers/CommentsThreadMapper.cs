@@ -5,7 +5,7 @@ using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models.DTO;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
-namespace YouTubeCommentsFetcher.Worker.Services.Mappers
+namespace YouTubeCommentsFetcher.Worker.Mappers
 {
     public class CommentsThreadMapper : ICommentsThreadMapper
     {

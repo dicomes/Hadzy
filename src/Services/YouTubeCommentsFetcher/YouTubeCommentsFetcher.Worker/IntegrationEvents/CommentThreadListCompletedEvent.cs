@@ -2,7 +2,7 @@ using IntegrationEventsContracts;
 
 namespace YouTubeCommentsFetcher.Worker.IntegrationEvents;
 
-public class CommentThreadListCompletedEvent : IFetchCommentThreadListCompletedEvent
+public class CommentThreadListCompletedEvent : ICommentThreadListCompletedEvent
 {
     public CommentThreadListCompletedEvent()
     {

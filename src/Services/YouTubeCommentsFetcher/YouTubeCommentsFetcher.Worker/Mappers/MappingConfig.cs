@@ -2,7 +2,7 @@ using AutoMapper;
 using Google.Apis.YouTube.v3.Data;
 using YouTubeCommentsFetcher.Worker.Models.DTO;
 
-namespace YouTubeCommentsFetcher.Worker.Services.Mapper;
+namespace YouTubeCommentsFetcher.Worker.Mappers;
 
 public class MappingConfig : Profile
 {

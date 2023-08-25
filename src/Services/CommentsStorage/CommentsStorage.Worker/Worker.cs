@@ -1,52 +1,38 @@
 using MassTransit;
-using IntegrationEventsContracts;
+using MassTransit.Util;
 
 namespace CommentsStorage.Worker;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IBusControl _busControl;
 
-    private struct FetchEvent
-    {
-        public string VideoId;
-        public string PageToken;
-    }
-    
-    public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
+
+    public Worker(ILogger<Worker> logger, IBusControl busControl)
     {
         _logger = logger;
-        _serviceProvider = serviceProvider;
+        _busControl = busControl;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        List<FetchEvent> videoList = new List<FetchEvent>();
-        // videoList.Add(new FetchEvent {VideoId = "h3bt79JUYak", PageToken = "QURTSl9pMmxMeUZuLXg1bGVPNDJnVzUxVGVjNkJNaVYxR2JYSGp4RmhhcXRTZmJ0aHBPRkY1cmF6V2ZQRzVWOVdYMGt1TGRVYVVTc1JOTQ=="});
-        videoList.Add(new FetchEvent {VideoId = "h3bt79JUYak", PageToken = string.Empty});
-        // videoList.Add(new FetchEvent {VideoId = "sdasd", PageToken = string.Empty});
-        // videoList.Add(new FetchEvent {VideoId = "Q_RxN7FqV8M", PageToken = string.Empty});
+        _logger.LogInformation("CommentsStorage.Worker started. Waiting for CommentThreadListCompletedEvent...");
 
-        while (!stoppingToken.IsCancellationRequested && videoList.Count != 0)
-        {
-            _logger.LogInformation("Worker running at: {time}.", DateTimeOffset.Now);
-        
-            // Create a scope to retrieve scoped services
-            using var scope = _serviceProvider.CreateScope();
-            var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
-        
-            await publishEndpoint.Publish<IFetchStartedEvent>(new
-            {
-                VideoId = videoList[0].VideoId,
-                PageToken = videoList[0].PageToken
-            });
-            _logger.LogInformation("Published CommentsFetchingInitiatedEvent: {VideoID}. PageToken: {PageToken}.", videoList[0].VideoId, videoList[0].PageToken);
+        // Starting the bus control initiates the MassTransit service and begins listening for messages.
+        // When a message of type ICommentThreadListCompletedEvent is received, MassTransit will automatically 
+        // instantiate the associated consumer (CommentThreadListCompletedEventConsumer) and invoke its Consume method 
+        // to process the message.
+        await _busControl.StartAsync(stoppingToken);
 
-            videoList.Remove(videoList[0]);
-        
-            await Task.Delay(1000, stoppingToken);
-        }
+        // Wait until the task is cancelled.
+        await TaskUtil.Completed;
     }
 
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await _busControl.StopAsync(cancellationToken);
+        await base.StopAsync(cancellationToken);
+    }
 }
+

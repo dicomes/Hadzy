@@ -1,6 +1,6 @@
 namespace IntegrationEventsContracts;
 
-public interface IFetchCommentThreadListCompletedEvent
+public interface ICommentThreadListCompletedEvent
 {
     Guid Id { get; }
     string? VideoId { get; }
