@@ -1,4 +1,4 @@
-namespace CommentsStorage.Worker.Model;
+namespace CommentsStorage.Worker.Models;
 
 public class Comment
 {

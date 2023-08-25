@@ -1,5 +1,5 @@
 using AutoMapper;
-using CommentsStorage.Worker.Model;
+using CommentsStorage.Worker.Models;
 using IntegrationEventsContracts;
 
 namespace CommentsStorage.Worker.Mapper;
