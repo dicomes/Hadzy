@@ -29,10 +29,6 @@ public class CommentThreadListCompletedEventConsumer : IConsumer<ICommentThreadL
         {
             return;
         }
-        foreach (Comment comment in comments)
-        {
-            _logger.LogInformation("CommentThreadListCompletedEventConsumer. Consumed comment: {Comment}", comment);
-            _commentService.AddCommentAsync(comment);
-        }
+        await _commentService.AddCommentsAsync(comments);
     }
 }
