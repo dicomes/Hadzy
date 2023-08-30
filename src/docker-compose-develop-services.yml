@@ -1,0 +1,67 @@
+version: '3.4'
+
+services:
+  
+  hadzy-comments.fetcher.worker.dev:
+    image: hadzy/comments.fetcher.worker:1.0.0
+    ports:
+      - "5151:5151"
+    build:
+      context: .
+      dockerfile: Services/YouTubeCommentsFetcher/YouTubeCommentsFetcher.Worker/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5151
+      - YouTube:ApiKey=${YOUTUBE_APIKEY}
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}
+  
+  hadzy-comments.fetch.info.integration.worker.dev:
+    image: hadzy/comments.fetch.info.integration.worker:1.0.0
+    ports:
+      - "5171:5171"
+    build:
+      context: .
+      dockerfile: Services/CommentsFetchInfoIntegration/CommentsFetchInfoIntegration.Worker/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5171
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}
+      - MongoDb:ConnectionString=${MONGODB_CONNECTION_STRING}
+      - MongoDb:DatabaseName=${MONGODB_DATABASE_NAME}
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEO_FETCH_INFO_COLLECTION_NAME}
+  
+  hadzy-comments.fetch.info.manager.api.dev:
+    image: hadzy/comments.fetch.info.manager.api:1.0.0
+    ports:
+      - "5181:5181"
+    build:
+      context: .
+      dockerfile: Services/CommentsFetchInfoManager/CommentsFetchInfoManager.MinimalApi/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5181
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}
+      - MongoDb:ConnectionString=${MONGODB_CONNECTION_STRING}
+      - MongoDb:DatabaseName=${MONGODB_DATABASE_NAME}
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEO_FETCH_INFO_COLLECTION_NAME}
+
+  hadzy-comments.storage.worker.dev:
+    image: hadzy/comments.storage.worker:1.0.0
+    ports:
+      - "5191:5191"
+    build:
+      context: .
+      dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5151
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}
+      - PostgreSql:ConnectionString=${POSTGRESQL_CONNECTION_STRING}

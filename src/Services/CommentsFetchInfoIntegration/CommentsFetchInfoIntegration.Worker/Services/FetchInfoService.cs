@@ -1,5 +1,4 @@
 using CommentsFetchInfoIntegration.Worker.Configurations;
-using CommentsFetchInfoIntegration.Worker.Configurations.Interfaces;
 using CommentsFetchInfoIntegration.Worker.Models;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 using Microsoft.Extensions.Options;

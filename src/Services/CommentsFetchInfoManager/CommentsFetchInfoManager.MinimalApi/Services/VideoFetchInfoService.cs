@@ -1,6 +1,7 @@
 using AutoMapper;
 using CommentsFetchInfoManager.MinimalApi.Models;
 using CommentsFetchInfoManager.MinimalApi.Models.DTO;
+using CommentsFetchInfoManager.MinimalApi.Repositories;
 using CommentsFetchInfoManager.MinimalApi.Services.Interfaces;
 using CommentsFetchInfoManager.MinimalApi.Validations;
 
@@ -30,7 +31,7 @@ public class VideoFetchInfoService : IVideoFetchInfoService
 
     public async Task<IResult> GetFetchInfoByIdAsync(string videoId)
     {
-        VideoFetchInfo videoFetchInfo = await _videoFetchInfoRepository.GetByVideoId(videoId);
+        VideoFetchInfo videoFetchInfo = await _videoFetchInfoRepository.GetByIdAsync(videoId);
     
         if (videoFetchInfo == null)
         {

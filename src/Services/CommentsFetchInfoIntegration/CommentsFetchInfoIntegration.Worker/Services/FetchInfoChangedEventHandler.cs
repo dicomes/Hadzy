@@ -1,7 +1,9 @@
 using AutoMapper;
+using CommentsFetchInfoIntegration.Worker.Builders;
 using CommentsFetchInfoIntegration.Worker.IntegrationEvents;
 using CommentsFetchInfoIntegration.Worker.Models;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
+using IntegrationEventsContracts;
 
 namespace CommentsFetchInfoIntegration.Worker.Services;
 
@@ -9,34 +11,36 @@ public class FetchInfoChangedEventHandler : IFetchInfoChangedEventHandler
 {
     private readonly IFetchInfoService _fetchInfoService;
     private readonly IMapper _mapper;
+    private readonly CommentsFetchInfoEventBuilder _eventBuilder;
 
     public FetchInfoChangedEventHandler(
         IFetchInfoService fetchInfoService,
-        IMapper mapper)
+        IMapper mapper, CommentsFetchInfoEventBuilder eventBuilder)
     {
         _fetchInfoService = fetchInfoService;
         _mapper = mapper;
-        
+        _eventBuilder = eventBuilder;
     }
-    public async Task HandeAsync(FetchInfoChangedEvent fetchInfoChangedEvent)
+    public async Task HandeAsync(IFetchInfoChangedEvent fetchInfoChangedEvent)
     {
+        FetchInfoChangedEvent fetchInfoChanged = _eventBuilder.BuildFromEvent(fetchInfoChangedEvent);
 
-        bool fetchInfoEventExists = await _fetchInfoService.FetchInfoByIdExistsAsync(fetchInfoChangedEvent.VideoId);
+        bool fetchInfoEventExists = await _fetchInfoService.FetchInfoByIdExistsAsync(fetchInfoChanged.VideoId);
 
         if (fetchInfoEventExists)
         {
             await UpdateFetchInfoAsync(
-                fetchInfoChangedEvent.VideoId,
-                fetchInfoChangedEvent.Status,
-                fetchInfoChangedEvent.CommentsCount + fetchInfoChangedEvent.ReplyCount,
-                fetchInfoChangedEvent.CommentIds,
-                fetchInfoChangedEvent.PageToken,
-                fetchInfoChangedEvent.CompletedTillFirstComment
+                fetchInfoChanged.VideoId,
+                fetchInfoChanged.Status,
+                fetchInfoChanged.CommentsCount + fetchInfoChanged.ReplyCount,
+                fetchInfoChanged.CommentIds,
+                fetchInfoChanged.PageToken,
+                fetchInfoChanged.CompletedTillFirstComment
                 );
         }
         else
         {
-            await InsertFetchInfoAsync(fetchInfoChangedEvent);
+            await InsertFetchInfoAsync(fetchInfoChanged);
         }
     }
 

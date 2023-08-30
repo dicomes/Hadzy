@@ -1,8 +1,6 @@
-using CommentsFetchInfoIntegration.Worker.Configurations.Interfaces;
-
 namespace CommentsFetchInfoIntegration.Worker.Configurations;
 
-public class MongoDbConfig : IMongoDbConfig
+public class MongoDbConfig
 {
     public string ConnectionString { get; set; }
     public string DatabaseName { get; set; }

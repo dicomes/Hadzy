@@ -1,8 +1,8 @@
-using CommentsFetchInfoIntegration.Worker.IntegrationEvents;
+using IntegrationEventsContracts;
 
 namespace CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 
 public interface IFetchInfoChangedEventHandler
 {
-    Task HandeAsync(FetchInfoChangedEvent fetchInfoChangedEvent);
+    Task HandeAsync(IFetchInfoChangedEvent fetchInfoChangedEvent);
 }

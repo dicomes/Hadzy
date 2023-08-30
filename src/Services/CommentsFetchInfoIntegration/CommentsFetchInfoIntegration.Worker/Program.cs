@@ -1,13 +1,11 @@
 using CommentsFetchInfoIntegration.Worker;
 using CommentsFetchInfoIntegration.Worker.Builders;
 using CommentsFetchInfoIntegration.Worker.Configurations;
-using CommentsFetchInfoIntegration.Worker.Configurations.Interfaces;
 using CommentsFetchInfoIntegration.Worker.Consumers;
 using CommentsFetchInfoIntegration.Worker.Mapper;
 using CommentsFetchInfoIntegration.Worker.Services;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 using MassTransit;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 var seqConfig = new SeqConfig();

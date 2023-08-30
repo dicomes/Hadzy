@@ -28,27 +28,21 @@ namespace CommentsStorage.Worker.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("AuthorChannelId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AuthorChannelUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AuthorDisplayName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AuthorProfileImageUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ChannelId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Etag")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("LikeCount")
@@ -58,11 +52,9 @@ namespace CommentsStorage.Worker.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("TextDisplay")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TextOriginal")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long>("TotalReplyCount")
@@ -76,7 +68,6 @@ namespace CommentsStorage.Worker.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ViewerRating")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");

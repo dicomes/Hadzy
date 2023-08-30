@@ -10,24 +10,21 @@ public class FetchInfoChangedEventConsumer : IConsumer<IFetchInfoChangedEvent>
 {
     private readonly ILogger<FetchInfoChangedEventConsumer> _logger;
     private readonly IFetchInfoChangedEventHandler _fetchInfoChangedEventHandler;
-    private readonly CommentsFetchInfoEventBuilder _eventBuilder;
 
     public FetchInfoChangedEventConsumer(
         ILogger<FetchInfoChangedEventConsumer> logger,
-        IFetchInfoChangedEventHandler fetchInfoChangedEventHandler,
-        CommentsFetchInfoEventBuilder eventBuilder)
+        IFetchInfoChangedEventHandler fetchInfoChangedEventHandler)
     {
         _logger = logger;
         _fetchInfoChangedEventHandler = fetchInfoChangedEventHandler;
-        _eventBuilder = eventBuilder;
     }
 
     public async Task Consume(ConsumeContext<IFetchInfoChangedEvent> context)
     {
-        FetchInfoChangedEvent fetchInfoChangedEventReceived = _eventBuilder.BuildFromEvent(context.Message);
-        _logger.LogInformation("{Source}: Received FetchInfoChangedEvent. Guid: {Guid}. Event data: {EventData}.",
-            GetType().Name, fetchInfoChangedEventReceived.Id, fetchInfoChangedEventReceived);
+        
+        _logger.LogInformation("{Source}: Received FetchInfoChangedEvent. Event Id: {EventId}. Event data: {EventData}.",
+            GetType().Name, context.Message.Id, context.Message);
 
-        await _fetchInfoChangedEventHandler.HandeAsync(fetchInfoChangedEventReceived);
+        await _fetchInfoChangedEventHandler.HandeAsync(context.Message);
     }
 }

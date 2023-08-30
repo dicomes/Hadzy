@@ -30,9 +30,9 @@ services:
       - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
       - RabbitMq:User=${RABBITMQ_USER}
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
-      - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
-      - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEOFETCHINFOCOLLECTIONNAME}
+      - MongoDb:ConnectionString=${MONGODB_CONNECTION_STRING}
+      - MongoDb:DatabaseName=${MONGODB_DATABASE_NAME}
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEO_FETCH_INFO_COLLECTION_NAME}
   
   hadzy-comments.fetch.info.manager.api.dev:
     image: hadzy/comments.fetch.info.manager.api:1.0.0
@@ -47,6 +47,6 @@ services:
       - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
       - RabbitMq:User=${RABBITMQ_USER}
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
-      - MongoDb:ConnectionString=${MONGODB_CONNECTIONSTRING}
-      - MongoDb:DatabaseName=${MONGODB_DATABASENAME}
-      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEOFETCHINFOCOLLECTIONNAME}
+      - MongoDb:ConnectionString=${MONGODB_CONNECTION_STRING}
+      - MongoDb:DatabaseName=${MONGODB_DATABASE_NAME}
+      - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEO_FETCH_INFO_COLLECTION_NAME}

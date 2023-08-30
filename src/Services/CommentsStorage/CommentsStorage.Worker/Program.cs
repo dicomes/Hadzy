@@ -30,6 +30,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<Worker>();
         services.AddAutoMapper(typeof(MappingConfig));
         services.AddDbContext<CommentDbContext>();
+        services.AddTransient<IIntegrationService, IntegrationService>();
         services.AddScoped<ICommentRepository, PostgreCommentRepository>();
         services.AddScoped<ICommentService, CommentService>();
         services.AddTransient<CommentThreadListCompletedEventConsumer>();

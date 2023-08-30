@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\..\SharedContracts\IntegrationEventsContracts\IntegrationEventsContracts.csproj" />
     <ProjectReference Include="..\..\..\SharedContracts\MongoDbContracts\MongoDbContracts.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configurations\Interfaces" />
+  </ItemGroup>
 </Project>
