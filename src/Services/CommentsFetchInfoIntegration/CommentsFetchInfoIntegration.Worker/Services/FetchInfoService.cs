@@ -1,5 +1,4 @@
 using CommentsFetchInfoIntegration.Worker.Configurations;
-using CommentsFetchInfoIntegration.Worker.Configurations.Interfaces;
 using CommentsFetchInfoIntegration.Worker.Models;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 using Microsoft.Extensions.Options;
@@ -12,11 +11,11 @@ public class FetchInfoService : IFetchInfoService
     private readonly IMongoCollection<VideoFetchInfo> _fetchStatus;
 
     public FetchInfoService(
-        IMongoDbConfig mongoDbConfig)
+        IOptions<MongoDbConfig> mongoDbConfig)
     {
-        var mongoClient = new MongoClient(mongoDbConfig.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.DatabaseName);
-        _fetchStatus = mongoDatabase.GetCollection<VideoFetchInfo>(mongoDbConfig.VideoFetchInfoCollectionName);
+        var mongoClient = new MongoClient(mongoDbConfig.Value.ConnectionString);
+        var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.Value.DatabaseName);
+        _fetchStatus = mongoDatabase.GetCollection<VideoFetchInfo>(mongoDbConfig.Value.VideoFetchInfoCollectionName);
     }
 
     public async Task<bool> FetchInfoByIdExistsAsync(string? videoId)

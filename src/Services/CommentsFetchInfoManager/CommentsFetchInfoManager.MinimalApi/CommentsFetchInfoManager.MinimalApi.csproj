@@ -26,8 +26,4 @@
     <ProjectReference Include="..\..\..\SharedContracts\MongoDbContracts\MongoDbContracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Exceptions" />
-  </ItemGroup>
-
 </Project>

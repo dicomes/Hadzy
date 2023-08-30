@@ -3,12 +3,11 @@ using Google.Apis.YouTube.v3;
 using Serilog;
 using YouTubeCommentsFetcher.Worker.Configurations;
 using YouTubeCommentsFetcher.Worker.Services;
-using YouTubeCommentsFetcher.Worker.Services.Mapper;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker;
 using YouTubeCommentsFetcher.Worker.Consumers;
+using YouTubeCommentsFetcher.Worker.Mappers;
 using YouTubeCommentsFetcher.Worker.Services.Interfaces;
-using YouTubeCommentsFetcher.Worker.Services.Mappers;
 
 var hostBuilder = Host.CreateDefaultBuilder(args);
 

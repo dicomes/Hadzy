@@ -1,6 +1,7 @@
 using System.Net;
 using CommentsFetchInfoManager.MinimalApi.Models;
 using CommentsFetchInfoManager.MinimalApi.Models.DTO;
+using CommentsFetchInfoManager.MinimalApi.Repositories;
 using CommentsFetchInfoManager.MinimalApi.Services.Interfaces;
 using CommentsFetchInfoManager.MinimalApi.Validations;
 
@@ -27,7 +28,7 @@ public class FetchInfoHandlerService : IFetchInfoHandlerService
 
     public async Task<IResult> HandleAsync(FetchInfoDto? fetchInfoDto)
     {
-        VideoFetchInfo oldVideoFetchInfo = await _videoFetchInfoRepository.GetByVideoId(fetchInfoDto.VideoId);
+        VideoFetchInfo oldVideoFetchInfo = await _videoFetchInfoRepository.GetByIdAsync(fetchInfoDto.VideoId);
 
         foreach (var handler in _statusHandlers)
         {

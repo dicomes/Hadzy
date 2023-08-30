@@ -23,11 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions" />
+    <ProjectReference Include="..\..\..\SharedContracts\IntegrationEventsContracts\IntegrationEventsContracts.csproj" />
+    <ProjectReference Include="..\..\..\SharedContracts\MongoDbContracts\MongoDbContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\SharedContracts\IntegrationEventsContracts\IntegrationEventsContracts.csproj" />
-    <ProjectReference Include="..\..\..\SharedContracts\MongoDbContracts\MongoDbContracts.csproj" />
+    <Folder Include="Configurations\Interfaces" />
   </ItemGroup>
 </Project>

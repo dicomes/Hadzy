@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-    
+  
   hadzy-comments.fetcher.worker.dev:
     image: hadzy/comments.fetcher.worker:1.0.0
     ports:
@@ -16,7 +16,7 @@ services:
       - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
       - RabbitMq:User=${RABBITMQ_USER}
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
-        
+  
   hadzy-comments.fetch.info.integration.worker.dev:
     image: hadzy/comments.fetch.info.integration.worker:1.0.0
     ports:
@@ -50,3 +50,18 @@ services:
       - MongoDb:ConnectionString=${MONGODB_CONNECTION_STRING}
       - MongoDb:DatabaseName=${MONGODB_DATABASE_NAME}
       - MongoDb:VideoFetchInfoCollectionName=${MONGODB_VIDEO_FETCH_INFO_COLLECTION_NAME}
+
+  hadzy-comments.storage.worker.dev:
+    image: hadzy/comments.storage.worker:1.0.0
+    ports:
+      - "5191:5191"
+    build:
+      context: .
+      dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5151
+      - Seq:Url=${SEQ_URL}
+      - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
+      - RabbitMq:User=${RABBITMQ_USER}
+      - RabbitMq:Password=${RABBITMQ_PASSWORD}
+      - PostgreSql:ConnectionString=${POSTGRESQL_CONNECTION_STRING}

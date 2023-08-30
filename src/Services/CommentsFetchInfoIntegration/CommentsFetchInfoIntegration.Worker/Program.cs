@@ -1,13 +1,11 @@
 using CommentsFetchInfoIntegration.Worker;
 using CommentsFetchInfoIntegration.Worker.Builders;
 using CommentsFetchInfoIntegration.Worker.Configurations;
-using CommentsFetchInfoIntegration.Worker.Configurations.Interfaces;
 using CommentsFetchInfoIntegration.Worker.Consumers;
 using CommentsFetchInfoIntegration.Worker.Mapper;
 using CommentsFetchInfoIntegration.Worker.Services;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 using MassTransit;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 var seqConfig = new SeqConfig();
@@ -31,8 +29,6 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         services.AddAutoMapper(typeof(MappingConfig));
         services.Configure<MongoDbConfig>(
             hostingContext.Configuration.GetSection("MongoDb"));
-        services.AddSingleton<IMongoDbConfig>(provider =>
-            provider.GetRequiredService<IOptions<MongoDbConfig>>().Value);
         services.AddSingleton<IFetchInfoChangedEventHandler, FetchInfoChangedEventHandler>();
         services.AddSingleton<IFetchInfoService, FetchInfoService>();
         services.AddSingleton<CommentsFetchInfoEventBuilder>();
@@ -48,7 +44,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                     configure.Password(rabbitMqConfig.Password);
                 });
                 
-                cfg.ReceiveEndpoint("fetch-status-queue", e =>
+                cfg.ReceiveEndpoint("fetch-info-queue", e =>
                 {
                     e.Consumer<FetchInfoChangedEventConsumer>(context);
                 });
