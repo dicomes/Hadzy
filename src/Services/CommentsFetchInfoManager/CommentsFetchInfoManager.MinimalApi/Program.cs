@@ -25,14 +25,14 @@ var mongoDbConfig = builder.Configuration.GetSection("MongoDb").Get<MongoDbConfi
     builder.Services.AddAutoMapper(typeof(MappingConfig));
     builder.Services.AddTransient<IErrorResponseService, ErrorResponseService<FetchInfoDto>>();
     builder.Services.AddTransient<IFetchInfoHandlerService, FetchInfoHandlerService>();
-    builder.Services.AddTransient<IVideoFetchInfoRepository, VideoFetchInfoRepository>();
+    builder.Services.AddTransient<IFetchInfoRepository, MongoDbFetchInfoRepository>();
     builder.Services.AddTransient<IValidationService<FetchInfoDto>, FetchInfoValidationService>();
     builder.Services.AddTransient<IEventPublisherService, EventPublisherService>();
     builder.Services.AddTransient<IFetchStatusHandler, HandlerFetchedBefore>();
     builder.Services.AddTransient<IFetchStatusHandler, HandlerFailedBefore>();
     builder.Services.AddTransient<IFetchStatusHandler, HandlerInProgress>();
     builder.Services.AddTransient<IFetchStatusHandler, HandlerNewFetch>();
-    builder.Services.AddTransient<IVideoFetchInfoService, VideoFetchInfoService>();
+    builder.Services.AddTransient<IFetchInfoService, FetchInfoService>();
     builder.Services.AddValidatorsFromAssemblyContaining<Program>();
     builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
     builder.Services.AddMassTransit(configurator =>

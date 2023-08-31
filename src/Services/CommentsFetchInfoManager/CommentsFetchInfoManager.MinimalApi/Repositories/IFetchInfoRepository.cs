@@ -2,7 +2,7 @@ using CommentsFetchInfoManager.MinimalApi.Models;
 
 namespace CommentsFetchInfoManager.MinimalApi.Repositories;
 
-public interface IVideoFetchInfoRepository
+public interface IFetchInfoRepository
 {
     Task<VideoFetchInfo> GetByIdAsync(string videoId);
     Task AddAsync(VideoFetchInfo videoFetchInfo);

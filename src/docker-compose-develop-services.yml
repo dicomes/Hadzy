@@ -59,7 +59,7 @@ services:
       context: .
       dockerfile: Services/CommentsStorage/CommentsStorage.Worker/Dockerfile.develop
     environment:
-      - ASPNETCORE_URLS=http://*:5151
+      - ASPNETCORE_URLS=http://*:5191
       - Seq:Url=${SEQ_URL}
       - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
       - RabbitMq:User=${RABBITMQ_USER}

@@ -7,31 +7,31 @@ using CommentsFetchInfoManager.MinimalApi.Validations;
 
 namespace CommentsFetchInfoManager.MinimalApi.Services;
 
-public class VideoFetchInfoService : IVideoFetchInfoService
+public class FetchInfoService : IFetchInfoService
 {
     private readonly IFetchInfoHandlerService _fetchInfoHandlerService;
     private readonly IMapper _mapper;
-    private readonly IVideoFetchInfoRepository _videoFetchInfoRepository;
+    private readonly IFetchInfoRepository _fetchInfoRepository;
     private readonly IErrorResponseService _errorResponseService;
     private readonly IValidationService<FetchInfoDto> _validationService;
 
-    public VideoFetchInfoService(
+    public FetchInfoService(
         IFetchInfoHandlerService fetchInfoHandlerService,
         IMapper mapper,
-        IVideoFetchInfoRepository videoFetchInfoRepository,
+        IFetchInfoRepository fetchInfoRepository,
         IErrorResponseService errorResponseService,
         IValidationService<FetchInfoDto> validationService)
     {
         _fetchInfoHandlerService = fetchInfoHandlerService;
         _mapper = mapper;
-        _videoFetchInfoRepository = videoFetchInfoRepository;
+        _fetchInfoRepository = fetchInfoRepository;
         _errorResponseService = errorResponseService;
         _validationService = validationService;
     }
 
     public async Task<IResult> GetFetchInfoByIdAsync(string videoId)
     {
-        VideoFetchInfo videoFetchInfo = await _videoFetchInfoRepository.GetByIdAsync(videoId);
+        VideoFetchInfo videoFetchInfo = await _fetchInfoRepository.GetByIdAsync(videoId);
     
         if (videoFetchInfo == null)
         {
@@ -47,7 +47,6 @@ public class VideoFetchInfoService : IVideoFetchInfoService
 
         return Results.Ok(response);
     }
-
 
     public async Task<IResult> CreateNewFetchInfoAsync(FetchInfoDto fetchInfoDto)
     {

@@ -4,9 +4,8 @@ namespace CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 
 public interface IFetchInfoService
 {
-    Task<bool> FetchInfoByIdExistsAsync(string? videoId);
-    Task UpdateFetchInfoAsync(string videoId, ulong newTotalCommentsFetched, string newStatus);
-    Task UpdateFetchInfoAsync(VideoFetchInfo videoFetchInfo);
-    Task<VideoFetchInfo> GetFetchInfoByIdAsync(string? videoId);
-    Task InsertFetchInfoAsync(VideoFetchInfo videoFetchInfo);
+    Task<bool> ExistsByIdAsync(string videoId);
+    Task UpdateAsync(VideoFetchInfo videoFetchInfo);
+    Task<VideoFetchInfo> GetByIdAsync(string videoId);
+    Task AddAsync(VideoFetchInfo videoFetchInfo);
 }

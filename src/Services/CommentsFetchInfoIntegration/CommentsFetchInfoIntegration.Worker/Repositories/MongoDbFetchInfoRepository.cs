@@ -1,15 +1,15 @@
-using CommentsFetchInfoManager.MinimalApi.Configurations;
-using CommentsFetchInfoManager.MinimalApi.Models;
+using CommentsFetchInfoIntegration.Worker.Configurations;
+using CommentsFetchInfoIntegration.Worker.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace CommentsFetchInfoManager.MinimalApi.Repositories;
+namespace CommentsFetchInfoIntegration.Worker.Repositories;
 
-public class VideoFetchInfoRepository : IVideoFetchInfoRepository
+public class MongoDbFetchInfoRepository : IFetchInfoRepository
 {
     private readonly IMongoCollection<VideoFetchInfo> _videoFetchInfo;
 
-    public VideoFetchInfoRepository(IOptions<MongoDbConfig> mongoDbConfig)
+    public MongoDbFetchInfoRepository(IOptions<MongoDbConfig> mongoDbConfig)
     {
         var mongoClient = new MongoClient(mongoDbConfig.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.Value.DatabaseName);
@@ -36,9 +36,10 @@ public class VideoFetchInfoRepository : IVideoFetchInfoRepository
     {
         await _videoFetchInfo.DeleteOneAsync(videoId);
     }
+
+    public async Task<long> CountByIdAsync(string videoId)
+    {
+        var filter = Builders<VideoFetchInfo>.Filter.Eq(x => x.VideoId, videoId);
+        return await _videoFetchInfo.CountDocumentsAsync(filter);
+    }
 }
-
-
-
-
-

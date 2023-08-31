@@ -1,5 +1,6 @@
 using CommentsFetchInfoIntegration.Worker.Configurations;
 using CommentsFetchInfoIntegration.Worker.Models;
+using CommentsFetchInfoIntegration.Worker.Repositories;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -8,45 +9,32 @@ namespace CommentsFetchInfoIntegration.Worker.Services;
 
 public class FetchInfoService : IFetchInfoService
 {
-    private readonly IMongoCollection<VideoFetchInfo> _fetchStatus;
+    private readonly IFetchInfoRepository _fetchInfoRepository;
 
     public FetchInfoService(
-        IOptions<MongoDbConfig> mongoDbConfig)
+        IFetchInfoRepository fetchInfoRepository)
     {
-        var mongoClient = new MongoClient(mongoDbConfig.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(mongoDbConfig.Value.DatabaseName);
-        _fetchStatus = mongoDatabase.GetCollection<VideoFetchInfo>(mongoDbConfig.Value.VideoFetchInfoCollectionName);
+        _fetchInfoRepository = fetchInfoRepository;
     }
 
-    public async Task<bool> FetchInfoByIdExistsAsync(string? videoId)
+    public async Task<bool> ExistsByIdAsync(string videoId)
     {
-        var filter = Builders<VideoFetchInfo>.Filter.Eq(x => x.VideoId, videoId);
-        var count = await _fetchStatus.CountDocumentsAsync(filter);
+        var count = await _fetchInfoRepository.CountByIdAsync(videoId);
         return count > 0;
     }
 
-    public async Task UpdateFetchInfoAsync(VideoFetchInfo videoFetchInfo)
+    public async Task UpdateAsync(VideoFetchInfo videoFetchInfo)
     {
-        await _fetchStatus.ReplaceOneAsync(x => x.VideoId == videoFetchInfo.VideoId, videoFetchInfo);
+        await _fetchInfoRepository.UpdateAsync(videoFetchInfo);
     }
     
-    public async Task UpdateFetchInfoAsync(string videoId, ulong newTotalCommentsFetched, string newStatus)
+    public async Task<VideoFetchInfo> GetByIdAsync(string videoId)
     {
-        var filter = Builders<VideoFetchInfo>.Filter.Eq(x => x.VideoId, videoId);
-        var update = Builders<VideoFetchInfo>.Update
-            .Set(x => x.CommentsCount, newTotalCommentsFetched)
-            .Set(x => x.Status, newStatus);
-    
-        await _fetchStatus.UpdateOneAsync(filter, update);
+        return await _fetchInfoRepository.GetByIdAsync(videoId);
     }
 
-    public async Task<VideoFetchInfo> GetFetchInfoByIdAsync(string? videoId)
+    public async Task AddAsync(VideoFetchInfo videoFetchInfo)
     {
-        return await _fetchStatus.Find(x => x.VideoId == videoId).FirstOrDefaultAsync();
-    }
-
-    public async Task InsertFetchInfoAsync(VideoFetchInfo videoFetchInfo)
-    {
-        await _fetchStatus.InsertOneAsync(videoFetchInfo);
+        await _fetchInfoRepository.AddAsync(videoFetchInfo);
     }
 }

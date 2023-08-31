@@ -29,7 +29,7 @@ public static class WebApplicationExtensions
     public static WebApplication ConfigureEndpoints(this WebApplication app)
     {
         app.MapPost("comments-fetch-status-manager/api/v1/comments/fetch/",
-                (IVideoFetchInfoService fetchStatusService, [FromBody] FetchInfoDto fetchInfoDto) =>
+                (IFetchInfoService fetchStatusService, [FromBody] FetchInfoDto fetchInfoDto) =>
                     fetchStatusService.CreateNewFetchInfoAsync(fetchInfoDto))
             .WithName("NewFetchInfo")
             .Accepts<FetchInfoDto>("application/json")
@@ -39,7 +39,7 @@ public static class WebApplicationExtensions
             .Produces(StatusCodes.Status500InternalServerError);
 
         app.MapGet("comments-fetch-status-manager/api/v1/comments/fetch/status/{videoId}",
-                (IVideoFetchInfoService fetchManagerService, string? videoId) =>  
+                (IFetchInfoService fetchManagerService, string? videoId) =>  
                     fetchManagerService.GetFetchInfoByIdAsync(videoId))
             .WithName("GetFetchStatus")
             .Produces<APIResponse<FetchInfoDto>>(StatusCodes.Status200OK)

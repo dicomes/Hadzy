@@ -2,6 +2,7 @@ using AutoMapper;
 using CommentsFetchInfoIntegration.Worker.Builders;
 using CommentsFetchInfoIntegration.Worker.IntegrationEvents;
 using CommentsFetchInfoIntegration.Worker.Models;
+using CommentsFetchInfoIntegration.Worker.Repositories;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
 using IntegrationEventsContracts;
 
@@ -15,7 +16,8 @@ public class FetchInfoChangedEventHandler : IFetchInfoChangedEventHandler
 
     public FetchInfoChangedEventHandler(
         IFetchInfoService fetchInfoService,
-        IMapper mapper, CommentsFetchInfoEventBuilder eventBuilder)
+        IMapper mapper,
+        CommentsFetchInfoEventBuilder eventBuilder)
     {
         _fetchInfoService = fetchInfoService;
         _mapper = mapper;
@@ -25,7 +27,7 @@ public class FetchInfoChangedEventHandler : IFetchInfoChangedEventHandler
     {
         FetchInfoChangedEvent fetchInfoChanged = _eventBuilder.BuildFromEvent(fetchInfoChangedEvent);
 
-        bool fetchInfoEventExists = await _fetchInfoService.FetchInfoByIdExistsAsync(fetchInfoChanged.VideoId);
+        bool fetchInfoEventExists = await _fetchInfoService.ExistsByIdAsync(fetchInfoChanged.VideoId);
 
         if (fetchInfoEventExists)
         {
@@ -46,18 +48,18 @@ public class FetchInfoChangedEventHandler : IFetchInfoChangedEventHandler
 
     private async Task UpdateFetchInfoAsync(string? id, string? newStatus, ulong newTotalCommentsProcessed, List<string>? newCommentIds, string? newPageToken, bool completed)
     {
-        var fetchInfo = await _fetchInfoService.GetFetchInfoByIdAsync(id);
+        var fetchInfo = await _fetchInfoService.GetByIdAsync(id);
         fetchInfo.Status = newStatus;
         fetchInfo.CommentsCount += newTotalCommentsProcessed;
         fetchInfo.CommentIds = newCommentIds ?? fetchInfo.CommentIds;
         fetchInfo.LastPageToken = newPageToken;
         fetchInfo.CompletedTillFirstComment = completed;
-        await _fetchInfoService.UpdateFetchInfoAsync(fetchInfo);
+        await _fetchInfoService.UpdateAsync(fetchInfo);
     }
 
     private async Task InsertFetchInfoAsync(FetchInfoChangedEvent fetchInfoChangedEvent)
     {
         var fetchInfo = _mapper.Map<VideoFetchInfo>(fetchInfoChangedEvent);
-        await _fetchInfoService.InsertFetchInfoAsync(fetchInfo);
+        await _fetchInfoService.AddAsync(fetchInfo);
     }
 }

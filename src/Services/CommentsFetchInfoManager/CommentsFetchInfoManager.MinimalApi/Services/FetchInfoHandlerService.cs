@@ -10,25 +10,25 @@ namespace CommentsFetchInfoManager.MinimalApi.Services;
 public class FetchInfoHandlerService : IFetchInfoHandlerService
 {
     private readonly IValidationService<FetchInfoDto> _validationService;
-    private readonly IVideoFetchInfoRepository _videoFetchInfoRepository;
+    private readonly IFetchInfoRepository _fetchInfoRepository;
     private readonly IEnumerable<IFetchStatusHandler> _statusHandlers;
     private readonly IErrorResponseService _errorResponseService;
 
     public FetchInfoHandlerService(
         IValidationService<FetchInfoDto> validationService,
-        IVideoFetchInfoRepository videoFetchInfoRepository,
+        IFetchInfoRepository fetchInfoRepository,
         IEnumerable<IFetchStatusHandler> statusHandlers,
         IErrorResponseService errorResponseService)
     {
         _validationService = validationService;
-        _videoFetchInfoRepository = videoFetchInfoRepository;
+        _fetchInfoRepository = fetchInfoRepository;
         _statusHandlers = statusHandlers;
         _errorResponseService = errorResponseService;
     }
 
     public async Task<IResult> HandleAsync(FetchInfoDto? fetchInfoDto)
     {
-        VideoFetchInfo oldVideoFetchInfo = await _videoFetchInfoRepository.GetByIdAsync(fetchInfoDto.VideoId);
+        VideoFetchInfo oldVideoFetchInfo = await _fetchInfoRepository.GetByIdAsync(fetchInfoDto.VideoId);
 
         foreach (var handler in _statusHandlers)
         {
