@@ -7,17 +7,12 @@ public static class BuilderExtensions
 {
     public static WebApplicationBuilder ConfigureLogging(this WebApplicationBuilder builder)
     {
-        var seqConfig = builder.Configuration.GetSection("Seq");
         Log.Logger = new LoggerConfiguration()
-            .WriteTo.Seq(seqConfig["Url"])
+            .WriteTo.Seq(builder.Configuration["Seq:Url"])
             .WriteTo.Console()
             .CreateLogger();
 
         builder.Host.UseSerilog();
         return builder;
     }
-    
-    public static void ConfigurePostgreSqlSettings(this WebApplicationBuilder builder) =>
-        builder.Services.Configure<PostgreSqlConfig>(
-            builder.Configuration.GetSection("PostgreSql"));
 }

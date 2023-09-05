@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using CommentsManager.Api.Models;
 using CommentsManager.Api.Repositories;
 
@@ -17,9 +18,10 @@ public class CommentService : ICommentService
         return await _commentRepository.GetByIdAsync(id);
     }
 
-    public async Task<IEnumerable<Comment>> GetAllCommentsByVideoIdAsync(string videoId)
+    public async Task<IEnumerable<Comment>> FindByConditionAsync(Expression<Func<Comment, bool>> expression)
     {
-        return await _commentRepository.GetAllByVideoIdAsync(videoId);
+        return await _commentRepository.FindByConditionAsync(expression);
     }
+    
     
 }

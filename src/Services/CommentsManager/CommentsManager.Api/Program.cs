@@ -1,27 +1,24 @@
-using CommentsManager.Api.Configurations;
-using CommentsManager.Api.Data;
 using CommentsManager.Api.Extensions;
 using CommentsManager.Api.Mapping;
 using CommentsManager.Api.Repositories;
 using CommentsManager.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureLogging();
 
-var seqConfig = builder.Configuration.GetSection("Seq").Get<SeqConfig>();
-
-// Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Add Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure services
+builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.ConfigureCors();
-builder.ConfigureLogging();
-builder.ConfigurePostgreSqlSettings();
+
+// Register services to the container.
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddDbContext<CommentDbContext>();
-builder.Services.AddScoped<ICommentRepository, PostgreCommentRepository>();
+builder.Services.AddScoped<ICommentRepository, PostgresCommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 

@@ -1,9 +1,9 @@
+using System.Linq.Expressions;
 using CommentsManager.Api.Models;
 
 namespace CommentsManager.Api.Repositories;
 
-public interface ICommentRepository
+public interface ICommentRepository : IRepository<Comment>
 {
-    Task<Comment?> GetByIdAsync(string id);
-    Task<IEnumerable<Comment>> GetAllByVideoIdAsync(string id);
+    Task<IEnumerable<Comment>> FindByConditionAsync(Expression<Func<Comment, bool>> expression);
 }

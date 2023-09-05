@@ -1,4 +1,6 @@
 using CommentsManager.Api.Configurations;
+using CommentsManager.Api.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CommentsManager.Api.Extensions;
@@ -13,4 +15,11 @@ public static class ServiceExtensions
                     .AllowAnyMethod()
                     .AllowAnyHeader());
         });
+    
+    public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        // PostgreSQL
+        services.AddDbContext<CommentDbContext>(options =>
+            options.UseNpgsql(configuration["Database:ConnectionString"]));
+    }
 }
