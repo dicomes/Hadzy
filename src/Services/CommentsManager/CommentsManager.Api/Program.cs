@@ -1,9 +1,11 @@
+using CommentsManager.Api.Contracts.Exceptions;
+using CommentsManager.Api.Contracts.Repositories;
+using CommentsManager.Api.Contracts.Services;
 using CommentsManager.Api.Exceptions;
 using CommentsManager.Api.Extensions;
 using CommentsManager.Api.Mapping;
 using CommentsManager.Api.Repositories;
 using CommentsManager.Api.Services;
-using CommentsManager.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureLogging();
@@ -20,7 +22,6 @@ builder.Services.ConfigureCors();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<ICommentRepository, PostgresCommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped<IErrorResponseService, ErrorResponseService>();
 builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
 builder.Services.AddControllers();
 

@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Data;
 using CommentsManager.Api.Models;
 using Microsoft.EntityFrameworkCore;

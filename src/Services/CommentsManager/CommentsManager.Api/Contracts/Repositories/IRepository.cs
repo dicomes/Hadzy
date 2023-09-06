@@ -1,6 +1,4 @@
-using System.Linq.Expressions;
-
-namespace CommentsManager.Api.Repositories;
+namespace CommentsManager.Api.Contracts.Repositories;
 
 public interface IRepository<TEntity> where TEntity : class
 {

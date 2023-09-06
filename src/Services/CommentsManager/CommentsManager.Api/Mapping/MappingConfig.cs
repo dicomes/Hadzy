@@ -8,6 +8,6 @@ public class MappingConfig : Profile
 {
     public MappingConfig()
     {
-        CreateMap<Comment, GetCommentResponse>();
+        CreateMap<Comment, CommentResponse>();
     }
 }

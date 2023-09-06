@@ -1,13 +1,11 @@
 using System.Linq.Expressions;
+using System.Net;
 using AutoMapper;
+using CommentsManager.Api.Contracts.Services;
 using CommentsManager.Api.DTO;
 using CommentsManager.Api.Exceptions;
 using CommentsManager.Api.Models;
-using CommentsManager.Api.Repositories;
-using CommentsManager.Api.Services;
-using CommentsManager.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CommentsManager.Api.Controllers;
 
@@ -17,18 +15,21 @@ public class CommentsController : ControllerBase
 {
     private readonly ILogger<CommentsController> _logger;
     private readonly ICommentService _commentService;
-    private readonly IMapper _mapper;
 
     public CommentsController(
         ILogger<CommentsController> logger,
-        ICommentService commentService,
-        IMapper mapper)
+        ICommentService commentService)
     {
         _logger = logger;
         _commentService = commentService;
-        _mapper = mapper;
     }
 
+    [ProducesResponseType(typeof(ApiResponse<GetCommentResponse>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ApiResponse<GetCommentResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<GetCommentResponse>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [HttpGet(Name = "GetComments")]
     public async Task<IActionResult> GetCommentsFiltered([FromRoute] string videoId, [FromQuery] GetComment getComment)
     {
@@ -38,8 +39,12 @@ public class CommentsController : ControllerBase
         }
         
         Expression<Func<Comment, bool>> filterExpression = comment => comment.VideoId == videoId;
+        IEnumerable<CommentResponse> commentsResponse = await _commentService.GetCommentsByExpressionAsync(filterExpression);
 
-        IEnumerable<GetCommentResponse> commentsResponse = await _commentService.GetCommentsByExpressionAsync(filterExpression);
+        if (!commentsResponse.Any())
+        {
+            throw new CommentNotFoundException(videoId);
+        }
             
         return Ok(commentsResponse);
     }

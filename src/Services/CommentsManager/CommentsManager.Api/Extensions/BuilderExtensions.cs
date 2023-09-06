@@ -1,4 +1,3 @@
-using CommentsManager.Api.Configurations;
 using Serilog;
 
 namespace CommentsManager.Api.Extensions;

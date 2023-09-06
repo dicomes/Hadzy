@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace CommentsManager.Api.Exceptions;
+namespace CommentsManager.Api.Contracts.Exceptions;
 
 public interface IExceptionHandlerService
 {
