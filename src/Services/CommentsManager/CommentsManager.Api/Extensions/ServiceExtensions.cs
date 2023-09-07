@@ -1,5 +1,7 @@
 using CommentsManager.Api.Configurations;
+using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Data;
+using CommentsManager.Api.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,10 +18,13 @@ public static class ServiceExtensions
                     .AllowAnyHeader());
         });
     
-    public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
+    public static void ConfigureRepositoryManager(this IServiceCollection services) =>
+        services.AddScoped<IRepositoryManager, RepositoryManager>();
+    
+    public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         // PostgreSQL
-        services.AddDbContext<CommentDbContext>(options =>
+        services.AddDbContext<RepositoryContext>(options =>
             options.UseNpgsql(configuration["Database:ConnectionString"]));
     }
 }

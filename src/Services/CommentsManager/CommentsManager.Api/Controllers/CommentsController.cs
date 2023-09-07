@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CommentsManager.Api.Controllers;
 
-// [ApiController]
+[ApiController]
 [Route("comments-manager/api/v1/video/{videoId}/comments")]
 public class CommentsController : ControllerBase
 {
@@ -24,28 +24,22 @@ public class CommentsController : ControllerBase
         _commentService = commentService;
     }
 
-    [ProducesResponseType(typeof(ApiResponse<GetCommentResponse>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ApiResponse<GetCommentResponse>), (int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(ApiResponse<GetCommentResponse>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CommentsPageResponse>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ApiResponse<CommentsPageResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<CommentsPageResponse>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    [Consumes("application/json")]
     [Produces("application/json")]
-    [HttpGet(Name = "GetComments")]
-    public async Task<IActionResult> GetCommentsFiltered([FromRoute] string videoId, [FromQuery] GetComment getComment)
+    [HttpGet(Name = "CommentsByQuery")]
+    public async Task<IActionResult> GetCommentsByQuery([FromRoute] string videoId, [FromQuery] QueryForCommentsPage queryForCommentsPage)
     {
         if (!ModelState.IsValid)
         {
             throw new ModelValidationException(ModelState);
         }
         
-        Expression<Func<Comment, bool>> filterExpression = comment => comment.VideoId == videoId;
-        IEnumerable<CommentResponse> commentsResponse = await _commentService.GetCommentsByExpressionAsync(filterExpression);
+        var commentsResponse = 
+            await _commentService.GetCommentsPageByQueryAsync(videoId, queryForCommentsPage);
 
-        if (!commentsResponse.Any())
-        {
-            throw new CommentNotFoundException(videoId);
-        }
-            
         return Ok(commentsResponse);
     }
 }

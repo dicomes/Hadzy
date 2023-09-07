@@ -6,5 +6,5 @@ namespace CommentsManager.Api.Contracts.Services;
 
 public interface ICommentService
 {
-    Task<IEnumerable<CommentResponse>> GetCommentsByExpressionAsync(Expression<Func<Comment, bool>> expression);
+    Task<CommentsPageResponse> GetCommentsPageByQueryAsync(string videoId, QueryForCommentsPage queryForCommentsPage);
 }

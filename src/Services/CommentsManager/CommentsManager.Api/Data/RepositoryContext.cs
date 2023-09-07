@@ -5,11 +5,11 @@ using Microsoft.Extensions.Options;
 
 namespace CommentsManager.Api.Data;
 
-public class CommentDbContext : DbContext
+public class RepositoryContext : DbContext
 {
     public DbSet<Comment> Comments { get; set; }
     
-    public CommentDbContext(DbContextOptions<CommentDbContext> options)
+    public RepositoryContext(DbContextOptions options)
         : base(options)
     {
     }

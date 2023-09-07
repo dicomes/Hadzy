@@ -6,6 +6,7 @@ using CommentsManager.Api.Extensions;
 using CommentsManager.Api.Mapping;
 using CommentsManager.Api.Repositories;
 using CommentsManager.Api.Services;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureLogging();
@@ -15,20 +16,28 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure services
-builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.ConfigureCors();
+builder.Services.ConfigureDbContext(builder.Configuration);
+builder.Services.ConfigureRepositoryManager();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 // Register services to the container.
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddScoped<ICommentRepository, PostgresCommentRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers(config => {
+    config.RespectBrowserAcceptHeader = true;
+    config.ReturnHttpNotAcceptable = true;
+});
 
 var app = builder.Build();
 
 // Exception Handling
-app.UseCustomExceptionHandler();
+app.UseExceptionHandlerService();
 
 // Development Tools
 if (app.Environment.IsDevelopment())

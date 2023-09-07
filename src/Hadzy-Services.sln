@@ -45,8 +45,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEventsContracts"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDbContracts", "SharedContracts\MongoDbContracts\MongoDbContracts.csproj", "{B8B69AA2-52EE-4D71-AB9B-DB21BBC179A2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{5DBD5615-7C85-4F0B-97BE-6F1CEEFF9036}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentsManager", "CommentsManager", "{D2551BA8-B7D4-4909-B8FA-028053000D51}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsManager.Api", "Services\CommentsManager\CommentsManager.Api\CommentsManager.Api.csproj", "{C2BD48A4-846D-4B43-8E77-4C19BF0C370C}"

@@ -8,7 +8,7 @@ namespace CommentsManager.Api.Extensions;
 
 public static class ApplicationExtensions
 {
-    public static WebApplication UseCustomExceptionHandler(this WebApplication app)
+    public static WebApplication UseExceptionHandlerService(this WebApplication app)
     {
         app.UseExceptionHandler(appBuilder =>
         {

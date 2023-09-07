@@ -3,32 +3,41 @@ using AutoMapper;
 using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Contracts.Services;
 using CommentsManager.Api.DTO;
+using CommentsManager.Api.Exceptions;
+using CommentsManager.Api.Factories;
 using CommentsManager.Api.Models;
-using CommentsManager.Api.Repositories;
 
 namespace CommentsManager.Api.Services;
 
 public class CommentService : ICommentService
 {
-    private readonly ICommentRepository _commentRepository;
+    private readonly IRepositoryManager _repository;
     private readonly IMapper _mapper;
 
     public CommentService(
-        ICommentRepository commentRepository,
+        IRepositoryManager repository,
         IMapper mapper)
     {
-        _commentRepository = commentRepository;
+        _repository = repository;
         _mapper = mapper;
     }
 
-    public async Task<Comment> GetCommentByIdAsync(string id)
+    public async Task<CommentsPageResponse> GetCommentsPageByQueryAsync(
+        string videoId, QueryForCommentsPage queryForCommentsPage)
     {
-        return await _commentRepository.GetByIdAsync(id);
-    }
 
-    public async Task<IEnumerable<CommentResponse>> GetCommentsByExpressionAsync(Expression<Func<Comment, bool>> expression)
-    {
-        var comments = await _commentRepository.FindByConditionAsync(expression);
-        return _mapper.Map<IEnumerable<CommentResponse>>(comments);
+        var comments = await _repository.Comment.GetByVideoIdAsync(videoId, false);
+        
+        if (!comments.Any())
+        {
+            throw new CommentNotFoundException(videoId);
+        }
+        
+        var commentsResponse = _mapper.Map<List<CommentForResponse>>(comments);
+        var response = CommentsPageResponseFactory.Create(
+            commentsResponse, queryForCommentsPage, commentsResponse.Count);
+        
+        return response;
     }
+    
 }

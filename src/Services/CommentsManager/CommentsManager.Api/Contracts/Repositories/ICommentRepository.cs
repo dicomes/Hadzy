@@ -1,9 +1,10 @@
-using System.Linq.Expressions;
+
 using CommentsManager.Api.Models;
 
 namespace CommentsManager.Api.Contracts.Repositories;
 
-public interface ICommentRepository : IRepository<Comment>
+public interface ICommentRepository
 {
-    Task<IEnumerable<Comment>> FindByConditionAsync(Expression<Func<Comment, bool>> expression);
+    Task<Comment> GetByIdAsync(string videoId, bool trackChanges);
+    Task<IEnumerable<Comment>> GetByVideoIdAsync(string videoId, bool trackChanges);
 }

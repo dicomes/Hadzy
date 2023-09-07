@@ -1,6 +1,6 @@
 namespace CommentsManager.Api.DTO;
 
-public record CommentResponse
+public record CommentForResponse
 {
     public string Id { get; set; }
     public string AuthorDisplayName { get; set; }
@@ -13,5 +13,4 @@ public record CommentResponse
     public ulong LikeCount { get; set; }
     public DateTimeOffset PublishedAt { get; set; }
     public uint TotalReplyCount { get; set; }
-    public PageInfo PageInfo { get; set; }
 }

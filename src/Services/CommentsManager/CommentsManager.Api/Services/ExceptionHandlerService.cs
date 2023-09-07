@@ -27,7 +27,7 @@ public class ExceptionHandlerService : IExceptionHandlerService
             allErrors.AddRange(validationErrors);
 
             // Return a BadRequest with the collected error messages.
-            return new BadRequestObjectResult(new ApiResponse<GetComment>
+            return new BadRequestObjectResult(new ApiResponse<QueryForCommentsPage>
             {
                 ErrorMessages = allErrors
             });
@@ -37,7 +37,7 @@ public class ExceptionHandlerService : IExceptionHandlerService
         {
             var message = new List<string> { commentNotFoundException.Message };
 
-            return new NotFoundObjectResult(new ApiResponse<GetComment>
+            return new NotFoundObjectResult(new ApiResponse<QueryForCommentsPage>
             {
                 ErrorMessages = message
             });
