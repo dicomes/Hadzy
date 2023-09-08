@@ -1,6 +1,6 @@
 namespace CommentsManager.Api.DTO;
 
-public record CommentForResponse
+public record CommentResponse
 {
     public string Id { get; set; }
     public string AuthorDisplayName { get; set; }

@@ -1,10 +1,9 @@
-using System.Linq.Expressions;
 using CommentsManager.Api.DTO;
-using CommentsManager.Api.Models;
+using CommentsManager.Api.RequestParameters;
 
 namespace CommentsManager.Api.Contracts.Services;
 
 public interface ICommentService
 {
-    Task<CommentsPageResponse> GetCommentsPageByQueryAsync(string videoId, QueryForCommentsPage queryForCommentsPage);
+    Task<PagedList<CommentResponse>> GetCommentsPageByQueryAsync(string videoId, CommentsParameters parameters);
 }

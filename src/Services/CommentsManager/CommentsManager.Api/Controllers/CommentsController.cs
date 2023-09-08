@@ -5,6 +5,7 @@ using CommentsManager.Api.Contracts.Services;
 using CommentsManager.Api.DTO;
 using CommentsManager.Api.Exceptions;
 using CommentsManager.Api.Models;
+using CommentsManager.Api.RequestParameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommentsManager.Api.Controllers;
@@ -24,13 +25,13 @@ public class CommentsController : ControllerBase
         _commentService = commentService;
     }
 
-    [ProducesResponseType(typeof(ApiResponse<CommentsPageResponse>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ApiResponse<CommentsPageResponse>), (int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(ApiResponse<CommentsPageResponse>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<PagedList<CommentResponse>>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedList<CommentResponse>>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<PagedList<CommentResponse>>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     [Produces("application/json")]
     [HttpGet(Name = "CommentsByQuery")]
-    public async Task<IActionResult> GetCommentsByQuery([FromRoute] string videoId, [FromQuery] QueryForCommentsPage queryForCommentsPage)
+    public async Task<IActionResult> GetCommentsByQuery([FromRoute] string videoId, [FromQuery] CommentsParameters parameters)
     {
         if (!ModelState.IsValid)
         {
@@ -38,8 +39,13 @@ public class CommentsController : ControllerBase
         }
         
         var commentsResponse = 
-            await _commentService.GetCommentsPageByQueryAsync(videoId, queryForCommentsPage);
+            await _commentService.GetCommentsPageByQueryAsync(videoId, parameters);
 
-        return Ok(commentsResponse);
+        var apiResponse = new ApiResponse<PagedList<CommentResponse>>()
+        {
+            Result = commentsResponse
+        };
+        
+        return Ok(apiResponse);
     }
 }

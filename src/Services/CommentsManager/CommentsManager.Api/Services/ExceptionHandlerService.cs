@@ -3,6 +3,7 @@ using CommentsManager.Api.Contracts.Exceptions;
 using CommentsManager.Api.Contracts.Services;
 using CommentsManager.Api.DTO;
 using CommentsManager.Api.Exceptions;
+using CommentsManager.Api.RequestParameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommentsManager.Api.Services;
@@ -27,7 +28,7 @@ public class ExceptionHandlerService : IExceptionHandlerService
             allErrors.AddRange(validationErrors);
 
             // Return a BadRequest with the collected error messages.
-            return new BadRequestObjectResult(new ApiResponse<QueryForCommentsPage>
+            return new BadRequestObjectResult(new ApiResponse<PagedList<CommentResponse>>
             {
                 ErrorMessages = allErrors
             });
@@ -37,7 +38,16 @@ public class ExceptionHandlerService : IExceptionHandlerService
         {
             var message = new List<string> { commentNotFoundException.Message };
 
-            return new NotFoundObjectResult(new ApiResponse<QueryForCommentsPage>
+            return new NotFoundObjectResult(new ApiResponse<CommentResponse>
+            {
+                ErrorMessages = message
+            });
+        }
+
+        if (exception is ArgumentException argumentException)
+        {
+            var message = new List<string> { argumentException.Message };
+            return new BadRequestObjectResult(new ApiResponse<PagedList<CommentResponse>>
             {
                 ErrorMessages = message
             });
