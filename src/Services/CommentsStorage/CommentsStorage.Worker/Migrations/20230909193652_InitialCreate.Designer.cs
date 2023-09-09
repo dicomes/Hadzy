@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CommentsStorage.Worker.Migrations
 {
     [DbContext(typeof(CommentDbContext))]
-    [Migration("20230830102305_InitialCreate")]
+    [Migration("20230909193652_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

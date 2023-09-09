@@ -24,12 +24,7 @@ public class CommentService : ICommentService
     public async Task<PagedList<CommentResponse>> GetCommentsPageByQueryAsync(
         string videoId, CommentsParameters parameters)
     {
-        (IEnumerable<Comment> comments, int totalCount) = await _repository.Comment.GetByVideoIdAndQueryAsync(videoId, parameters, false);
-        
-        if (!comments.Any())
-        {
-            throw new CommentNotFoundException(videoId);
-        }
+        (IEnumerable<Comment> comments, var totalCount) = await _repository.Comment.GetByVideoIdAndQueryAsync(videoId, parameters, false);
         
         var commentsResponse = _mapper.Map<List<CommentResponse>>(comments);
         

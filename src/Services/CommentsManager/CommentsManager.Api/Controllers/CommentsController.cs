@@ -38,12 +38,14 @@ public class CommentsController : ControllerBase
             throw new ModelValidationException(ModelState);
         }
         
-        var commentsResponse = 
-            await _commentService.GetCommentsPageByQueryAsync(videoId, parameters);
+        var pagedList = await _commentService.GetCommentsPageByQueryAsync(videoId, parameters);
+        
+        Console.WriteLine(pagedList.PageInfo.ToString());
+        Console.WriteLine(pagedList.Items.ToString());
 
         var apiResponse = new ApiResponse<PagedList<CommentResponse>>()
         {
-            Result = commentsResponse
+            Result = pagedList
         };
         
         return Ok(apiResponse);

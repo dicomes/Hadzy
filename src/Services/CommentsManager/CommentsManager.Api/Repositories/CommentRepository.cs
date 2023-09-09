@@ -2,6 +2,7 @@ using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Data;
 using CommentsManager.Api.DTO;
 using CommentsManager.Api.Enums;
+using CommentsManager.Api.Extensions;
 using CommentsManager.Api.Mapping;
 using CommentsManager.Api.Models;
 using CommentsManager.Api.RequestParameters;
@@ -34,6 +35,16 @@ public class CommentRepository : RepositoryBase<Comment>, ICommentRepository
 
         var query = FindByCondition(c => c.VideoId == videoId, trackChanges);
 
+        if (!string.IsNullOrEmpty(parameters.SearchTerm))
+        {
+            query = query.SearchByText(parameters.SearchTerm);
+        }
+    
+        if (!string.IsNullOrEmpty(parameters.Author))
+        {
+            query = query.SearchByAuthor(parameters.Author);
+        }
+
         if (parameters.Direction == Direction.Ascending)
         {
             query = query.OrderBy(orderExpression);
@@ -52,4 +63,5 @@ public class CommentRepository : RepositoryBase<Comment>, ICommentRepository
 
         return (comments, count);
     }
+
 }
