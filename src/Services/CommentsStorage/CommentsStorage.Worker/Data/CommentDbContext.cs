@@ -40,6 +40,16 @@ public class CommentDbContext : DbContext
             entity.Property(e => e.PublishedAt).IsRequired(true);
             entity.Property(e => e.UpdatedAt).IsRequired(true);
             entity.Property(e => e.TotalReplyCount).IsRequired(true);
+                
+            // Indexes
+            // entity.HasIndex(e => e.VideoId).HasDatabaseName("IX_Comments_VideoId");
+            // entity.HasIndex(e => e.TextDisplay).HasDatabaseName("IX_Comments_TextDisplay_FTS").HasMethod("GIN");
+            // entity.HasIndex(e => e.AuthorDisplayName).HasDatabaseName("IX_Comments_AuthorDisplayName_FTS").HasMethod("GIN");
+            // entity.HasIndex(e => e.PublishedAt).HasDatabaseName("IX_Comments_PublishedAt");
+            //
+            // // Composite Indexes
+            // entity.HasIndex(e => new { e.PublishedAt, e.TextDisplay }).HasDatabaseName("IX_Comments_PublishedAt_TextDisplay");
+            // entity.HasIndex(e => new { e.PublishedAt, e.AuthorDisplayName }).HasDatabaseName("IX_Comments_PublishedAt_AuthorDisplayName");
         });
     }
 
