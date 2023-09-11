@@ -1,10 +1,7 @@
-using System.Linq.Expressions;
 using System.Net;
-using AutoMapper;
 using CommentsManager.Api.Contracts.Services;
 using CommentsManager.Api.DTO;
 using CommentsManager.Api.Exceptions;
-using CommentsManager.Api.Models;
 using CommentsManager.Api.RequestParameters;
 using Microsoft.AspNetCore.Mvc;
 

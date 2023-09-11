@@ -1,6 +1,4 @@
 using CommentsManager.Api.Contracts.Exceptions;
-using CommentsManager.Api.Contracts.Services;
-using CommentsManager.Api.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 

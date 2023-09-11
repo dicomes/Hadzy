@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CommentsManager.Api.Enums;
 
 namespace CommentsManager.Api.RequestParameters;
@@ -8,4 +9,7 @@ public class CommentsParameters : PageParameters
     public Direction Direction { get; set; } = Direction.Ascending;
     public string? SearchTerm { get; set; }
     public string? Author { get; set; }
+
+    public override string ToString() => JsonSerializer.Serialize(this);
+
 }

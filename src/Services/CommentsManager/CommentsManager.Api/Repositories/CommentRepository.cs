@@ -1,6 +1,5 @@
 using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Data;
-using CommentsManager.Api.DTO;
 using CommentsManager.Api.Enums;
 using CommentsManager.Api.Extensions;
 using CommentsManager.Api.Mapping;
@@ -45,14 +44,9 @@ public class CommentRepository : RepositoryBase<Comment>, ICommentRepository
             query = query.SearchByAuthor(parameters.Author);
         }
 
-        if (parameters.Direction == Direction.Ascending)
-        {
-            query = query.OrderBy(orderExpression);
-        }
-        else
-        {
-            query = query.OrderByDescending(orderExpression);
-        }
+        query = parameters.Direction == Direction.Ascending ? 
+            query.OrderBy(orderExpression) :
+            query.OrderByDescending(orderExpression);
 
         // Include pagination
         var count = await query.CountAsync();

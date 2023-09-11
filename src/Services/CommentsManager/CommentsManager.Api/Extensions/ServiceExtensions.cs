@@ -1,9 +1,7 @@
-using CommentsManager.Api.Configurations;
 using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Data;
 using CommentsManager.Api.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CommentsManager.Api.Extensions;
 

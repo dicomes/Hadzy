@@ -1,7 +1,5 @@
-using CommentsManager.Api.Configurations;
 using CommentsManager.Api.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace CommentsManager.Api.Data;
 

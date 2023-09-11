@@ -1,5 +1,3 @@
-
-using CommentsManager.Api.DTO;
 using CommentsManager.Api.Models;
 using CommentsManager.Api.RequestParameters;
 

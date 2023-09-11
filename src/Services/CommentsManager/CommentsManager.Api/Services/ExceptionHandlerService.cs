@@ -1,10 +1,9 @@
 using System.Net;
 using CommentsManager.Api.Contracts.Exceptions;
-using CommentsManager.Api.Contracts.Services;
 using CommentsManager.Api.DTO;
 using CommentsManager.Api.Exceptions;
-using CommentsManager.Api.RequestParameters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CommentsManager.Api.Services;
 
@@ -13,10 +12,17 @@ namespace CommentsManager.Api.Services;
 /// </summary>
 public class ExceptionHandlerService : IExceptionHandlerService
 {
-    public IActionResult HandleException(Exception exception)
+    private readonly ILogger<ExceptionHandlerService> _logger;
+    public ExceptionHandlerService(
+        ILogger<ExceptionHandlerService> logger)
+    {
+        _logger = logger;
+    }
+
+    public IActionResult HandleException(Exception ex)
     {
         // Handle model validation exceptions.
-        if (exception is ModelValidationException modelValidationException)
+        if (ex is ModelValidationException modelValidationException)
         {
             // Extract validation error messages from the model state.
             var validationErrors = modelValidationException.ModelState
@@ -34,7 +40,7 @@ public class ExceptionHandlerService : IExceptionHandlerService
             });
         }
 
-        if (exception is CommentNotFoundException commentNotFoundException)
+        if (ex is CommentNotFoundException commentNotFoundException)
         {
             var message = new List<string> { commentNotFoundException.Message };
 
@@ -44,7 +50,7 @@ public class ExceptionHandlerService : IExceptionHandlerService
             });
         }
 
-        if (exception is ArgumentException argumentException)
+        if (ex is ArgumentException argumentException)
         {
             var message = new List<string> { argumentException.Message };
             return new BadRequestObjectResult(new ApiResponse<PagedList<CommentResponse>>
@@ -52,10 +58,12 @@ public class ExceptionHandlerService : IExceptionHandlerService
                 ErrorMessages = message
             });
         }
+        
+        _logger.LogError(ex, "{Source}: Raised a {ExceptionType}. Exception Message: {ExceptionMessage}.", 
+            GetType().Name, ex.GetType().Name, ex.Message);
             
-        // Default error response for unhandled exceptions.
         return new ObjectResult("An error occurred while processing your request.") 
-        { 
+        {
             StatusCode = (int)HttpStatusCode.InternalServerError 
         };
     }
