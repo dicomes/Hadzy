@@ -1,5 +1,4 @@
 using IntegrationEventsContracts;
-using MassTransit.Contracts;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models;
@@ -23,7 +22,8 @@ public class IntegrationEventsManager : IIntegrationEventsManager
             _commentThreadIterator = commentThreadIterator;
         }
 
-        public async Task ProcessCommentsAndPublishFetchedEventsAsync(string? videoId, string? pageToken, List<string> commentIds)
+        public async Task ProcessCommentsAndPublishFetchedEventsAsync(
+            string? videoId, string? pageToken, List<string> commentIds)
         {
             ulong totalCommentsFetched = 0;
             uint totalReplies = 0;
@@ -36,13 +36,14 @@ public class IntegrationEventsManager : IIntegrationEventsManager
                 do
                 {
                     var commentThreadListCompletedEvent = await Batch(fetchParams);
-                    await PublishFetchCommentThreadListCompletedEvent(commentThreadListCompletedEvent);
+                    await PublishCommentThreadEvent(commentThreadListCompletedEvent, !_commentThreadIterator.HasNext());
 
                     firstIteration = HandleFirstIteration(firstIteration, commentThreadListCompletedEvent,
                         ref firstIterationCommentIds);
                     
-                    await PublishFetchInfoChangedEvent(videoId, string.Empty, commentThreadListCompletedEvent,
-                        firstIterationCommentIds, GetStatus(_commentThreadIterator.HasNext()), !_commentThreadIterator.HasNext());
+                    await PublishFetchInfoEvent(
+                        videoId, string.Empty, commentThreadListCompletedEvent, firstIterationCommentIds,
+                        GetStatus(_commentThreadIterator.HasNext()), !_commentThreadIterator.HasNext());
                     
                     IncrementComments(ref totalCommentsFetched, ref totalReplies, commentThreadListCompletedEvent);
 
@@ -55,7 +56,7 @@ public class IntegrationEventsManager : IIntegrationEventsManager
             }
             catch
             {
-                await PublishFetchInfoChangedEvent(videoId, fetchParams.PageToken, new CommentThreadListCompletedEvent(), new List<string>(), FetchStatus.Failed.ToString(), false);
+                await PublishFetchInfoEvent(videoId, fetchParams.PageToken, new CommentThreadListCompletedEvent(), new List<string>(), FetchStatus.Failed.ToString(), false);
                 throw;
             }
         }
@@ -90,12 +91,20 @@ public class IntegrationEventsManager : IIntegrationEventsManager
             return fetchBatchCompletedEvent;
         }
 
-        private async Task PublishFetchCommentThreadListCompletedEvent(CommentThreadListCompletedEvent commentThreadListCompletedEvent)
+        private async Task PublishCommentThreadEvent(
+            CommentThreadListCompletedEvent commentThreadListCompletedEvent, bool fetchCompletedTillFirstComment)
         {
+            if (fetchCompletedTillFirstComment)
+            {
+                commentThreadListCompletedEvent.FirstComment =
+                    commentThreadListCompletedEvent.YouTubeCommentsList.Last();
+            }
             await _eventPublisher.PublishEvent(commentThreadListCompletedEvent);
         }
 
-        private async Task PublishFetchInfoChangedEvent(string videoId, string? pageToken, CommentThreadListCompletedEvent commentThreadListCompletedEvent, List<string>? firstIterationCommentIds, string fetchStatus, bool completed)
+        private async Task PublishFetchInfoEvent(
+            string videoId, string? pageToken, CommentThreadListCompletedEvent commentThreadListCompletedEvent,
+            List<string>? firstIterationCommentIds, string fetchStatus, bool fetchCompletedTillFirstComment)
         {
             var fetchInfoChangedEvent = new FetchInfoChangedEventBuilder(videoId)
                 .WithPageToken(pageToken)
@@ -103,7 +112,7 @@ public class IntegrationEventsManager : IIntegrationEventsManager
                 .WithReplyCount(commentThreadListCompletedEvent.ReplyCount)
                 .WithCommentIds(firstIterationCommentIds)
                 .WithStatus(fetchStatus)
-                .WithCompletedTillFirstComment(completed)
+                .WithCompletedTillFirstComment(fetchCompletedTillFirstComment)
                 .Build();
 
             await _eventPublisher.PublishEvent(fetchInfoChangedEvent);

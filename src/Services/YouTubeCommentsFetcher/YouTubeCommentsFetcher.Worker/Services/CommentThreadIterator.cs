@@ -83,6 +83,8 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 
         private void UpdatePageToken(OverlapResult overlapResult, CommentThreadListResponse response)
         {
+            // Overlap occurs only if comments have already been fetched.
+            // This means the fetching has reached the last comment before and the pageToken was empty.
             _pageToken = overlapResult.ShouldStopFetching ? string.Empty : response.NextPageToken;
         }
 
