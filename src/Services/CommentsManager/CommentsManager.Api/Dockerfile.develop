@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+ENV DOTNET_ENVIRONMENT=Development
+EXPOSE 80
+
+WORKDIR /src
+
+COPY ["Services/CommentsManager/CommentsManager.Api/CommentsManager.Api.csproj", "Services/CommentsManager/CommentsManager.Api/"]
+
+RUN dotnet restore Services/CommentsManager/CommentsManager.Api/CommentsManager.Api.csproj
+
+COPY . .
+WORKDIR "/src/Services/CommentsManager/CommentsManager.Api"
+RUN dotnet build -c Debug
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "Debug", "--"]

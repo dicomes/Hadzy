@@ -40,11 +40,20 @@ public class RepositoryContext : DbContext
                 .HasForeignKey(c => c.VideoId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            // Vectors
-            entity.Property(e => e.TextDisplaySearchVector)
-                .HasComputedColumnSql("to_tsvector('simple', coalesce(\"TextDisplay\", ''))", stored: true);
-            entity.Property(e => e.AuthorDisplayNameSearchVector)
-                .HasComputedColumnSql("to_tsvector('simple', coalesce(\"AuthorDisplayName\", ''))", stored: true);
+            // Set up generated tsvector columns
+            entity.HasGeneratedTsVectorColumn(
+                    e => e.TextDisplaySearchVector,
+                    "simple", 
+                    e => new { e.TextDisplay })
+                .HasIndex(e => e.TextDisplaySearchVector)
+                .HasMethod("GIN");
+
+            entity.HasGeneratedTsVectorColumn(
+                    e => e.AuthorDisplayNameSearchVector,
+                    "simple",
+                    e => new { e.AuthorDisplayName })
+                .HasIndex(e => e.AuthorDisplayNameSearchVector)
+                .HasMethod("GIN");
 
             // Indexes
             entity.HasIndex(e => e.VideoId).HasDatabaseName("IX_Comments_VideoId");
@@ -53,12 +62,6 @@ public class RepositoryContext : DbContext
             // Composite Index for VideoId and PublishedAt
             entity.HasIndex(e => new { e.VideoId, e.PublishedAt })
                 .HasDatabaseName("IX_Comments_VideoId_PublishedAt");
-
-            // Indexes for tsvector columns
-            entity.HasIndex(e => e.TextDisplaySearchVector).HasDatabaseName("IX_Comments_TextDisplaySearchVector")
-                .HasMethod("GIN");
-            entity.HasIndex(e => e.AuthorDisplayNameSearchVector).HasDatabaseName("IX_Comments_AuthorDisplayNameSearchVector")
-                .HasMethod("GIN");
         });
 
         modelBuilder.Entity<Video>(entity =>

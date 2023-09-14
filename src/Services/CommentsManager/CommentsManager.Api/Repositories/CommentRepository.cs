@@ -38,7 +38,7 @@ public class CommentRepository : RepositoryBase<Comment>, ICommentRepository
         {
             query = query.SearchByText(parameters.SearchTerm);
         }
-    
+
         if (!string.IsNullOrEmpty(parameters.Author))
         {
             query = query.SearchByAuthor(parameters.Author);

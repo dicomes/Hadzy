@@ -65,3 +65,15 @@ services:
       - RabbitMq:User=${RABBITMQ_USER}
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
       - Database:ConnectionString=${POSTGRESQL_CONNECTION_STRING}
+
+  hadzy-comments.manager.api.dev:
+    image: hadzy/comments.manager.api:1.0.0
+    ports:
+      - "5211:5211"
+    build:
+      context: .
+      dockerfile: Services/CommentsManager/CommentsManager.Api/Dockerfile.develop
+    environment:
+      - ASPNETCORE_URLS=http://*:5211
+      - Seq:Url=${SEQ_URL}
+      - Database:ConnectionString=${POSTGRESQL_CONNECTION_STRING}

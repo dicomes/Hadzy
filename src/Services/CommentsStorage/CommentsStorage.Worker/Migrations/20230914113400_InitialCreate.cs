@@ -43,8 +43,12 @@ namespace CommentsStorage.Worker.Migrations
                     PublishedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     TotalReplyCount = table.Column<long>(type: "bigint", nullable: false),
-                    TextDisplaySearchVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false, computedColumnSql: "to_tsvector('simple', coalesce(\"TextDisplay\", ''))", stored: true),
-                    AuthorDisplayNameSearchVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false, computedColumnSql: "to_tsvector('simple', coalesce(\"AuthorDisplayName\", ''))", stored: true)
+                    TextDisplaySearchVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "simple")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "TextDisplay" }),
+                    AuthorDisplayNameSearchVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "simple")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "AuthorDisplayName" })
                 },
                 constraints: table =>
                 {

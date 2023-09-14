@@ -1,26 +1,25 @@
+using System.Linq.Expressions;
 using CommentsManager.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommentsManager.Api.Extensions;
 
-public static class QueryableExtensions
+public static class CommentSearchExtensions
 {
     public static IQueryable<Comment> SearchByText(this IQueryable<Comment> query, string searchTerm)
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
+        if (string.IsNullOrEmpty(searchTerm))
             return query;
 
-        var tsQuery = EF.Functions.ToTsQuery("simple", searchTerm);
-        return query.Where(c => EF.Functions.ToTsVector("simple", c.TextDisplaySearchVector).Matches(tsQuery));
+        return query.Where(c => c.TextDisplaySearchVector.Matches(searchTerm));
     }
 
-    public static IQueryable<Comment> SearchByAuthor(this IQueryable<Comment> query, string searchTerm)
+    public static IQueryable<Comment> SearchByAuthor(this IQueryable<Comment> query, string author)
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
+        if (string.IsNullOrEmpty(author))
             return query;
 
-        var tsQuery = EF.Functions.ToTsQuery("simple", searchTerm);
-        return query.Where(c => EF.Functions.ToTsVector("simple", c.AuthorDisplayNameSearchVector).Matches(tsQuery));
+        return query.Where(c => c.AuthorDisplayNameSearchVector.Matches(author));
     }
 }
 

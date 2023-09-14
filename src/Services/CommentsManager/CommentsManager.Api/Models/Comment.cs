@@ -1,4 +1,5 @@
 using EFContracts;
+using NpgsqlTypes;
 
 namespace CommentsManager.Api.Models;
 
@@ -19,9 +20,8 @@ public class Comment : IComment
     public DateTimeOffset PublishedAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
     public uint TotalReplyCount { get; set; }
-
-    public string TextDisplaySearchVector { get; set; }
-    public string AuthorDisplayNameSearchVector { get; set; }
+    public NpgsqlTsVector TextDisplaySearchVector { get; set; }
+    public NpgsqlTsVector AuthorDisplayNameSearchVector { get; set; }
     public override string ToString() =>
         $"Comment - Id: {Id}." +
         $" VideoId: {VideoId}," +

@@ -13,7 +13,7 @@ using NpgsqlTypes;
 namespace CommentsStorage.Worker.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20230914072332_InitialCreate")]
+    [Migration("20230914113400_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -44,7 +44,8 @@ namespace CommentsStorage.Worker.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("tsvector")
-                        .HasComputedColumnSql("to_tsvector('simple', coalesce(\"AuthorDisplayName\", ''))", true);
+                        .HasAnnotation("Npgsql:TsVectorConfig", "simple")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "AuthorDisplayName" });
 
                     b.Property<string>("AuthorProfileImageUrl")
                         .HasColumnType("text");
@@ -68,7 +69,8 @@ namespace CommentsStorage.Worker.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("tsvector")
-                        .HasComputedColumnSql("to_tsvector('simple', coalesce(\"TextDisplay\", ''))", true);
+                        .HasAnnotation("Npgsql:TsVectorConfig", "simple")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "TextDisplay" });
 
                     b.Property<string>("TextOriginal")
                         .HasColumnType("text");
@@ -88,16 +90,14 @@ namespace CommentsStorage.Worker.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorDisplayNameSearchVector")
-                        .HasDatabaseName("IX_Comments_AuthorDisplayNameSearchVector");
+                    b.HasIndex("AuthorDisplayNameSearchVector");
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("AuthorDisplayNameSearchVector"), "GIN");
 
                     b.HasIndex("PublishedAt")
                         .HasDatabaseName("IX_Comments_PublishedAt");
 
-                    b.HasIndex("TextDisplaySearchVector")
-                        .HasDatabaseName("IX_Comments_TextDisplaySearchVector");
+                    b.HasIndex("TextDisplaySearchVector");
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("TextDisplaySearchVector"), "GIN");
 
