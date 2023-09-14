@@ -12,6 +12,24 @@ public class VideoRepository : RepositoryBase<Video>, IVideoRepository
     {
     }
 
-    public async Task<Video> GetByIdAsync(string id, bool trackChanges) => 
+    public async Task<Video?> GetByIdAsync(string id, bool trackChanges) => 
         await FindByCondition(c => c.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
+    
+    public async Task CreateVideo(Video video)
+    {
+        Create(video);
+        await RepositoryContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateVideo(Video video)
+    {
+        Update(video);
+        await RepositoryContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteVideo(Video video)
+    {
+        Delete(video);
+        await RepositoryContext.SaveChangesAsync();
+    }
 }

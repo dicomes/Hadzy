@@ -35,4 +35,16 @@ public class CommentService : ICommentService
         return new PagedList<CommentResponse>(
             commentsResponse, totalCount, parameters.PageNumber, parameters.PageSize);
     }
+    
+    public async Task<CommentResponse> GetCommentByIdAsync(
+        string videoId)
+    {
+        _logger.LogInformation("{Source}: GetCommentByVideoIdAsync for VideoId {VideoId}.",
+            GetType().Name, videoId);
+        
+        Comment comment = await _repository.Comment.GetByIdAsync(videoId, false);
+        var commentsResponse = _mapper.Map<CommentResponse>(comment);
+        
+        return commentsResponse;
+    }
 }

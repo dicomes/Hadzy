@@ -6,4 +6,5 @@ namespace CommentsManager.Api.Contracts.Services;
 public interface ICommentService
 {
     Task<PagedList<CommentResponse>> GetCommentsPageByQueryAsync(string videoId, CommentsParameters parameters);
+    Task<CommentResponse?> GetCommentByIdAsync(string videoId);
 }

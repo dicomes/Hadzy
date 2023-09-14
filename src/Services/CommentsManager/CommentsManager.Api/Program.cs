@@ -25,7 +25,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // Register services to the container.
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
 builder.Services.AddControllers(config => {
