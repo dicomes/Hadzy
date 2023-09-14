@@ -7,7 +7,7 @@ public interface ICommentThreadListCompletedEvent
     string? NextPageToken { get; }
     ulong CommentsCount { get; }
     uint ReplyCount { get; }
-    IYouTubeCommentDto FirstComment { get; }
+    string? FirstCommentId { get; }
     List<string>? CommentIds { get; }
     List<IYouTubeCommentDto> YouTubeCommentsList { get; }
 }

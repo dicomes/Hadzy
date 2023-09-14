@@ -96,8 +96,8 @@ public class IntegrationEventsManager : IIntegrationEventsManager
         {
             if (fetchCompletedTillFirstComment)
             {
-                commentThreadListCompletedEvent.FirstComment =
-                    commentThreadListCompletedEvent.YouTubeCommentsList.Last();
+                commentThreadListCompletedEvent.FirstCommentId =
+                    commentThreadListCompletedEvent.YouTubeCommentsList.Last().Id;
             }
             await _eventPublisher.PublishEvent(commentThreadListCompletedEvent);
         }

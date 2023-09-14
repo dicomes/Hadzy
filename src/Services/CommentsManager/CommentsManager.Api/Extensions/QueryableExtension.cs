@@ -10,8 +10,8 @@ public static class QueryableExtensions
         if (string.IsNullOrWhiteSpace(searchTerm))
             return query;
 
-        return query.Where(c => EF.Functions.ToTsVector("english", c.TextDisplay) 
-            .Matches(EF.Functions.ToTsQuery("english", $"\"{searchTerm}\"")));
+        var tsQuery = EF.Functions.ToTsQuery("simple", searchTerm);
+        return query.Where(c => EF.Functions.ToTsVector("simple", c.TextDisplaySearchVector).Matches(tsQuery));
     }
 
     public static IQueryable<Comment> SearchByAuthor(this IQueryable<Comment> query, string searchTerm)
@@ -19,8 +19,8 @@ public static class QueryableExtensions
         if (string.IsNullOrWhiteSpace(searchTerm))
             return query;
 
-        return query.Where(c => EF.Functions.ToTsVector("english", c.AuthorDisplayName) 
-            .Matches(EF.Functions.ToTsQuery("english", $"\"{searchTerm}\"")));
+        var tsQuery = EF.Functions.ToTsQuery("simple", searchTerm);
+        return query.Where(c => EF.Functions.ToTsVector("simple", c.AuthorDisplayNameSearchVector).Matches(tsQuery));
     }
-
 }
+

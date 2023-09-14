@@ -24,4 +24,8 @@
     <Folder Include="Configurations" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EFContracts\EFContracts.csproj" />
+  </ItemGroup>
+
 </Project>

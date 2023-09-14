@@ -1,6 +1,8 @@
+using EFContracts;
+
 namespace CommentsManager.Api.Models;
 
-public class Comment
+public class Comment : IComment
 {
     public string Etag { get; set; }
     public string Id { get; set; }
@@ -18,6 +20,8 @@ public class Comment
     public DateTimeOffset UpdatedAt { get; set; }
     public uint TotalReplyCount { get; set; }
 
+    public string TextDisplaySearchVector { get; set; }
+    public string AuthorDisplayNameSearchVector { get; set; }
     public override string ToString() =>
         $"Comment - Id: {Id}." +
         $" VideoId: {VideoId}," +

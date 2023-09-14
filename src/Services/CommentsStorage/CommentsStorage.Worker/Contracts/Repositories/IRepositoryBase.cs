@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
+using CommentsStorage.Worker.Data;
 
-namespace CommentsManager.Api.Contracts.Repositories;
+namespace CommentsStorage.Worker.Contracts.Repositories;
 
 public interface IRepositoryBase<T>
 {
@@ -10,5 +11,4 @@ public interface IRepositoryBase<T>
     void Update(T entity);
     void Delete(T entity);
     public void CreateRange(IEnumerable<T> entities);
-
 }

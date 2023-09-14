@@ -1,7 +1,7 @@
-using CommentsManager.Api.Contracts.Repositories;
-using CommentsManager.Api.Data;
+using CommentsStorage.Worker.Contracts.Repositories;
+using CommentsStorage.Worker.Data;
 
-namespace CommentsManager.Api.Repositories;
+namespace CommentsStorage.Worker.Repositories;
 
 public sealed class RepositoryManager : IRepositoryManager
 {

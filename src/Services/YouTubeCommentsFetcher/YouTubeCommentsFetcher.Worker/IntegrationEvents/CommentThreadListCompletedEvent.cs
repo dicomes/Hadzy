@@ -15,7 +15,7 @@ public class CommentThreadListCompletedEvent : ICommentThreadListCompletedEvent
     public string? NextPageToken { get; set; } 
     public ulong CommentsCount { get; set; }
     public uint ReplyCount { get; set; }
-    public IYouTubeCommentDto? FirstComment { get; set; }
+    public string? FirstCommentId { get; set; }
     public List<string>? CommentIds { get; set; }
     public List<IYouTubeCommentDto> YouTubeCommentsList { get; set; }
 

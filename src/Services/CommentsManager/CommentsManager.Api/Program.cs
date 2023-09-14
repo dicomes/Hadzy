@@ -1,7 +1,6 @@
 using CommentsManager.Api.Contracts.Exceptions;
 using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Contracts.Services;
-using CommentsManager.Api.Exceptions;
 using CommentsManager.Api.Extensions;
 using CommentsManager.Api.Mapping;
 using CommentsManager.Api.Repositories;
@@ -18,7 +17,6 @@ builder.Services.AddSwaggerGen();
 // Configure services
 builder.Services.ConfigureCors();
 builder.Services.ConfigureDbContext(builder.Configuration);
-builder.Services.ConfigureRepositoryManager();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -28,6 +26,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IExceptionHandlerService, ExceptionHandlerService>();
 builder.Services.AddControllers(config => {
     config.RespectBrowserAcceptHeader = true;

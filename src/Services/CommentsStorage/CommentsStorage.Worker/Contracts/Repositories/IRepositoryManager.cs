@@ -1,4 +1,4 @@
-namespace CommentsManager.Api.Contracts.Repositories;
+namespace CommentsStorage.Worker.Contracts.Repositories;
 
 public interface IRepositoryManager
 {

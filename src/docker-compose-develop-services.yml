@@ -64,4 +64,4 @@ services:
       - RabbitMq:Hostname=${RABBITMQ_HOSTNAME}
       - RabbitMq:User=${RABBITMQ_USER}
       - RabbitMq:Password=${RABBITMQ_PASSWORD}
-      - PostgreSql:ConnectionString=${POSTGRESQL_CONNECTION_STRING}
+      - Database:ConnectionString=${POSTGRESQL_CONNECTION_STRING}

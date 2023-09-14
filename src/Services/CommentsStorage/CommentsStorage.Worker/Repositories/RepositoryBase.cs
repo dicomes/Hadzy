@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
-using CommentsManager.Api.Contracts.Repositories;
-using CommentsManager.Api.Data;
+using CommentsStorage.Worker.Contracts.Repositories;
+using CommentsStorage.Worker.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace CommentsManager.Api.Repositories;
+namespace CommentsStorage.Worker.Repositories;
 
 public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
@@ -27,5 +27,4 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     public void Delete(T entity) => RepositoryContext.Set<T>().Remove(entity);
     
     public void CreateRange(IEnumerable<T> entities) => RepositoryContext.Set<T>().AddRange(entities);
-
 }

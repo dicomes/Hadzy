@@ -1,3 +1,5 @@
+using CommentsStorage.Worker.Contracts.Repositories;
+using CommentsStorage.Worker.Contracts.Services;
 using CommentsStorage.Worker.Models;
 using CommentsStorage.Worker.Repositories;
 
@@ -5,40 +7,45 @@ namespace CommentsStorage.Worker.Services;
 
 public class CommentService : ICommentService
 {
-    private readonly ICommentRepository _commentRepository;
+    private readonly IRepositoryManager _repository;
 
-    public CommentService(ICommentRepository commentRepository)
+    public CommentService(
+        IRepositoryManager repository)
     {
-        _commentRepository = commentRepository;
+        _repository = repository;
     }
 
     public async Task AddCommentAsync(Comment comment)
     {
-        await _commentRepository.AddAsync(comment);
+        await _repository.Comment.CreateComment(comment);
     }
 
     public async Task AddCommentsAsync(IEnumerable<Comment> comments)
     {
-        await _commentRepository.AddAsync(comments);
+        await _repository.Comment.CreateComments(comments);
     }
 
-    public async Task<Comment?> GetCommentByIdAsync(string id)
+    public async Task<Comment?> GetByIdAsync(string id, bool trackChanges)
     {
-        return await _commentRepository.GetByIdAsync(id);
+        return await _repository.Comment.GetByIdAsync(id, trackChanges:false);
     }
 
-    public async Task<IEnumerable<Comment>> GetAllCommentsByVideoIdAsync(string videoId)
+    public async Task<IEnumerable<Comment>> GetByVideoIdAsync(string videoId, bool trackChanges)
     {
-        return await _commentRepository.GetAllByVideoIdAsync(videoId);
+        return await _repository.Comment.GetByVideoIdAsync(videoId, trackChanges: false);
     }
 
-    public async Task UpdateCommentAsync(Comment comment)
+    public async Task UpdateAsync(Comment comment)
     {
-        await _commentRepository.UpdateAsync(comment);
+        await _repository.Comment.UpdateComment(comment);
     }
 
-    public async Task DeleteCommentAsync(string id)
+    public async Task DeleteAsync(string id)
     {
-        await _commentRepository.DeleteAsync(id);
+        var comment = await _repository.Comment.GetByIdAsync(id, trackChanges: true);
+        if (comment != null)
+        {
+            await _repository.Comment.DeleteComment(comment);
+        }
     }
 }

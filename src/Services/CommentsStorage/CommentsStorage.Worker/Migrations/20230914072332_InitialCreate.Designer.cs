@@ -6,13 +6,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
 namespace CommentsStorage.Worker.Migrations
 {
-    [DbContext(typeof(CommentDbContext))]
-    [Migration("20230909193652_InitialCreate")]
+    [DbContext(typeof(RepositoryContext))]
+    [Migration("20230914072332_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -39,6 +40,12 @@ namespace CommentsStorage.Worker.Migrations
                     b.Property<string>("AuthorDisplayName")
                         .HasColumnType("text");
 
+                    b.Property<NpgsqlTsVector>("AuthorDisplayNameSearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasComputedColumnSql("to_tsvector('simple', coalesce(\"AuthorDisplayName\", ''))", true);
+
                     b.Property<string>("AuthorProfileImageUrl")
                         .HasColumnType("text");
 
@@ -56,6 +63,12 @@ namespace CommentsStorage.Worker.Migrations
 
                     b.Property<string>("TextDisplay")
                         .HasColumnType("text");
+
+                    b.Property<NpgsqlTsVector>("TextDisplaySearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasComputedColumnSql("to_tsvector('simple', coalesce(\"TextDisplay\", ''))", true);
 
                     b.Property<string>("TextOriginal")
                         .HasColumnType("text");
@@ -75,7 +88,51 @@ namespace CommentsStorage.Worker.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorDisplayNameSearchVector")
+                        .HasDatabaseName("IX_Comments_AuthorDisplayNameSearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("AuthorDisplayNameSearchVector"), "GIN");
+
+                    b.HasIndex("PublishedAt")
+                        .HasDatabaseName("IX_Comments_PublishedAt");
+
+                    b.HasIndex("TextDisplaySearchVector")
+                        .HasDatabaseName("IX_Comments_TextDisplaySearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("TextDisplaySearchVector"), "GIN");
+
+                    b.HasIndex("VideoId")
+                        .HasDatabaseName("IX_Comments_VideoId");
+
+                    b.HasIndex("VideoId", "PublishedAt")
+                        .HasDatabaseName("IX_Comments_VideoId_PublishedAt");
+
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("CommentsStorage.Worker.Models.Video", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstComment")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .HasDatabaseName("IX_Videos_Id");
+
+                    b.ToTable("Videos");
+                });
+
+            modelBuilder.Entity("CommentsStorage.Worker.Models.Comment", b =>
+                {
+                    b.HasOne("CommentsStorage.Worker.Models.Video", null)
+                        .WithMany()
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
