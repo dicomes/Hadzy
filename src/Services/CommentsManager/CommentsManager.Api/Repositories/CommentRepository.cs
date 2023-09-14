@@ -1,4 +1,5 @@
 using CommentsManager.Api.Contracts.Repositories;
+using CommentsManager.Api.Contracts.Utilities;
 using CommentsManager.Api.Data;
 using CommentsManager.Api.Enums;
 using CommentsManager.Api.Extensions;
@@ -15,7 +16,7 @@ public class CommentRepository : RepositoryBase<Comment>, ICommentRepository
         base(repositoryContext)
     {
     }
-
+    
     public async Task<Comment> GetByIdAsync(string id, bool trackChanges) => 
         await FindByCondition(c => c.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 

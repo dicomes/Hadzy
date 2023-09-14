@@ -45,15 +45,15 @@ hostBuilder
 
         services.AddSingleton<RetryPolicyProvider>();
         services.AddTransient<FetcherErrorEventConsumer>();
-        services.AddSingleton<IYouTubeFetcherService, YouTubeFetcherService>();
+        services.AddSingleton<IYouTubeFetcher, YouTubeFetcher>();
         services.AddAutoMapper(typeof(MappingConfig));
         services.AddTransient<ICommentsThreadMapper, CommentsThreadMapper>();
         services.AddTransient<IYouTubeFetcherServiceExceptionHandler, YouTubeFetcherServiceExceptionHandler>();
         services.AddTransient<FetchStartedEventConsumer>();
         services.AddTransient<IEventPublisher, EventPublisher>();
         services.AddTransient<ICommentsOverlapHandler, CommentsOverlapHandler>();
-        services.AddTransient<ICommentThreadIterator, CommentThreadIterator>();
-        services.AddTransient<IIntegrationEventsManager, IntegrationEventsManager>();
+        services.AddTransient<ICommentFetchIterator, CommentFetchIterator>();
+        services.AddTransient<ICommentPublisher, CommentPublisher>();
 
         // MassTransit Configuration
         services.AddMassTransit(configurator =>

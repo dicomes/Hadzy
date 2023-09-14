@@ -9,16 +9,16 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
     public class FetchStartedEventConsumer : IConsumer<IFetchStartedEvent>
     {
         private readonly ILogger<FetchStartedEventConsumer> _logger;
-        private readonly IIntegrationEventsManager _integrationEventsManager;
+        private readonly ICommentPublisher _commentPublisher;
         private readonly IYouTubeFetcherServiceExceptionHandler _youTubeFetcherServiceExceptionHandler;
 
         public FetchStartedEventConsumer(
             ILogger<FetchStartedEventConsumer> logger, 
-            IIntegrationEventsManager integrationEventsManager, 
+            ICommentPublisher commentPublisher, 
             IYouTubeFetcherServiceExceptionHandler youTubeFetcherServiceExceptionHandler)
         {
             _logger = logger;
-            _integrationEventsManager = integrationEventsManager;
+            _commentPublisher = commentPublisher;
             _youTubeFetcherServiceExceptionHandler = youTubeFetcherServiceExceptionHandler;
         }
 
@@ -29,7 +29,7 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
         
             try
             {
-                await _integrationEventsManager.ProcessCommentsAndPublishFetchedEventsAsync(context.Message.VideoId, context.Message.PageToken, context.Message.FirstFetchedCommentIds);
+                await _commentPublisher.IterateAndPublishCommentsAsync(context.Message.VideoId, context.Message.PageToken, context.Message.FirstFetchedCommentIds);
             }
             catch (YouTubeFetcherServiceException ex)
             {

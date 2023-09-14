@@ -9,15 +9,15 @@ using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
-public class YouTubeFetcherService : IYouTubeFetcherService
+public class YouTubeFetcher : IYouTubeFetcher
 {
     private readonly string _properties = "snippet";
     private readonly int _maxResults = 100;
     private readonly YouTubeService _youtubeService;
     private readonly RetryPolicyProvider _retryPolicyProvider;
-    private readonly ILogger<YouTubeFetcherService> _logger;
+    private readonly ILogger<YouTubeFetcher> _logger;
     
-    public YouTubeFetcherService(YouTubeService youtubeService, RetryPolicyProvider retryPolicyProvider, ILogger<YouTubeFetcherService> logger)
+    public YouTubeFetcher(YouTubeService youtubeService, RetryPolicyProvider retryPolicyProvider, ILogger<YouTubeFetcher> logger)
     {
         _youtubeService = youtubeService;
         _retryPolicyProvider = retryPolicyProvider;

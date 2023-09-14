@@ -5,25 +5,25 @@ using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
- public class CommentThreadIterator : ICommentThreadIterator
+ public class CommentFetchIterator : ICommentFetchIterator
     {
         private readonly ICommentsThreadMapper _commentsThreadMapper;
         private readonly ICommentsOverlapHandler _overlapService;
-        private readonly ILogger<CommentThreadIterator> _logger;
-        private readonly IYouTubeFetcherService _fetcherService;
+        private readonly ILogger<CommentFetchIterator> _logger;
+        private readonly IYouTubeFetcher _fetcher;
         private string? _pageToken;
 
-        public CommentThreadIterator(
+        public CommentFetchIterator(
             ICommentsThreadMapper commentsThreadMapper,
             ICommentsOverlapHandler overlapService,
-            ILogger<CommentThreadIterator> logger,
-            IYouTubeFetcherService fetcherService
+            ILogger<CommentFetchIterator> logger,
+            IYouTubeFetcher fetcher
         )
         {
             _commentsThreadMapper = commentsThreadMapper;
             _overlapService = overlapService;
             _logger = logger;
-            _fetcherService = fetcherService;
+            _fetcher = fetcher;
         }
 
         public async Task<CommentThreadListCompletedEvent> Next(FetchParams fetchParams)
@@ -33,7 +33,7 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 
             if (!IsFirstFetch(fetchParams))
             {
-                RemoveOverlappingCommentsFromResponse(response, fetchParams);
+                RemoveOverlappingCommentsFromResponse(ref response, fetchParams);
             }
             else
             {
@@ -45,7 +45,7 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 
         private async Task<CommentThreadListResponse> FetchCommentThreadList(FetchParams fetchParams)
         {
-            return await _fetcherService.FetchAsync(fetchParams);
+            return await _fetcher.FetchAsync(fetchParams);
         }
 
         private List<string>? ExtractCommentIds(CommentThreadListResponse response)
@@ -58,7 +58,7 @@ namespace YouTubeCommentsFetcher.Worker.Services;
             return fetchParams.FirstCommentsFromPreviousBatch.Count == 0;
         }
 
-        private void RemoveOverlappingCommentsFromResponse(CommentThreadListResponse commentThreadList, FetchParams fetchParams)
+        private void RemoveOverlappingCommentsFromResponse(ref CommentThreadListResponse commentThreadList, FetchParams fetchParams)
         {
             var overlapResult = _overlapService.HandleOverlaps(commentThreadList.Items.ToList(), fetchParams.FirstCommentsFromPreviousBatch);
             commentThreadList.Items = overlapResult.UpdatedCommentList;

@@ -1,10 +1,12 @@
 using CommentsManager.Api.Contracts.Exceptions;
 using CommentsManager.Api.Contracts.Repositories;
 using CommentsManager.Api.Contracts.Services;
+using CommentsManager.Api.Contracts.Utilities;
 using CommentsManager.Api.Extensions;
 using CommentsManager.Api.Mapping;
 using CommentsManager.Api.Repositories;
 using CommentsManager.Api.Services;
+using CommentsManager.Api.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 // Register services to the container.
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddTransient<ISanitizationService, SanitizationService>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();

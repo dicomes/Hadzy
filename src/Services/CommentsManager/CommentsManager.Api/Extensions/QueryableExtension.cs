@@ -1,6 +1,6 @@
-using System.Linq.Expressions;
 using CommentsManager.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 
 namespace CommentsManager.Api.Extensions;
 
@@ -10,16 +10,18 @@ public static class CommentSearchExtensions
     {
         if (string.IsNullOrEmpty(searchTerm))
             return query;
-
-        return query.Where(c => c.TextDisplaySearchVector.Matches(searchTerm));
+        
+        var tsQuery = NpgsqlTsQuery.Parse($"{searchTerm.ToLower()}:*");
+        return query.Where(c => c.TextDisplaySearchVector.Matches(tsQuery));
     }
 
     public static IQueryable<Comment> SearchByAuthor(this IQueryable<Comment> query, string author)
     {
         if (string.IsNullOrEmpty(author))
             return query;
-
-        return query.Where(c => c.AuthorDisplayNameSearchVector.Matches(author));
+        
+        var tsQuery = NpgsqlTsQuery.Parse($"{author.ToLower()}:*");
+        return query.Where(c => c.AuthorDisplayNameSearchVector.Matches(tsQuery));
     }
 }
 

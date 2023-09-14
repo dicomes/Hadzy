@@ -6,23 +6,23 @@ using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
-public class IntegrationEventsManager : IIntegrationEventsManager
+public class CommentPublisher : ICommentPublisher
     {
         private readonly IEventPublisher _eventPublisher;
-        private readonly ILogger<IntegrationEventsManager> _logger;
-        private readonly ICommentThreadIterator _commentThreadIterator;
+        private readonly ILogger<CommentPublisher> _logger;
+        private readonly ICommentFetchIterator _commentFetchIterator;
 
-        public IntegrationEventsManager(
+        public CommentPublisher(
             IEventPublisher eventPublisher,
-            ILogger<IntegrationEventsManager> logger,
-            ICommentThreadIterator commentThreadIterator)
+            ILogger<CommentPublisher> logger,
+            ICommentFetchIterator commentFetchIterator)
         {
             _eventPublisher = eventPublisher;
             _logger = logger;
-            _commentThreadIterator = commentThreadIterator;
+            _commentFetchIterator = commentFetchIterator;
         }
 
-        public async Task ProcessCommentsAndPublishFetchedEventsAsync(
+        public async Task IterateAndPublishCommentsAsync(
             string? videoId, string? pageToken, List<string> commentIds)
         {
             ulong totalCommentsFetched = 0;
@@ -36,20 +36,20 @@ public class IntegrationEventsManager : IIntegrationEventsManager
                 do
                 {
                     var commentThreadListCompletedEvent = await Batch(fetchParams);
-                    await PublishCommentThreadEvent(commentThreadListCompletedEvent, !_commentThreadIterator.HasNext());
+                    await PublishCommentThreadEvent(commentThreadListCompletedEvent, !_commentFetchIterator.HasNext());
 
                     firstIteration = HandleFirstIteration(firstIteration, commentThreadListCompletedEvent,
                         ref firstIterationCommentIds);
                     
                     await PublishFetchInfoEvent(
                         videoId, string.Empty, commentThreadListCompletedEvent, firstIterationCommentIds,
-                        GetStatus(_commentThreadIterator.HasNext()), !_commentThreadIterator.HasNext());
+                        GetStatus(_commentFetchIterator.HasNext()), !_commentFetchIterator.HasNext());
                     
                     IncrementComments(ref totalCommentsFetched, ref totalReplies, commentThreadListCompletedEvent);
 
                     fetchParams.PageToken = commentThreadListCompletedEvent.NextPageToken;
 
-                } while (_commentThreadIterator.HasNext());
+                } while (_commentFetchIterator.HasNext());
 
                 _logger.LogInformation("{Source}: Completed fetching all comments for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.",
                     GetType().Name, videoId, totalCommentsFetched, totalReplies);
@@ -85,7 +85,7 @@ public class IntegrationEventsManager : IIntegrationEventsManager
 
         private async Task<CommentThreadListCompletedEvent> Batch(FetchParams fetchParams)
         {
-            var fetchBatchCompletedEvent = await _commentThreadIterator.Next(fetchParams);
+            var fetchBatchCompletedEvent = await _commentFetchIterator.Next(fetchParams);
             _logger.LogInformation("{Source}: Batch fetch completed for VideoId: {VideoId}. NextPageToken: {PageToken}. Comments in batch: {CommentsCount}. Replies in batch: {RepliesCount}.",
                 GetType().Name, fetchParams.VideoId, fetchParams.PageToken, fetchBatchCompletedEvent.CommentsCount, fetchBatchCompletedEvent.ReplyCount);
             return fetchBatchCompletedEvent;

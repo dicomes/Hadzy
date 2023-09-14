@@ -3,7 +3,7 @@ using YouTubeCommentsFetcher.Worker.Models;
 
 namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
-public interface IYouTubeFetcherService
+public interface IYouTubeFetcher
 {
     Task<CommentThreadListResponse> FetchAsync(FetchParams fetchParams);
 }

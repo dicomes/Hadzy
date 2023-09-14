@@ -6,7 +6,7 @@ namespace YouTubeCommentsFetcher.Worker.Services;
 
 public class CommentsOverlapHandler : ICommentsOverlapHandler
     {
-        private readonly double _overlappingThreshold = 0.5;
+        private readonly double _overlappingThreshold = 0.1;
 
         public OverlapResult HandleOverlaps(IList<CommentThread> items, List<string> storedCommentIds)
         {
