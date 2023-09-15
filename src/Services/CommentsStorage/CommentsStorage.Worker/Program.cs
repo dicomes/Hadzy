@@ -3,6 +3,7 @@ using CommentsStorage.Worker.Configurations;
 using CommentsStorage.Worker.Consumers;
 using CommentsStorage.Worker.Contracts.Repositories;
 using CommentsStorage.Worker.Contracts.Services;
+using CommentsStorage.Worker.Data;
 using CommentsStorage.Worker.Extensions;
 using CommentsStorage.Worker.Mapper;
 using CommentsStorage.Worker.Repositories;
@@ -51,6 +52,12 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                 });
             });
         });
+        
+        using (var scope = services.BuildServiceProvider().CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<RepositoryContext>();
+            dbContext.EnsureDatabaseMigrated();
+        }
     })
     .UseSerilog()
     .Build();

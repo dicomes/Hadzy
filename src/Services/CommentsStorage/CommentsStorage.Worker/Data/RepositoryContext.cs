@@ -74,4 +74,11 @@ public class RepositoryContext : DbContext
             entity.HasIndex(e => e.Id).HasDatabaseName("IX_Videos_Id");
         });
     }
+    
+    public void EnsureDatabaseMigrated()
+    {
+        // This will apply all pending migrations. 
+        // If the database doesn't exist, it will be created and all migrations will be applied.
+        Database.Migrate();
+    }
 }
