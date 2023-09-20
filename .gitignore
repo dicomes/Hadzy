@@ -34,6 +34,9 @@ bld/
 # MongoDb
 src/data/**
 
+# PostreSQL
+src/pgdata/**
+
 # Docker
 .env
 

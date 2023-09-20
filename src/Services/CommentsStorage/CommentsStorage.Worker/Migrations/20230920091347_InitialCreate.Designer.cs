@@ -13,7 +13,7 @@ using NpgsqlTypes;
 namespace CommentsStorage.Worker.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20230914113400_InitialCreate")]
+    [Migration("20230920091347_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
