@@ -19,3 +19,4 @@ global.json
 packages/
 test-results/
 TestResults/
+pgdata/
