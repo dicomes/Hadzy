@@ -1,6 +1,4 @@
-using AutoMapper;
 using CommentsStorage.Worker.Contracts.Services;
-using CommentsStorage.Worker.Services;
 using IntegrationEventsContracts;
 using MassTransit;
 

@@ -8,6 +8,7 @@ using CommentsStorage.Worker.Extensions;
 using CommentsStorage.Worker.Mapper;
 using CommentsStorage.Worker.Repositories;
 using CommentsStorage.Worker.Services;
+using GreenPipes;
 using MassTransit;
 using Serilog;
 
@@ -28,7 +29,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         services.ConfigureDbContext(hostingContext.Configuration);
         services.AddHostedService<Worker>();
         services.AddAutoMapper(typeof(MappingConfig));
-        services.AddTransient<IIntegrationService, IntegrationService>();
+        services.AddScoped<IIntegrationService, IntegrationService>();
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IVideoRepository, VideoRepository>();
         services.AddScoped<ICommentService, CommentService>();
@@ -49,6 +50,12 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                 cfg.ReceiveEndpoint("comment-thread-queue", e =>
                 {
                     e.Consumer<CommentThreadListCompletedEventConsumer>(context);
+                    //First Retry: Delay = 100ms + (2^1 - 1) * 100ms = 200ms
+                    //Second Retry: Delay = 100ms + (2^2 - 1) * 100ms = 300ms
+                    //Third Retry: Delay = 100ms + (2^3 - 1) * 100ms = 700ms
+                    e.UseMessageRetry(r =>
+                        r.Exponential(3, TimeSpan.FromMilliseconds(100),
+                        TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(100)));
                 });
             });
         });
@@ -63,10 +70,8 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
     .Build();
 
 var logger = host.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("CommentsStorage service settings-------------------->");
-logger.LogInformation("SEQ URL: {SeqUrl}", seqConfig.Url);
-logger.LogInformation("RABBITMQ HOST: {ApiKey}", rabbitMqConfig.Hostname);
-logger.LogInformation("<--------------------CommentsStorage service settings");
+logger.LogInformation("CommentsStorage: SEQ URL: {SeqUrl}", seqConfig.Url);
+logger.LogInformation("CommentsStorage: RABBITMQ HOST: {ApiKey}", rabbitMqConfig.Hostname);
 
 await host.RunAsync();
 
