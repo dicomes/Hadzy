@@ -22,7 +22,6 @@ public class CommentThreadListCompletedEventConsumer : IConsumer<ICommentThreadL
         _logger.LogInformation("{Source}: Received CommentThreadListCompletedEvent. EventId: {EventId}.",
             GetType().Name, context.Message.Id);
         
-        await _integrationService.HandleVideo(context.Message);
         await _integrationService.AddComments(context.Message.YouTubeCommentsList);
         
         _logger.LogInformation("{Source}: Comments added to DB. EventId: {EventId}. VideoId: {VideoId}",

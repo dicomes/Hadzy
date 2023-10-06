@@ -1,6 +1,6 @@
 using Google.Apis.YouTube.v3.Data;
+using YouTubeCommentsFetcher.Worker.Contracts;
 using YouTubeCommentsFetcher.Worker.Models;
-using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 

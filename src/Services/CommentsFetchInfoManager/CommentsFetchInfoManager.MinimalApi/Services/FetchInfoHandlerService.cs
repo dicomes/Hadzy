@@ -9,21 +9,15 @@ namespace CommentsFetchInfoManager.MinimalApi.Services;
 
 public class FetchInfoHandlerService : IFetchInfoHandlerService
 {
-    private readonly IValidationService<FetchInfoDto> _validationService;
     private readonly IFetchInfoRepository _fetchInfoRepository;
     private readonly IEnumerable<IFetchStatusHandler> _statusHandlers;
-    private readonly IErrorResponseService _errorResponseService;
 
     public FetchInfoHandlerService(
-        IValidationService<FetchInfoDto> validationService,
         IFetchInfoRepository fetchInfoRepository,
-        IEnumerable<IFetchStatusHandler> statusHandlers,
-        IErrorResponseService errorResponseService)
+        IEnumerable<IFetchStatusHandler> statusHandlers)
     {
-        _validationService = validationService;
         _fetchInfoRepository = fetchInfoRepository;
         _statusHandlers = statusHandlers;
-        _errorResponseService = errorResponseService;
     }
 
     public async Task<IResult> HandleAsync(FetchInfoDto? fetchInfoDto)

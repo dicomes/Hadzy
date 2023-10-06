@@ -9,5 +9,5 @@ public interface ICommentThreadListCompletedEvent
     uint ReplyCount { get; }
     string? FirstCommentId { get; }
     List<string>? CommentIds { get; }
-    List<IYouTubeCommentDto> YouTubeCommentsList { get; }
+    List<IYouTubeCommentDto>? YouTubeCommentsList { get; }
 }

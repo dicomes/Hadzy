@@ -1,3 +1,4 @@
+using YouTubeCommentsFetcher.Worker.Contracts;
 using YouTubeCommentsFetcher.Worker.Enums;
 
 namespace YouTubeCommentsFetcher.Worker.IntegrationEvents;

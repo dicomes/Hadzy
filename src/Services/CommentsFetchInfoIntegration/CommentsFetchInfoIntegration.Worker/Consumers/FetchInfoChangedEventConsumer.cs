@@ -22,8 +22,8 @@ public class FetchInfoChangedEventConsumer : IConsumer<IFetchInfoChangedEvent>
     public async Task Consume(ConsumeContext<IFetchInfoChangedEvent> context)
     {
         
-        _logger.LogInformation("{Source}: Received FetchInfoChangedEvent. Event Id: {EventId}. Event data: {EventData}.",
-            GetType().Name, context.Message.Id, context.Message);
+        _logger.LogInformation("{Source}: Received FetchInfoChangedEvent. EventId: {EventId}. VideoId: {VideoId}.",
+            GetType().Name, context.Message.Id, context.Message.VideoId);
 
         await _fetchInfoChangedEventHandler.HandeAsync(context.Message);
     }

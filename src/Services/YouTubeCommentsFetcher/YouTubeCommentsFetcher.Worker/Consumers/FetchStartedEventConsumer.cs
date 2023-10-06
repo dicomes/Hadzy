@@ -1,24 +1,24 @@
 using Google;
 using MassTransit;
 using IntegrationEventsContracts;
+using YouTubeCommentsFetcher.Worker.Contracts;
 using YouTubeCommentsFetcher.Worker.Exceptions;
-using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Consumers
 {
     public class FetchStartedEventConsumer : IConsumer<IFetchStartedEvent>
     {
         private readonly ILogger<FetchStartedEventConsumer> _logger;
-        private readonly ICommentPublisher _commentPublisher;
+        private readonly IEventsManager _eventsManager;
         private readonly IYouTubeFetcherServiceExceptionHandler _youTubeFetcherServiceExceptionHandler;
 
         public FetchStartedEventConsumer(
             ILogger<FetchStartedEventConsumer> logger, 
-            ICommentPublisher commentPublisher, 
+            IEventsManager eventsManager, 
             IYouTubeFetcherServiceExceptionHandler youTubeFetcherServiceExceptionHandler)
         {
             _logger = logger;
-            _commentPublisher = commentPublisher;
+            _eventsManager = eventsManager;
             _youTubeFetcherServiceExceptionHandler = youTubeFetcherServiceExceptionHandler;
         }
 
@@ -29,7 +29,7 @@ namespace YouTubeCommentsFetcher.Worker.Consumers
         
             try
             {
-                await _commentPublisher.IterateAndPublishCommentsAsync(context.Message.VideoId, context.Message.PageToken, context.Message.FirstFetchedCommentIds);
+                await _eventsManager.IterateCommentsAndPublishEventsAsync(context.Message.VideoId, context.Message.PageToken, context.Message.FirstFetchedCommentIds);
             }
             catch (YouTubeFetcherServiceException ex)
             {

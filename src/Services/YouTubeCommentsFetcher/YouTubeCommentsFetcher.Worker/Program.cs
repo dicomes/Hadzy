@@ -6,8 +6,8 @@ using YouTubeCommentsFetcher.Worker.Services;
 using MassTransit;
 using YouTubeCommentsFetcher.Worker;
 using YouTubeCommentsFetcher.Worker.Consumers;
+using YouTubeCommentsFetcher.Worker.Contracts;
 using YouTubeCommentsFetcher.Worker.Mappers;
-using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 var hostBuilder = Host.CreateDefaultBuilder(args);
 
@@ -53,7 +53,7 @@ hostBuilder
         services.AddTransient<IEventPublisher, EventPublisher>();
         services.AddTransient<ICommentsOverlapHandler, CommentsOverlapHandler>();
         services.AddTransient<ICommentFetchIterator, CommentFetchIterator>();
-        services.AddTransient<ICommentPublisher, CommentPublisher>();
+        services.AddTransient<IEventsManager, EventsManager>();
 
         // MassTransit Configuration
         services.AddMassTransit(configurator =>
@@ -69,12 +69,12 @@ hostBuilder
                     configure.Password(rabbitMqConfig.Password);
                 });
 
-                cfg.ReceiveEndpoint("videoId-queue", e =>
+                cfg.ReceiveEndpoint("comments-fetcher-fetch-started-consumer-endpoint", e =>
                 {
                     e.Consumer<FetchStartedEventConsumer>(context);
                 });
 
-                cfg.ReceiveEndpoint("error-message-queue", e =>
+                cfg.ReceiveEndpoint("comments-fetcher-fetcher-error-consumer-endpoint", e =>
                 {
                     e.Consumer<FetcherErrorEventConsumer>(context);
                 });
@@ -87,10 +87,8 @@ var host = hostBuilder.Build();
 
 // Logging Service Settings
 var logger = host.Services.GetRequiredService<ILogger<Worker>>();
-logger.LogInformation("YouTubeCommentsFetcher service settings-------------------->");
-logger.LogInformation("SEQ URL: {SeqUrl}", seqConfig.Url);
-logger.LogInformation("API KEY: {ApiKey}", youTubeConfig.ApiKey);
-logger.LogInformation("RABBITMQ HOST: {RabbitMqHost}", rabbitMqConfig.Hostname);
-logger.LogInformation("<--------------------YouTubeCommentsFetcher service settings");
+logger.LogInformation("YouTubeCommentsFetcher: SEQ URL: {SeqUrl}", seqConfig.Url);
+logger.LogInformation("YouTubeCommentsFetcher: API KEY: {ApiKey}", youTubeConfig.ApiKey);
+logger.LogInformation("YouTubeCommentsFetcher: RABBITMQ HOST: {RabbitMqHost}", rabbitMqConfig.Hostname);
 
 await host.RunAsync();

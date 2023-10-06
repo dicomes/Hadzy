@@ -1,23 +1,18 @@
 using IntegrationEventsContracts;
+using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Models.DTO;
 
-namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
+namespace YouTubeCommentsFetcher.Worker.Builders;
 
 public class FetchCompletedEventBuilder
 {
     private readonly CommentThreadListCompletedEvent _event;
 
-    public FetchCompletedEventBuilder()
+    public FetchCompletedEventBuilder(string videoId)
     {
-        _event = new CommentThreadListCompletedEvent();
+        _event = new CommentThreadListCompletedEvent(videoId);
     }
-
-    public FetchCompletedEventBuilder WithVideoId(string? videoId)
-    {
-        _event.VideoId = videoId;
-        return this;
-    }
-
+    
     public FetchCompletedEventBuilder WithPageToken(string pageToken)
     {
         _event.NextPageToken = pageToken;

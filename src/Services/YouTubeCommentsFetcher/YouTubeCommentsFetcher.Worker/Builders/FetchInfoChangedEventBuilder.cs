@@ -1,6 +1,6 @@
-using IntegrationEventsContracts;
+using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 
-namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
+namespace YouTubeCommentsFetcher.Worker.Builders;
 
 public class FetchInfoChangedEventBuilder
 {

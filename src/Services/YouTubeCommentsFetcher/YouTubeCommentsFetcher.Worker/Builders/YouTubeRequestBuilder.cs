@@ -1,10 +1,10 @@
 using Google.Apis.YouTube.v3;
 
-namespace YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
+namespace YouTubeCommentsFetcher.Worker.Builders;
 
 public class YouTubeRequestBuilder
 {
-    private CommentThreadsResource.ListRequest _request;
+    private readonly CommentThreadsResource.ListRequest _request;
 
     public YouTubeRequestBuilder(YouTubeService youtubeService, string properties)
     {

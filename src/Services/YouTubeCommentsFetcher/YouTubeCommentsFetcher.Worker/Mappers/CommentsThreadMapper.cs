@@ -1,9 +1,9 @@
 using AutoMapper;
 using Google.Apis.YouTube.v3.Data;
+using YouTubeCommentsFetcher.Worker.Builders;
+using YouTubeCommentsFetcher.Worker.Contracts;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
-using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models.DTO;
-using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Mappers
 {
@@ -20,8 +20,7 @@ namespace YouTubeCommentsFetcher.Worker.Mappers
         {
             List<YouTubeCommentDto> youTubeCommentDtoList = _mapper.Map<List<YouTubeCommentDto>>(response.Items.Select(ct => ct.Snippet));
         
-            CommentThreadListCompletedEvent commentThreadListCompletedEvent = new FetchCompletedEventBuilder()
-                .WithVideoId(videoId)
+            CommentThreadListCompletedEvent commentThreadListCompletedEvent = new FetchCompletedEventBuilder(videoId)
                 .WithPageToken(response.NextPageToken)
                 .WithCommentsFetchedCount((ulong)youTubeCommentDtoList.LongCount())
                 .WithReplyCount((uint)youTubeCommentDtoList.Sum(cmt => cmt.TotalReplyCount))

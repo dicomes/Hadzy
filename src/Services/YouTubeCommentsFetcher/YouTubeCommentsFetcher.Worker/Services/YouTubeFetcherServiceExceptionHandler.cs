@@ -1,6 +1,6 @@
+using YouTubeCommentsFetcher.Worker.Contracts;
 using YouTubeCommentsFetcher.Worker.Exceptions;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
-using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services
 {

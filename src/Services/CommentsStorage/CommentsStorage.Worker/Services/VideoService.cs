@@ -18,31 +18,25 @@ public class VideoService : IVideoService
         return await _repository.Video.GetByIdAsync(id, false);
     }
     
-    public async Task AddVideoAsync(Video video)
-    {
-        await _repository.Video.CreateVideo(video);
-    }
-    
-    public async Task UpdateAsync(Video video)
-    {
-        await _repository.Video.UpdateVideo(video);
-    }
-
-    public async Task AddOrUpdateAsync(Video video)
+    public async Task AddAsync(Video video)
     {
         var existentVideo  = await _repository.Video.GetByIdAsync(video.Id, false);
         if (existentVideo == null)
         {
             await _repository.Video.CreateVideo(video);
         }
-        
-        if (existentVideo != null && string.IsNullOrEmpty(existentVideo.FirstComment))
+    }
+    
+    public async Task UpdateAsync(Video video)
+    {
+        var existentVideo  = await _repository.Video.GetByIdAsync(video.Id, false);
+        if (existentVideo != null)
         {
             await _repository.Video.UpdateVideo(video);
         }
     }
 
-    public async Task DeleteAsync(string id)
+    public async Task DeleteByIdAsync(string id)
     {
         var video = await _repository.Video.GetByIdAsync(id, false);
         if (video != null)

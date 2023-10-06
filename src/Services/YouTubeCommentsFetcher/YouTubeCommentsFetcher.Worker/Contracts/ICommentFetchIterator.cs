@@ -1,7 +1,7 @@
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
 using YouTubeCommentsFetcher.Worker.Models;
 
-namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
+namespace YouTubeCommentsFetcher.Worker.Contracts;
 
 public interface ICommentFetchIterator
 {

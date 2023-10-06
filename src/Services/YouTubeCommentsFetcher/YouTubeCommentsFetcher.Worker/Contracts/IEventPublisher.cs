@@ -1,4 +1,4 @@
-namespace YouTubeCommentsFetcher.Worker.Services.Interfaces;
+namespace YouTubeCommentsFetcher.Worker.Contracts;
 
 public interface IEventPublisher
 {

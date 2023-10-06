@@ -26,24 +26,26 @@ public class IntegrationService : IIntegrationService
         await _commentService.AddCommentsAsync(comments);
     }
 
-    public async Task HandleVideo(ICommentThreadListCompletedEvent commentThreadEvent)
+    public async Task AddVideoByStartedEvent(IFetchStartedEvent fetchStarted)
     {
-        var video = BuildVideoFromEvent(commentThreadEvent);
-        await AddOrUpdateVideo(video);
-    }
-    
-    private async Task AddOrUpdateVideo(Video video)
-    {
-        await _videoService.AddOrUpdateAsync(video);
-    }
-    
-    private Video BuildVideoFromEvent(ICommentThreadListCompletedEvent commentThreadEvent)
-    {
-        Video video = new Video()
+        var video = new Video()
         {
-            Id = commentThreadEvent.VideoId,
-            FirstComment = commentThreadEvent.FirstCommentId
+            Id = fetchStarted.VideoId
         };
-        return video;
+        await _videoService.AddAsync(video);
+    }
+
+    public async Task UpdateVideoByCompletedEvent(IFetchCompletedEvent fetchCompleted)
+    {
+        if (string.IsNullOrEmpty(fetchCompleted.FirstCommentId))
+        {
+            return;
+        }
+        var video = new Video()
+        {
+            Id = fetchCompleted.VideoId,
+            FirstComment = fetchCompleted.FirstCommentId
+        };
+        await _videoService.UpdateAsync(video);
     }
 }

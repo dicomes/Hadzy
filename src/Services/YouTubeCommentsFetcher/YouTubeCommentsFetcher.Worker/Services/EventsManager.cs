@@ -1,20 +1,20 @@
 using IntegrationEventsContracts;
+using YouTubeCommentsFetcher.Worker.Builders;
+using YouTubeCommentsFetcher.Worker.Contracts;
 using YouTubeCommentsFetcher.Worker.IntegrationEvents;
-using YouTubeCommentsFetcher.Worker.IntegrationEvents.Builders;
 using YouTubeCommentsFetcher.Worker.Models;
-using YouTubeCommentsFetcher.Worker.Services.Interfaces;
 
 namespace YouTubeCommentsFetcher.Worker.Services;
 
-public class CommentPublisher : ICommentPublisher
+public class EventsManager : IEventsManager
     {
         private readonly IEventPublisher _eventPublisher;
-        private readonly ILogger<CommentPublisher> _logger;
+        private readonly ILogger<EventsManager> _logger;
         private readonly ICommentFetchIterator _commentFetchIterator;
 
-        public CommentPublisher(
+        public EventsManager(
             IEventPublisher eventPublisher,
-            ILogger<CommentPublisher> logger,
+            ILogger<EventsManager> logger,
             ICommentFetchIterator commentFetchIterator)
         {
             _eventPublisher = eventPublisher;
@@ -22,7 +22,7 @@ public class CommentPublisher : ICommentPublisher
             _commentFetchIterator = commentFetchIterator;
         }
 
-        public async Task IterateAndPublishCommentsAsync(
+        public async Task IterateCommentsAndPublishEventsAsync(
             string? videoId, string? pageToken, List<string> commentIds)
         {
             ulong totalCommentsFetched = 0;
@@ -36,7 +36,16 @@ public class CommentPublisher : ICommentPublisher
                 do
                 {
                     var commentThreadListCompletedEvent = await Batch(fetchParams);
-                    await PublishCommentThreadEvent(commentThreadListCompletedEvent, !_commentFetchIterator.HasNext());
+                    
+                    if (_commentFetchIterator.HasNext())
+                    {
+                        await PublishCommentThreadEvent(commentThreadListCompletedEvent);
+                    }
+                    
+                    if (!_commentFetchIterator.HasNext())
+                    {
+                        await PublishFetchCompletedEvent(commentThreadListCompletedEvent);
+                    }
 
                     firstIteration = HandleFirstIteration(firstIteration, commentThreadListCompletedEvent,
                         ref firstIterationCommentIds);
@@ -56,7 +65,7 @@ public class CommentPublisher : ICommentPublisher
             }
             catch
             {
-                await PublishFetchInfoEvent(videoId, fetchParams.PageToken, new CommentThreadListCompletedEvent(), new List<string>(), FetchStatus.Failed.ToString(), false);
+                await PublishFetchInfoEvent(videoId, fetchParams.PageToken, new CommentThreadListCompletedEvent(videoId), new List<string>(), FetchStatus.Failed.ToString(), false);
                 throw;
             }
         }
@@ -92,14 +101,22 @@ public class CommentPublisher : ICommentPublisher
         }
 
         private async Task PublishCommentThreadEvent(
-            CommentThreadListCompletedEvent commentThreadListCompletedEvent, bool fetchCompletedTillFirstComment)
+            CommentThreadListCompletedEvent commentThreadListCompletedEvent)
         {
-            if (fetchCompletedTillFirstComment)
-            {
-                commentThreadListCompletedEvent.FirstCommentId =
-                    commentThreadListCompletedEvent.YouTubeCommentsList.Last().Id;
-            }
             await _eventPublisher.PublishEvent(commentThreadListCompletedEvent);
+        }
+        
+        private async Task PublishFetchCompletedEvent(CommentThreadListCompletedEvent commentThreadListCompletedEvent)
+        {
+            if (commentThreadListCompletedEvent.VideoId != null)
+            {
+                var fetchCompletedEvent = new FetchCompletedEvent()
+                {
+                    VideoId = commentThreadListCompletedEvent.VideoId,
+                    FirstCommentId = commentThreadListCompletedEvent.YouTubeCommentsList?.LastOrDefault()?.Id ?? default
+                };
+                await _eventPublisher.PublishEvent(fetchCompletedEvent);
+            }
         }
 
         private async Task PublishFetchInfoEvent(
