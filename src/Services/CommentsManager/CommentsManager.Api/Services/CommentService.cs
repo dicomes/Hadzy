@@ -46,12 +46,12 @@ public class CommentService : ICommentService
     }
     
     public async Task<CommentResponse> GetCommentByIdAsync(
-        string videoId)
+        string id)
     {
-        _logger.LogInformation("{Source}: GetCommentByVideoIdAsync for VideoId {VideoId}.",
-            GetType().Name, videoId);
+        _logger.LogInformation("{Source}: GetCommentByIdAsync for Id {CommentId}.",
+            GetType().Name, id);
         
-        Comment comment = await _repository.Comment.GetByIdAsync(videoId, false);
+        Comment comment = await _repository.Comment.GetByIdAsync(id, false);
         var commentsResponse = _mapper.Map<CommentResponse>(comment);
         
         return commentsResponse;

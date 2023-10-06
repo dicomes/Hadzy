@@ -37,10 +37,7 @@ public class EventsManager : IEventsManager
                 {
                     var commentThreadListCompletedEvent = await Batch(fetchParams);
                     
-                    if (_commentFetchIterator.HasNext())
-                    {
-                        await PublishCommentThreadEvent(commentThreadListCompletedEvent);
-                    }
+                    await PublishCommentThreadEvent(commentThreadListCompletedEvent);
                     
                     if (!_commentFetchIterator.HasNext())
                     {
