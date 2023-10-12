@@ -47,11 +47,13 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                 {
                     configure.Username(rabbitMqConfig.User);
                     configure.Password(rabbitMqConfig.Password);
+                    configure.Heartbeat(60);
                 });
                 
                 cfg.ReceiveEndpoint("comment-storage-thread-consumer-endpoint", e =>
                 {
                     e.Consumer<CommentThreadListCompletedEventConsumer>(context);
+                    e.UseScheduledRedelivery(r => r.Intervals(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(30)));
                     //First Retry: Delay = 100ms + (2^1 - 1) * 100ms = 200ms
                     //Second Retry: Delay = 100ms + (2^2 - 1) * 100ms = 300ms
                     //Third Retry: Delay = 100ms + (2^3 - 1) * 100ms = 700ms
@@ -63,6 +65,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                 cfg.ReceiveEndpoint("comment-storage-fetch-started-consumer-endpoint", e =>
                 {
                     e.Consumer<FetchStartedEventConsumer>(context);
+                    e.UseScheduledRedelivery(r => r.Intervals(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(30)));
                     //First Retry: Delay = 100ms + (2^1 - 1) * 100ms = 200ms
                     //Second Retry: Delay = 100ms + (2^2 - 1) * 100ms = 300ms
                     //Third Retry: Delay = 100ms + (2^3 - 1) * 100ms = 700ms
@@ -73,6 +76,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                 cfg.ReceiveEndpoint("comment-storage-fetch-completed-consumer-endpoint", e =>
                 {
                     e.Consumer<FetchCompletedEventConsumer>(context);
+                    e.UseScheduledRedelivery(r => r.Intervals(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(30)));
                     //First Retry: Delay = 100ms + (2^1 - 1) * 100ms = 200ms
                     //Second Retry: Delay = 100ms + (2^2 - 1) * 100ms = 300ms
                     //Third Retry: Delay = 100ms + (2^3 - 1) * 100ms = 700ms

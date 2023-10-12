@@ -6,6 +6,7 @@ using CommentsFetchInfoIntegration.Worker.Mapper;
 using CommentsFetchInfoIntegration.Worker.Repositories;
 using CommentsFetchInfoIntegration.Worker.Services;
 using CommentsFetchInfoIntegration.Worker.Services.Interfaces;
+using GreenPipes;
 using MassTransit;
 using Serilog;
 
@@ -49,6 +50,8 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
                 cfg.ReceiveEndpoint("fetch-info-queue", e =>
                 {
                     e.Consumer<FetchInfoChangedEventConsumer>(context);
+                    e.UseScheduledRedelivery(r =>
+                        r.Intervals(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(3)));
                 });
             });
         });

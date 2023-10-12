@@ -35,7 +35,7 @@ public class EventsManager : IEventsManager
             {
                 do
                 {
-                    var commentThreadListCompletedEvent = await Batch(fetchParams);
+                    var commentThreadListCompletedEvent = await CommentsBatch(fetchParams);
                     
                     await PublishCommentThreadEvent(commentThreadListCompletedEvent);
                     
@@ -57,17 +57,24 @@ public class EventsManager : IEventsManager
 
                 } while (_commentFetchIterator.HasNext());
 
-                _logger.LogInformation("{Source}: Completed fetching all comments for VideoId: {VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.",
+                _logger.LogInformation("{Source}: " +
+                                       "IterateCommentsAndPublishEventsAsync Completed fetching all comments for VideoId: " +
+                                       "{VideoId}. Total Comments: {TotalComments}. Total Replies: {TotalReplies}.",
                     GetType().Name, videoId, totalCommentsFetched, totalReplies);
             }
             catch
             {
-                await PublishFetchInfoEvent(videoId, fetchParams.PageToken, new CommentThreadListCompletedEvent(videoId), new List<string>(), FetchStatus.Failed.ToString(), false);
+                _logger.LogError("{Source}: IterateCommentsAndPublishEventsAsync Error fetching comments for VideoId:" +
+                                 " {VideoId}.",
+                    GetType().Name, videoId);
+                await PublishFetchInfoEvent(videoId, fetchParams.PageToken, new CommentThreadListCompletedEvent(videoId), 
+                    new List<string>(), FetchStatus.Failed.ToString(), false);
                 throw;
             }
         }
 
-        private void IncrementComments(ref ulong totalCommentsFetched, ref uint totalReplies, CommentThreadListCompletedEvent commentThreadListCompletedEvent )
+        private void IncrementComments(ref ulong totalCommentsFetched, ref uint totalReplies,
+            CommentThreadListCompletedEvent commentThreadListCompletedEvent )
         {
             totalCommentsFetched += commentThreadListCompletedEvent.CommentsCount;
             totalReplies += commentThreadListCompletedEvent.ReplyCount;
@@ -78,7 +85,8 @@ public class EventsManager : IEventsManager
             return hasNext ? FetchStatus.InProgress.ToString() : FetchStatus.Done.ToString();
         }
 
-        private bool HandleFirstIteration(bool firstIteration, CommentThreadListCompletedEvent commentThreadListCompletedEvent, ref List<string>? firstIterationCommentIds)
+        private bool HandleFirstIteration(bool firstIteration, CommentThreadListCompletedEvent commentThreadListCompletedEvent,
+            ref List<string>? firstIterationCommentIds)
         {
             if (firstIteration)
             {
@@ -89,10 +97,11 @@ public class EventsManager : IEventsManager
             return firstIteration;
         }
 
-        private async Task<CommentThreadListCompletedEvent> Batch(FetchParams fetchParams)
+        private async Task<CommentThreadListCompletedEvent> CommentsBatch(FetchParams fetchParams)
         {
             var fetchBatchCompletedEvent = await _commentFetchIterator.Next(fetchParams);
-            _logger.LogInformation("{Source}: Batch fetch completed for VideoId: {VideoId}. NextPageToken: {PageToken}. Comments in batch: {CommentsCount}. Replies in batch: {RepliesCount}.",
+            _logger.LogInformation("{Source}: Batch fetch completed for VideoId: {VideoId}." +
+                                   " NextPageToken: {PageToken}. Comments in batch: {CommentsCount}. Replies in batch: {RepliesCount}.",
                 GetType().Name, fetchParams.VideoId, fetchParams.PageToken, fetchBatchCompletedEvent.CommentsCount, fetchBatchCompletedEvent.ReplyCount);
             return fetchBatchCompletedEvent;
         }
