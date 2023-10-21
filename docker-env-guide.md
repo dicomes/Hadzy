@@ -1,0 +1,9 @@
+YOUTUBE_APIKEY=<YourApiHere>
+SEQ_URL=http://seq:80
+RABBITMQ_HOSTNAME=rabbitmq://rabbitmq:5672
+RABBITMQ_USER=guest
+RABBITMQ_PASSWORD=guest
+MONGODB_CONNECTION_STRING=mongodb://admin:admin@mongodb:27017
+MONGODB_DATABASE_NAME=video-fetch-status
+MONGODB_VIDEO_FETCH_INFO_COLLECTION_NAME=VideoFetchInfo
+POSTGRESQL_CONNECTION_STRING=Host=postgres;Port=5432;Username=admin;Password=admin;Database=hadzy_db;
